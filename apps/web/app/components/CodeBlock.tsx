@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { IconCheck, IconCopy } from "./icons";
 
-export function CopyButton({ text, label = "复制", className = "" }: { text: string; label?: string; className?: string }) {
+export function CopyButton({ text, label = "Copy", className = "" }: { text: string; label?: string; className?: string }) {
   const [copied, setCopied] = useState(false);
   return (
     <button
@@ -21,12 +21,12 @@ export function CopyButton({ text, label = "复制", className = "" }: { text: s
         setTimeout(() => setCopied(false), 1500);
       }}
       className={`inline-flex h-7 items-center gap-1 rounded-mark border border-line bg-surface px-2 text-[12px] transition-colors ${copied ? "text-ok" : "text-ink-3 hover:border-line-strong hover:text-ink"} ${className}`}
-      aria-label={copied ? "已复制" : label}
+      aria-label={copied ? "Copied" : label}
     >
       <span key={copied ? "ok" : "copy"} className={copied ? "anim-swap-in" : ""}>
         {copied ? <IconCheck size={14} /> : <IconCopy size={14} />}
       </span>
-      {copied ? "已复制" : label}
+      {copied ? "Copied" : label}
     </button>
   );
 }
@@ -35,7 +35,7 @@ export function CopyButton({ text, label = "复制", className = "" }: { text: s
 export function CodeBlock({ code, lang, title }: { code: string; lang?: string; title?: string }) {
   return (
     <div className="my-4 overflow-hidden rounded-card border border-line bg-surface">
-      <div className="flex items-center justify-between border-b border-line-soft px-4 py-2">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line-soft px-4 py-2">
         <span className="text-[12px] text-ink-4">{title ?? lang ?? ""}</span>
         <CopyButton text={code} />
       </div>

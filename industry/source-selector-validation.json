@@ -1,0 +1,255 @@
+[
+  {
+    "id": "3d-systems",
+    "checkedAt": "2026-09-30T05:58:20.242Z",
+    "selector": "a[href*=\"/press-releases/\"]",
+    "sampleMatches": [
+      {
+        "url": "https://www.3dsystems.com/press-releases/3d-systems-launches-partnership-savannah-river-national-laboratory-advance-3d",
+        "matched": true
+      },
+      {
+        "url": "https://www.3dsystems.com/press-releases/3d-systems-receives-9-million-contract-award-us-air-force-advanced-large-format",
+        "matched": true
+      }
+    ],
+    "candidateCount": 20,
+    "first": {
+      "url": "https://www.3dsystems.com/press-releases/3d-systems-launches-partnership-savannah-river-national-laboratory-advance-3d",
+      "title": "3D Systems Launches Partnership with Savannah River National Laboratory to Advance 3D Printing for Advanced Energy and National Security Applications",
+      "publishedAt": null
+    },
+    "snapshotSha256": "d40dd3e87fa2b1a8619df4d52a69e0fda237f1535c5d7fce71af067664bfb519",
+    "limitation": null
+  },
+  {
+    "id": "bcn3d",
+    "checkedAt": "2026-09-30T05:58:20.257Z",
+    "selector": ".b3d-minipost",
+    "sampleMatches": [
+      {
+        "url": "https://bcn3d.com/introducing-supernova-new-company-carve-out-viscous-lithography-manufacturing-vlm/",
+        "matched": true
+      },
+      {
+        "url": "https://bcn3d.com/new-bcn3d-omega-i60-g2/",
+        "matched": true
+      }
+    ],
+    "candidateCount": 17,
+    "first": {
+      "url": "https://bcn3d.com/introducing-supernova-new-company-carve-out-viscous-lithography-manufacturing-vlm/",
+      "title": "Introducing Supernova: A New Company Born from the Carve-Out of BCN3D’s Viscous Lithography Manufacturing (VLM) Business Unit, Set to Revolutionize AM in Real Production Applications",
+      "publishedAt": "2024-01-30T16:00:00.000Z"
+    },
+    "snapshotSha256": "f478b0a669bfb64268f30d187680fc9032e4459916867fd3b5df2a1221e71bf4",
+    "limitation": null
+  },
+  {
+    "id": "carbon",
+    "checkedAt": "2026-09-30T05:58:20.266Z",
+    "selector": "a[href=\"https://www.carbon3d.com/resources/case-study/sherpa-design-collaborates-with-monterey-bay-aquarium-research-institute-to-address-manufacturing-challenge-for-underwater-robot\"], a[href=\"https://www.carbon3d.com/resources/case-study/closing-the-digital-gap-how-carbon-keystone-industries-fp3d-brought-precision-predictability-and-patient-satisfaction-to-removable-partial-dentures\"]",
+    "sampleMatches": [
+      {
+        "url": "https://www.carbon3d.com/resources/case-study/sherpa-design-collaborates-with-monterey-bay-aquarium-research-institute-to-address-manufacturing-challenge-for-underwater-robot",
+        "matched": true
+      },
+      {
+        "url": "https://www.carbon3d.com/resources/case-study/closing-the-digital-gap-how-carbon-keystone-industries-fp3d-brought-precision-predictability-and-patient-satisfaction-to-removable-partial-dentures",
+        "matched": true
+      }
+    ],
+    "candidateCount": 2,
+    "first": {
+      "url": "https://www.carbon3d.com/resources/case-study/sherpa-design-collaborates-with-monterey-bay-aquarium-research-institute-to-address-manufacturing-challenge-for-underwater-robot",
+      "title": "Sherpa Design Collaborates with Monterey Bay Aquarium Research Institute to Address Manufacturing Challenge for Underwater Robot",
+      "publishedAt": null
+    },
+    "snapshotSha256": "42e16799a7470b6bf13b96e32403f80fe04d95891b0445620b7fb2fb4a32cd34",
+    "limitation": "Pinned to observed sample articles; general listing discovery unresolved"
+  },
+  {
+    "id": "cobod",
+    "checkedAt": "2026-09-30T05:58:20.271Z",
+    "selector": "article.elementor-post",
+    "sampleMatches": [
+      {
+        "url": "https://cobod.com/europes-largest-3d-printed-project-completed-below-denmarks-social-housing-cost-cap/",
+        "matched": true
+      },
+      {
+        "url": "https://cobod.com/german-construction-giant-launches-3d-printing-division-after-printing-its-own-headquarters/",
+        "matched": true
+      }
+    ],
+    "candidateCount": 6,
+    "first": {
+      "url": "https://cobod.com/europes-largest-3d-printed-project-completed-below-denmarks-social-housing-cost-cap/",
+      "title": "Europe’s Largest 3D Printed Project Completed Below Denmark’s Social Housing Cost Cap",
+      "publishedAt": null
+    },
+    "snapshotSha256": "4e06a45837934529c582dee24d1f5fcb39aa212cbc89ee4cb6c9fb1b9f38d759",
+    "limitation": null
+  },
+  {
+    "id": "eos",
+    "checkedAt": "2026-09-30T05:58:20.287Z",
+    "selector": ".teaser-list__item a[href*=\"/press-releases/\"]",
+    "sampleMatches": [
+      {
+        "url": "https://www.eos.info/press-media/press-center/press-releases/2026/axiomatek_mexico_channel_partner",
+        "matched": true
+      },
+      {
+        "url": "https://www.eos.info/press-media/press-center/press-releases/2026/eos-joins-mat‑h2-consortium",
+        "matched": true
+      }
+    ],
+    "candidateCount": 10,
+    "first": {
+      "url": "https://www.eos.info/press-media/press-center/press-releases/2026/axiomatek_mexico_channel_partner",
+      "title": "Sep 2026 · Reading time 4 min. EOS Names Axiomatek as New Distribution Partner to Meet Rising Demand for Industrial 3D Printing Across Mexico Read More",
+      "publishedAt": null
+    },
+    "snapshotSha256": "a04c84fe77d90db92efffea82ece53bdf3cb0356ff8706729280d1ca7e29d1cc",
+    "limitation": null
+  },
+  {
+    "id": "eplus3d",
+    "checkedAt": "2026-09-30T05:58:20.290Z",
+    "selector": ".article-item",
+    "sampleMatches": [
+      {
+        "url": "https://www.eplus3d.com/investigation-of-manufacturing-316l-stainless-steel-closed-impeller-using-eplus3d-laser-powder-bed-fusion-machine.html",
+        "matched": true
+      },
+      {
+        "url": "https://www.eplus3d.com/eplus3ds-exploration-and-practice-support-free-metal-3d-printing.html",
+        "matched": true
+      }
+    ],
+    "candidateCount": 10,
+    "first": {
+      "url": "https://www.eplus3d.com/investigation-of-manufacturing-316l-stainless-steel-closed-impeller-using-eplus3d-laser-powder-bed-fusion-machine.html",
+      "title": "Investigation of Manufacturing 316L Stainless Steel Closed Impeller Using Eplus3D Laser Powder Bed Fusion Machine",
+      "publishedAt": null
+    },
+    "snapshotSha256": "123f881162de8d095ab0f4dbdbba87e27cdef3dd72e559a0118dbc27cb9e93c8",
+    "limitation": null
+  },
+  {
+    "id": "farsoon",
+    "checkedAt": "2026-09-30T05:58:20.296Z",
+    "selector": "a[href*=\"/news/\"]",
+    "sampleMatches": [
+      {
+        "url": "https://www.farsoon-gl.com/news/scaling-serial-production-100-farsoon-polymer-pbf-systems-deployed-in-the-rapid-manufacturing/",
+        "matched": true
+      },
+      {
+        "url": "https://www.farsoon-gl.com/news/farsoon-expands-industrial-additive-manufacturing-reach-in-australia-through-partnership-with-emlogic/",
+        "matched": true
+      }
+    ],
+    "candidateCount": 156,
+    "first": {
+      "url": "https://www.farsoon-gl.com/news/farsoon-metal-am-enables-a-new-approach-to-ship-lock-valve-cushioning-for-the-pinglu-canal/",
+      "title": "LEARN MORE",
+      "publishedAt": null
+    },
+    "snapshotSha256": "6fd5c30de3e1240dafc2c9b6a3a881c4e72e1a405592b45f714405dc75877abf",
+    "limitation": null
+  },
+  {
+    "id": "formlabs",
+    "checkedAt": "2026-09-30T05:58:20.307Z",
+    "selector": "ul[class*=\"Press_press_list\"] li",
+    "sampleMatches": [
+      {
+        "url": "https://formlabs.com/company/press/formlabs-board-changes-dan-riccio/",
+        "matched": true
+      },
+      {
+        "url": "https://formlabs.com/company/press/formlabs-unveils-fuse-x1-large-format-sls-3d-printing/",
+        "matched": true
+      }
+    ],
+    "candidateCount": 10,
+    "first": {
+      "url": "https://formlabs.com/company/press/formlabs-board-changes-dan-riccio/",
+      "title": "2026-08-12Formlabs Announces Former Apple Hardware Chief Dan Riccio as a Strategic Advisor and Board Changes",
+      "publishedAt": "2026-08-12T00:00:00.000Z"
+    },
+    "snapshotSha256": "a6361a465a6fc1c9038b64571a45a83b2e7aaea2f594d1f50427d566d1cc96a4",
+    "limitation": "Dates come from press-list calendar dates; not discovery. No September press release observed."
+  },
+  {
+    "id": "roboze",
+    "checkedAt": "2026-09-30T05:58:20.323Z",
+    "selector": "a[href*=\"/en/press/\"]",
+    "sampleMatches": [
+      {
+        "url": "https://www.roboze.com/en/press/high-performance-polymer-research-roboze-and-tor-vergata-university-of-rome-launch-new-collaboration",
+        "matched": true
+      },
+      {
+        "url": "https://www.roboze.com/en/press/nesst-srl-validates-roboze-high-performance-fff-polymers-for-next-generation-cubesats-in-esa-funded-project",
+        "matched": true
+      }
+    ],
+    "candidateCount": 6,
+    "first": {
+      "url": "https://www.roboze.com/en/press/high-performance-polymer-research-roboze-and-tor-vergata-university-of-rome-launch-new-collaboration",
+      "title": "High-Performance Polymer Research: Roboze and Tor Vergata University of Rome Launch New CollaborationAugust 27, 26",
+      "publishedAt": null
+    },
+    "snapshotSha256": "4ef79597346bd85286a28a0fb32348c7bd76a5bcaa3cb4bc849dccaaa405810d",
+    "limitation": null
+  },
+  {
+    "id": "trideo",
+    "checkedAt": "2026-09-30T05:58:20.327Z",
+    "selector": "a[href*=\"/blog-posts/\"]",
+    "sampleMatches": [
+      {
+        "url": "https://www.trideo3d.com/blog-posts/pared-de-11-metros-impresa-en-3d-trideo-fabricacion-aditiva",
+        "matched": true
+      },
+      {
+        "url": "https://www.trideo3d.com/blog-posts/trideo-3d-estrena-nueva-sede-en-sao-paulo",
+        "matched": true
+      }
+    ],
+    "candidateCount": 18,
+    "first": {
+      "url": "https://www.trideo3d.com/blog-posts/pared-de-11-metros-impresa-en-3d-trideo-fabricacion-aditiva",
+      "title": "Aplicaciones-September 15, 2026¿Una pared de 11 metros impresa en 3D? Sí. Y este proyecto demuestra hasta dónde podemos llegar.Descubre cómo Trideo transformó 11 metros de pared en una instalación arquitectónica impresa en 3D para un espacio corporativo en Faria Lima, São Paulo.",
+      "publishedAt": null
+    },
+    "snapshotSha256": "96c5cb40c7e53d61e77cda1638909cfa5076ac32afa7e1596590f0c857c828d5",
+    "limitation": null
+  },
+  {
+    "id": "uniontech",
+    "checkedAt": "2026-09-30T05:58:20.331Z",
+    "selector": "a[href=\"https://www.uniontech3d.com/3d-printing-is-heading-towards-design.html\"], a[href=\"https://www.uniontech3d.com/hair-dryer-gets-3d-printed-from-evonik-3010l-dlp-material.html\"]",
+    "sampleMatches": [
+      {
+        "url": "https://www.uniontech3d.com/3d-printing-is-heading-towards-design.html",
+        "matched": true
+      },
+      {
+        "url": "https://www.uniontech3d.com/hair-dryer-gets-3d-printed-from-evonik-3010l-dlp-material.html",
+        "matched": true
+      }
+    ],
+    "candidateCount": 2,
+    "first": {
+      "url": "https://www.uniontech3d.com/3d-printing-is-heading-towards-design.html",
+      "title": "UnionTech + ZW3D – 3D Printing is Heading Towards Design",
+      "publishedAt": null
+    },
+    "snapshotSha256": "0b8894b129d1bfeaa4e3315291e7a001f298079ea487bce483548ea1059280de",
+    "limitation": "Pinned to observed sample articles; general listing discovery unresolved"
+  }
+]

@@ -8,7 +8,7 @@ type Quoted = NonNullable<XPostView["quoted"]>;
 function Author({ quoted }: { quoted: Pick<Quoted, "authorName" | "handle"> }) {
   return (
     <>
-      <span className="text-ink-4">引用</span>
+      <span className="text-ink-4">Quoted post</span>
       <span className="font-semibold text-ink-2">{quoted.authorName || `@${quoted.handle}`}</span>
       {quoted.authorName && quoted.handle && <span className="text-ink-4">@{quoted.handle}</span>}
     </>
@@ -26,13 +26,13 @@ export function QuotedPost({ quoted, original = false }: { quoted: Quoted; origi
       <blockquote className="mt-2 whitespace-pre-line text-[15px] leading-[1.75] text-ink-2">{zh ?? quoted.text}</blockquote>
       {zh && (
         <details className="mt-2 text-[13px] text-ink-4">
-          <summary className="cursor-pointer select-none hover:text-ink-3">原文</summary>
+          <summary className="cursor-pointer select-none hover:text-ink-3">Original</summary>
           <p className="mt-1.5 whitespace-pre-line text-[14px] leading-[1.7] text-ink-3">{quoted.text}</p>
         </details>
       )}
       {quoted.url && (
         <a href={quoted.url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-0.5 text-[13px] text-accent hover:text-accent-ink">
-          在 X 查看被引用的帖子 <IconArrowUpRight size={13} />
+          View quoted post on X <IconArrowUpRight size={13} />
         </a>
       )}
     </figure>

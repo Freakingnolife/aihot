@@ -6,7 +6,7 @@ import { REPO_ROOT } from "../config.ts";
 export interface ChangelogRelease {
   date: string;
   time: string;
-  kind: "更新" | "优化" | "公告" | "下线";
+  kind: "Update" | "Improvement" | "Notice" | "Retirement";
   title: string;
   body: string[];
 }

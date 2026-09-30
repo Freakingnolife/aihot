@@ -1,5 +1,6 @@
-// Site navigation, one place for the desktop sidebar, the mobile tab bar and the mobile "更多" page.
+// Site navigation, one place for the desktop sidebar, the mobile tab bar and the mobile "More" page.
 import { withSubject } from "@aihot/industry/site";
+import { hrefWith } from "../../features/feed/Filters";
 import { FEATURES } from "@aihot/industry/features";
 import type { ReactNode } from "react";
 import {
@@ -18,14 +19,14 @@ export interface NavItem {
 
 export const SIDEBAR: Array<{ title: string; items: NavItem[] }> = [
   {
-    title: "内容",
+    title: "Reading",
     items: [
-      { to: "/", label: "精选", icon: IconBolt, end: true },
-      { to: "/all", label: `全部${withSubject("动态")}`, icon: IconList },
-      { to: "/hot", label: "热点榜", icon: IconFlame },
-      { to: "/daily", label: withSubject("日报"), icon: IconDoc },
-      { to: "/topics", label: "主题", icon: IconGrid },
-      { to: "/starred", label: "收藏", icon: IconBookmark },
+      { to: "/all", label: "Recent", icon: IconBolt, end: true },
+      { to: "/all?mode=archive", label: "Archive", icon: IconList },
+      { to: "/hot", label: "Trending", icon: IconFlame },
+      { to: "/daily", label: withSubject("briefings"), icon: IconDoc },
+      { to: "/topics", label: "Topics", icon: IconGrid },
+      { to: "/starred", label: "Bookmarks", icon: IconBookmark },
     ],
   },
   // The optional AI-only modules (industry/features.ts).
@@ -41,29 +42,36 @@ export const SIDEBAR: Array<{ title: string; items: NavItem[] }> = [
       ]
     : []),
   {
-    title: "更多",
+    title: "More",
     items: [
-      { to: "/agent", label: "Agent 接入", icon: IconPlug },
-      { to: "/about", label: "关于", icon: IconHeart },
-      { to: "/changelog", label: "更新日志", icon: IconHistory, changelog: true },
-      { to: "/feedback", label: "反馈", icon: IconMessage },
+      { to: "/agent", label: "API & MCP", icon: IconPlug },
+      { to: "/about", label: "About", icon: IconHeart },
+      { to: "/changelog", label: "Changes", icon: IconHistory, changelog: true },
+      { to: "/feedback", label: "Feedback", icon: IconMessage },
     ],
   },
 ];
 
 export const TABBAR: NavItem[] = [
-  { to: "/", label: "精选", icon: IconBolt, end: true },
-  { to: "/all", label: "全部", icon: IconList },
-  { to: "/daily", label: "日报", icon: IconDoc },
-  { to: "/more", label: "更多", icon: IconApps, changelog: true },
+  { to: "/all", label: "Recent", icon: IconBolt, end: true },
+  { to: "/all?mode=archive", label: "Archive", icon: IconList },
+  { to: "/daily", label: "Briefings", icon: IconDoc },
+  { to: "/more", label: "More", icon: IconApps, changelog: true },
 ];
 
-/** Pages reached from the mobile "更多" tab keep that tab highlighted. */
+/** Pages reached from the mobile "More" tab keep that tab highlighted. */
 export const MORE_PATHS = ["/more", "/hot", "/topics", "/starred", "/leaderboard", "/codex-reset", "/agent", "/about", "/changelog", "/feedback", "/terms", "/privacy"];
 
-export function tabIsActive(item: NavItem, pathname: string): boolean {
+export function tabIsActive(item: NavItem, pathname: string, search = ""): boolean {
+  if (item.to.startsWith("/all")) return pathname === "/all" && (new URLSearchParams(search).get("mode") === "archive") === item.to.includes("mode=archive");
   if (item.end) return pathname === item.to;
   if (item.to === "/more") return MORE_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
   if (item.to === "/daily") return /^\/(daily|weekly|monthly)(\/|$)/.test(pathname);
   return pathname === item.to || pathname.startsWith(`${item.to}/`);
+}
+
+/** Period switches retain the current pool filters; entering from elsewhere starts fresh. */
+export function navHref(item: NavItem, pathname: string, search: string): string {
+  if (pathname !== "/all" || !item.to.startsWith("/all")) return item.to;
+  return hrefWith("/all", new URLSearchParams(search), { mode: item.to.includes("mode=archive") ? "archive" : "recent" });
 }

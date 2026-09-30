@@ -155,6 +155,7 @@ export function toItemSummary(row: ItemRow): ItemSummary {
   return {
     id: row.id,
     revision: row.revision,
+    backfill: row.backfill,
     title: row.title,
     originalTitle: row.original_title,
     summary: row.summary,
@@ -186,6 +187,7 @@ export function toFeedItemSummary(row: ItemRow): FeedItemSummary {
   const item = toItemSummary(row);
   return {
     id: item.id, title: item.title, summary: item.summary, reason: item.reason,
+    backfill: item.backfill, discoveredAt: item.discoveredAt,
     source: { name: item.source.name }, publishedAt: item.publishedAt, timelineAt: item.timelineAt,
     category: item.category, tags: item.tags, score: item.score, selected: item.selected, channel: item.channel,
     x: item.x ? {

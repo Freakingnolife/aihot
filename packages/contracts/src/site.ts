@@ -43,6 +43,8 @@ export interface StoryRef {
 }
 
 export interface ItemSummary {
+  /** Historical import; never relabelled as current news. */
+  backfill?: boolean;
   id: string;
   revision: number;
   title: string;
@@ -65,6 +67,8 @@ export interface ItemSummary {
 
 /** The fields rendered by a site feed card; full original text lives in the item detail. */
 export interface FeedItemSummary extends Pick<ItemSummary, "id" | "title" | "summary" | "reason" | "publishedAt" | "timelineAt" | "category" | "tags" | "score" | "selected" | "channel"> {
+  backfill?: boolean;
+  discoveredAt?: string;
   source: Pick<SourceRef, "name">;
   x: (Pick<XPostView, "authorName" | "handle" | "avatarUrl" | "avatarSrcSet" | "media"> & {
     quoted: Omit<NonNullable<XPostView["quoted"]>, "url"> | null;
@@ -121,7 +125,7 @@ export interface TimelineResponse {
 }
 
 export interface PoolResponse {
-  filters: TimelineFilters & { q: string | null; tab: "time" | "relevance" };
+  filters: TimelineFilters & { q: string | null; tab: "time" | "relevance"; mode?: "recent" | "archive" };
   items: FeedItemSummary[];
   page: number;
   pageCount: number;

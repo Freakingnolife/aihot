@@ -4,6 +4,30 @@
 // local stubs by the tests that need them, and the push valves stay off. The files share
 // one database and its paid-service budgets, so they run one at a time (package.json).
 import http from "node:http";
+import { Agent, ProxyAgent, setGlobalDispatcher } from "undici";
+// Local provider fixtures may exercise receipt code even when live model calls are disabled.
+// Install an explicit transport boundary first: no test fetch may reach an external host.
+// guardedFetch supplies its own Agent, so a global dispatcher alone is insufficient.
+// Guard both explicit and default Undici agents before any socket can be opened.
+for (const Transport of [Agent, ProxyAgent]) {
+  const dispatch = Transport.prototype.dispatch;
+  Transport.prototype.dispatch = function (options, handler) {
+    const host = new URL(String(options.origin)).hostname;
+    if (!["127.0.0.1", "localhost", "[::1]"].includes(host)) {
+      throw new Error(`External test fetch refused: ${host}`);
+    }
+    return dispatch.call(this, options, handler);
+  };
+}
+// Node may have installed its bundled Undici dispatcher before this setup.
+setGlobalDispatcher(new Agent());
+const realFetch = globalThis.fetch;
+globalThis.fetch = ((input: string | URL | Request, init?: RequestInit) => {
+  const url = new URL(input instanceof Request ? input.url : String(input));
+  if (url.protocol === "data:") return realFetch(input, init);
+  if (!["127.0.0.1", "localhost", "[::1]"].includes(url.hostname)) throw new Error(`External test fetch refused: ${url.hostname}`);
+  return realFetch(input, { ...init, redirect: init?.redirect === "manual" ? "manual" : "error" });
+}) as typeof fetch;
 
 const database = new URL(process.env.DATABASE_URL ?? "postgres://unset/unset").pathname.slice(1);
 if (!/_(test|ci)$/.test(database)) {
@@ -43,6 +67,8 @@ export async function stub(answer: (hit: number, req: { url: string; body: strin
     });
   });
   await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", () => resolve()));
+  const { config } = await import("@aihot/backend/config");
+  config.modelCallsEnabled = true; // Only mock calls can pass the transport boundary above.
   const { port } = server.address() as { port: number };
   return { url: `http://127.0.0.1:${port}`, hits: () => hits, close: () => new Promise<void>((resolve) => server.close(() => resolve())) };
 }

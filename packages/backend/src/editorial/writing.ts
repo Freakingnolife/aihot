@@ -1,3 +1,4 @@
+import { SITE } from "@aihot/industry/site";
 // The writing side of the analysis: the prefilter's and the content understanding's inputs, the
 // title/summary prompts for everything else, the output parsing and the deterministic guards. The
 // wording lives in the industry pack (industry/prompts/); a failed guard falls back without a repair call.
@@ -5,6 +6,9 @@ import { IDENTITY_CONTEXT_ALIASES, IDENTITY_LEXICON, PUBLISHER_DOMAINS } from "@
 import { onlyXArticleLink } from "../sources/x.ts";
 import type { AnalyzeInputArticle } from "./input.ts";
 import { promptText } from "./prompts.ts";
+
+const english = SITE.locale.startsWith("en");
+export const fallbackTitle = (title: string) => english || looksZh(title) ? title : "";
 
 export const PREFILTER_SYSTEM = promptText("prefilter");
 export const UNDERSTAND_SYSTEM = promptText("understand");
@@ -126,7 +130,7 @@ export function missingEvidence(a: AnalyzeInputArticle): boolean {
 }
 
 export const understandUser = (a: AnalyzeInputArticle) =>
-  ["请按系统规则理解以下单篇材料，一次返回全部六个字段。", renderContext(a, { annotateQuoted: true })].join("\n\n");
+  ["Read this single source under the system rules. Return all six fields in English.", renderContext(a, { annotateQuoted: true })].join("\n\n");
 
 // ── Identity context and guard ────────────────────────────────────────────────────────────────
 
@@ -220,7 +224,7 @@ export function enforceIdentity(input: TranslateInput, copy: { titleZh: string; 
   const unsupportedTitleEntityIds = matchEntityIds([copy.titleZh]).filter((id) => !allowed.has(id));
   const unsupportedSummaryEntityIds = matchEntityIds([copy.summaryZh]).filter((id) => !allowed.has(id));
   return {
-    titleZh: unsupportedTitleEntityIds.length ? (looksZh(input.title) ? input.title : "") : copy.titleZh,
+    titleZh: unsupportedTitleEntityIds.length ? fallbackTitle(input.title) : copy.titleZh,
     summaryZh: unsupportedSummaryEntityIds.length ? "" : copy.summaryZh,
     identityGuard: {
       outcome: unsupportedTitleEntityIds.length || unsupportedSummaryEntityIds.length ? "fallback" : "pass",
@@ -232,10 +236,10 @@ export function enforceIdentity(input: TranslateInput, copy: { titleZh: string; 
 
 // ── Answer-first summary length ──────────────────────────────────────────────────────────────
 
-export function compactAnswerFirstSummary(summary: string, maxChars = 190): string {
+export function compactAnswerFirstSummary(summary: string, maxChars = english ? 800 : 190): string {
   const text = summary.trim().replace(/\s*\n+\s*/g, " ");
   if (text.length <= maxChars) return text;
-  const sentences = text.match(/[^。！？!?]+[。！？!?]?/gu) ?? [text];
+  const sentences = english ? [...new Intl.Segmenter("en", { granularity: "sentence" }).segment(text)].map((s) => s.segment) : text.match(/[^。！？!?]+[。！？!?]?/gu) ?? [text];
   let result = "";
   for (const sentence of sentences) {
     if ((result + sentence).length > maxChars) break;
@@ -251,12 +255,17 @@ export function compactAnswerFirstSummary(summary: string, maxChars = 190): stri
     result += clause;
     if (result.length >= 80) break;
   }
-  return result.length >= 50 ? `${result.replace(/[，；：、,;:]$/u, "")}。` : text;
+  return result.length >= 50 ? `${result.replace(/[，；：、,;:]$/u, "")}${english ? "." : "。"}` : text;
 }
 
 function answerFirstSummaryLengthOk(summary: string, input: TranslateInput): boolean {
   const trimmed = summary.trim();
   const sourceLength = (input.sourceKind === "x_search" ? input.text : cleanArticleTextForLLM(input.text)).trim().length;
+  if (english) {
+    const sentences = [...new Intl.Segmenter("en", { granularity: "sentence" }).segment(trimmed)].length;
+    const words = trimmed.split(/\s+/).length;
+    return words >= 35 && words <= 110 && trimmed.length <= 800 && sentences >= 2 && sentences <= 3;
+  }
   const sentences = trimmed.split(/[。！？!?]+/u).map((p) => p.trim()).filter(Boolean).length;
   const rich = sourceLength >= 500;
   return trimmed.length <= 200 && trimmed.length >= (rich ? 80 : 50) && sentences <= 3 && (!rich || sentences >= 2);

@@ -35,6 +35,19 @@ async function check(path: string, expect: (res: Response, body: string) => stri
   try {
     const res = await fetch(base + path, { redirect: "manual", signal: AbortSignal.timeout(30_000) });
     const body = res.headers.get("content-type")?.startsWith("image/") ? "" : await res.text();
+    if (path === "/" && res.status === 302) {
+      const destination = res.headers.get("location");
+      if (destination !== "/all" || res.headers.get("cache-control") !== "private, no-store") {
+        console.log(`✗ /  unexpected or cacheable redirect: ${destination}`);
+        failed += 1;
+        return;
+      }
+      const landing = await fetch(base + destination, { redirect: "manual", signal: AbortSignal.timeout(30_000) });
+      const problem = landing.status !== 200 ? `HTTP ${landing.status}` : expect(landing, await landing.text());
+      console.log(`${problem ? "✗" : "✓"} / → /all${problem ? `  ${problem}` : ""}`);
+      if (problem) failed += 1;
+      return;
+    }
     if (res.status === 503 && LEADERBOARD.includes(path)) {
       console.log(`– ${path}  no leaderboard round published yet`);
       return;

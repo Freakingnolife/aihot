@@ -1,5 +1,5 @@
 // A page of reports grouped by Beijing day with the same rail and rows as the home timeline
-// (全部动态, topics, search results, 收藏).
+// (All drafts, topics, search results, Bookmarks).
 import { useMemo } from "react";
 import { Link } from "react-router";
 import type { FeedItemSummary } from "@aihot/contracts/site";
@@ -9,28 +9,28 @@ import { markRead, useReadSet } from "../../lib/local-state";
 import { DayHeader, TimelineSlot } from "./Timeline";
 import { FeedItem } from "./FeedItem";
 
-export function DayList({ items, todayCount = null, showTags = true, animate = false }: { items: FeedItemSummary[]; todayCount?: number | null; showTags?: boolean; animate?: boolean }) {
+export function DayList({ items, todayCount = null, showTags = true, animate = false, originalDates = false }: { items: FeedItemSummary[]; todayCount?: number | null; showTags?: boolean; animate?: boolean; originalDates?: boolean }) {
   const readSet = useReadSet();
   const today = beijingDate(Date.now());
   const days = useMemo(() => {
     const out: Array<{ day: string; items: FeedItemSummary[] }> = [];
     for (const it of items) {
-      const d = beijingDate(it.timelineAt);
+      const d = originalDates ? (it.publishedAt ? beijingDate(it.publishedAt) : "unknown") : beijingDate(it.timelineAt);
       const last = out[out.length - 1];
       if (last && last.day === d) last.items.push(it);
       else out.push({ day: d, items: [it] });
     }
     return out;
-  }, [items]);
+  }, [items, originalDates]);
   let order = 0;
   return (
     <div>
       {days.map(({ day, items: list }) => (
-        <section key={day} aria-label={day}>
-          <DayHeader day={day} today={today} count={day === today ? todayCount : null} />
+        <section key={`${day}-${list[0]?.id}`} aria-label={day === "unknown" ? "Unknown publication date" : day}>
+          {day === "unknown" ? <h2 className="py-4 text-[16px] font-semibold text-ink">Unknown publication date</h2> : <DayHeader todayLabel={originalDates ? "Published today" : list.every(it => !it.publishedAt) ? "Discovered today" : "Today"} day={day} today={today} count={day === today ? todayCount : null} />}
           <ol className="lg:pt-1">
             {list.map((it) => (
-              <TimelineSlot key={it.id} at={it.timelineAt} fresh={animate} delay={animate ? Math.min(order++, 12) * 25 : 0}>
+              <TimelineSlot timeLabel={originalDates ? "" : !it.publishedAt ? "—" : undefined} key={it.id} at={originalDates ? it.publishedAt ?? it.timelineAt : it.timelineAt} fresh={animate} delay={animate ? Math.min(order++, 12) * 25 : 0}>
                 <FeedItem item={it} read={readSet.has(it.id)} onOpen={markRead} showTags={showTags} />
               </TimelineSlot>
             ))}
@@ -47,10 +47,10 @@ export function Pagination({ page, pageCount, href }: { page: number; pageCount:
   const pages = [...new Set([1, pageCount, page - 2, page - 1, page, page + 1, page + 2].filter((p) => p >= 1 && p <= pageCount))].sort((a, b) => a - b);
   const btn = "inline-flex h-9 min-w-9 items-center justify-center rounded-full px-2.5 text-[13px] transition-colors";
   return (
-    <nav aria-label="分页" className="mt-6 flex flex-wrap items-center justify-center gap-1">
+    <nav aria-label="Pagination" className="mt-6 flex flex-wrap items-center justify-center gap-1">
       {page > 1 && (
         <Link to={href(page - 1)} className={`${btn} border border-line-strong bg-surface px-3 text-ink-3 hover:border-ink-4 hover:text-ink`}>
-          上一页
+          Previous
         </Link>
       )}
       {pages.map((p, i) => (
@@ -67,7 +67,7 @@ export function Pagination({ page, pageCount, href }: { page: number; pageCount:
       ))}
       {page < pageCount && (
         <Link to={href(page + 1)} className={`${btn} gap-0.5 border border-line-strong bg-surface px-3 text-ink-3 hover:border-ink-4 hover:text-ink`}>
-          下一页 <IconChevronRight size={14} />
+          Next <IconChevronRight size={14} />
         </Link>
       )}
     </nav>

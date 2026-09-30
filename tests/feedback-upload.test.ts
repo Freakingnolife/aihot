@@ -42,7 +42,7 @@ test("malformed multipart and screenshots above the existing backend limit are r
   assert.equal(bad.statusCode, 400);
   const result = await upload(Buffer.alloc(8 * 1024 * 1024 + 1), "203.0.113.212");
   assert.equal(result.statusCode, 400);
-  assert.match(result.json().detail, /8MB/);
+  assert.match(result.json().detail, /8 MB/);
 });
 
 test("the JSON screenshot sent by an already-open tab remains accepted", async () => {

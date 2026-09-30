@@ -21,7 +21,7 @@ export const links: Route.LinksFunction = () => [
   { rel: "icon", type: "image/png", href: "/icon.png" },
   { rel: "apple-touch-icon", href: "/apple-icon.png" },
   { rel: "manifest", href: "/manifest.webmanifest" },
-  { rel: "alternate", type: "application/rss+xml", title: `${SITE.name} — 精选`, href: "/feed.xml" },
+  { rel: "alternate", type: "application/rss+xml", title: `${SITE.name} — Selected`, href: "/feed.xml" },
 ];
 
 interface SiteMeta {
@@ -47,6 +47,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf9f6" />
         <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#13191c" />
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
+        <meta name="robots" content="noindex, nofollow" />
         <Meta />
         <Links />
       </head>
@@ -63,7 +64,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export function meta({ error }: Route.MetaArgs) {
   if (!error) return [];
   const notFound = isRouteErrorResponse(error) && error.status === 404;
-  return [{ title: titled(notFound ? "页面不存在" : "暂时无法加载") }, { name: "robots", content: "noindex" }];
+  return [{ title: titled(notFound ? "Page not found" : "Unable to load") }, { name: "robots", content: "noindex" }];
 }
 
 /** Sidebar, main column and phone tab bar around a page (or an error). */
@@ -73,13 +74,13 @@ function SiteShell({ changelogVersion, children }: { changelogVersion: string | 
     <div className="flex min-h-dvh">
       <NavigationProgress active={navigation.state === "loading"} />
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[70] focus:rounded-control focus:bg-surface focus:px-3 focus:py-2">
-        跳到正文
+        Skip to content
       </a>
       <Sidebar changelogVersion={changelogVersion} />
       {/* Mobile shell (≤ 960px): one centred column, the tab bar below. Desktop: the page fills the main area
           up to the list width (--page-max-wide), centred beyond it. */}
-      <main id="main" className="min-w-0 flex-1 pb-[calc(72px+env(safe-area-inset-bottom))] lg:px-7 lg:pb-[72px] lg:pt-6">
-        <div className="mx-auto w-full max-w-[640px] px-4 lg:max-w-[var(--page-max-wide)] lg:px-0">{children}</div>
+      <main id="main" className="min-w-0 flex-1 pb-[calc(6rem+env(safe-area-inset-bottom))] lg:px-7 lg:pb-[72px] lg:pt-6">
+        <div className="mx-auto w-full max-w-[640px] px-4 lg:max-w-[var(--page-max-wide)] lg:px-0"><aside className="my-4 border-l-4 border-accent bg-bg-sunk px-4 py-3 text-sm"><strong>Private draft pilot</strong> · Attributed publisher reports, not validated engineering advice. Historical imports retain their original dates.</aside>{children}</div>
       </main>
       <MobileTabBar changelogVersion={changelogVersion} />
       <BackToTop />
@@ -111,16 +112,16 @@ export function ErrorBoundary() {
       <div className="max-w-sm text-center">
         <RingMark className="mx-auto mb-5 size-10 text-accent" />
         <div className="mono text-[12px] text-ink-4">{status}</div>
-        <h1 className="mt-1.5 text-[20px] font-bold text-ink">{notFound ? "这里没有内容" : "暂时无法加载"}</h1>
+        <h1 className="mt-1.5 text-[20px] font-bold text-ink">{notFound ? "No content here" : "Unable to load"}</h1>
         <p className="mt-2 text-[13.5px] leading-relaxed text-ink-3">
-          {notFound ? "你访问的页面不存在，或内容已不再公开。" : "服务暂时繁忙，请稍后再试。已经加载过的内容不受影响。"}
+          {notFound ? "This page is unavailable." : "Please retry shortly. Previously loaded drafts remain available."}
         </p>
         <div className="mt-6 flex justify-center gap-2.5">
           <Link to="/" className={buttonClass("primary")}>
-            回到精选
+            Back to selected drafts
           </Link>
           <Link to="/all" className={buttonClass("secondary")}>
-            浏览全部动态
+            Browse all drafts
           </Link>
         </div>
       </div>

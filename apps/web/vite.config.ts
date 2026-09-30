@@ -46,6 +46,8 @@ export default defineConfig({
   plugins: [devEdge(), tailwindcss(), reactRouter()],
   server: { port: 3000, strictPort: true },
   build: {
+    // Open reader tabs and cached HTML still reference previous hashed chunks.
+    emptyOutDir: false,
     rolldownOptions: {
       output: {
         // A page used to load 15–30 small shared chunks (a third of all edge requests were JS files).

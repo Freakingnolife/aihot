@@ -1,3 +1,4 @@
+import { SITE } from "@aihot/industry/site";
 // Full-text Chinese translations: made by the worker after an item
 // is selected, for sources whose full text may be shown on the site; a page read never translates.
 // Bodies are translated block by block (paragraphs, headings, list items, captions, table cells) so the
@@ -283,6 +284,7 @@ export async function translateQuotes(opts: { days?: number; limit?: number; bud
  * again whatever its age.
  */
 export async function translatePending(opts: { limit?: number; budgetMs?: number } = {}): Promise<{ done: TranslateResult[]; quotes: number }> {
+  if (SITE.locale.startsWith("en")) return { done: [], quotes: 0 };
   const started = Date.now();
   const rows = await sql<{ article_id: string }[]>`
     SELECT p.article_id FROM publications p JOIN articles a ON a.id = p.article_id

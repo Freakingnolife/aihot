@@ -31,7 +31,7 @@ const recent = new Map<string, number[]>();
 function rateLimit(source: string, perMinute = 5): void {
   const now = Date.now();
   const list = (recent.get(source) ?? []).filter((t) => now - t < 60_000);
-  if (list.length >= perMinute) throw new FeedbackRejected(429, "rate_limited", "提交太频繁，请稍后再试。", 60);
+  if (list.length >= perMinute) throw new FeedbackRejected(429, "rate_limited", "Too many submissions. Please try again later.", 60);
   list.push(now);
   recent.set(source, list);
   if (recent.size > 5000) for (const [k, v] of recent) if (v.every((t) => now - t > 60_000)) recent.delete(k);
@@ -48,20 +48,20 @@ export interface FeedbackInput {
 
 export async function submitFeedback(input: FeedbackInput): Promise<{ id: number }> {
   const content = input.content.trim();
-  if (content.length < 2) throw new FeedbackRejected(400, "invalid_request", "请写下反馈内容。");
-  if (content.length > 5000) throw new FeedbackRejected(400, "invalid_request", "反馈内容最多 5000 字。");
+  if (content.length < 2) throw new FeedbackRejected(400, "invalid_request", "Please enter your feedback.");
+  if (content.length > 5000) throw new FeedbackRejected(400, "invalid_request", "Feedback must not exceed 5,000 characters.");
   const email = input.email?.trim() || null;
-  if (email && (email.length > 200 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) throw new FeedbackRejected(400, "invalid_request", "邮箱格式不正确。");
+  if (email && (email.length > 200 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) throw new FeedbackRejected(400, "invalid_request", "Enter a valid email address.");
   const pageUrl = input.pageUrl?.trim().slice(0, 500) || null;
   const source = feedbackSourceHash(input.ip, input.userAgent);
   const [banned] = await sql`SELECT 1 FROM feedback_bans WHERE source_hash = ${source}`;
-  if (banned) throw new FeedbackRejected(403, "forbidden", "暂时无法提交反馈。");
+  if (banned) throw new FeedbackRejected(403, "forbidden", "Feedback is temporarily unavailable.");
   rateLimit(source);
 
   let screenshotKey: string | null = null;
   if (input.screenshot) {
-    if (!/^image\/(png|jpeg|webp|gif)$/.test(input.screenshot.mime)) throw new FeedbackRejected(400, "invalid_request", "截图需要是 PNG、JPG、WebP 或 GIF。");
-    if (input.screenshot.data.length > 8 * 1024 * 1024) throw new FeedbackRejected(400, "invalid_request", "截图最大 8MB。");
+    if (!/^image\/(png|jpeg|webp|gif)$/.test(input.screenshot.mime)) throw new FeedbackRejected(400, "invalid_request", "Use a PNG, JPG, WebP or GIF image.");
+    if (input.screenshot.data.length > 8 * 1024 * 1024) throw new FeedbackRejected(400, "invalid_request", "The image must not exceed 8 MB.");
     // Stored locally only until it is forwarded (notify/feishu.ts); the database keeps only an identifier.
     const name = `${sha256(input.screenshot.data).slice(0, 24)}.${input.screenshot.mime.split("/")[1]}`;
     const dir = path.join(config.dataDir, "feedback-screenshots");

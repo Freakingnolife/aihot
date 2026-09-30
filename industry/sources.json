@@ -1,388 +1,923 @@
 {
-  "$comment": "示范信源：首次启动时导入（scripts/seed.ts），已存在的不会被覆盖。之后在后台“信源”里增删改。字段说明见 docs/customize.md。",
   "sources": [
     {
-      "id": "rss-openai-news",
-      "name": "OpenAI News",
+      "id": "3d-printing-industry",
+      "name": "3D Printing Industry",
       "kind": "rss",
       "config": {
-        "feedUrl": "https://openai.com/news/rss.xml",
+        "feedUrl": "https://3dprintingindustry.com/feed/",
         "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": "openai",
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-google-deepmind",
-      "name": "Google DeepMind",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://deepmind.google/blog/rss.xml",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": "google",
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-google-research",
-      "name": "Google Research",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://research.google/blog/rss/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": "google",
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方",
-        "研究"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-hugging-face",
-      "name": "Hugging Face Blog",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://huggingface.co/blog/feed.xml",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": "hugging-face",
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方",
-        "开源"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-microsoft-research",
-      "name": "Microsoft Research",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.microsoft.com/en-us/research/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": "microsoft",
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方",
-        "研究"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-nvidia-blog",
-      "name": "NVIDIA Blog",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://blogs.nvidia.com/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": "nvidia",
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-aws-ml",
-      "name": "AWS Machine Learning Blog",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://aws.amazon.com/blogs/machine-learning/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方",
-        "教程"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-github-ai",
-      "name": "GitHub Blog · AI & ML",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://github.blog/ai-and-ml/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-mistral",
-      "name": "Mistral AI",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://mistral.ai/rss.xml",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "官方"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-bair",
-      "name": "Berkeley AI Research",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://bair.berkeley.edu/blog/feed.xml",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T1",
-      "first_party": true,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 180,
-      "tags": [
-        "研究"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-the-verge-ai",
-      "name": "The Verge · AI",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
-        "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
         }
       },
       "tier": "T2",
       "first_party": false,
-      "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 60,
-      "tags": [
-        "媒体"
-      ],
       "site_fulltext": false,
-      "syndicate_fulltext": false
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
     },
     {
-      "id": "rss-techcrunch-ai",
-      "name": "TechCrunch · AI",
+      "id": "3d-systems",
+      "name": "3D Systems",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.3dsystems.com/press-releases",
+        "itemSelector": "a[href*=\"/press-releases/\"]",
+        "linkSelector": "a",
+        "detail": {
+          "maxFetches": 1,
+          "titleSelector": "h1",
+          "titleAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "3dxtech",
+      "name": "3DXTech",
       "kind": "rss",
       "config": {
-        "feedUrl": "https://techcrunch.com/category/artificial-intelligence/feed/",
+        "feedUrl": "https://www.3dxtech.com/blogs/featured.atom",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "ackuretta",
+      "name": "Ackuretta",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://ackuretta.com/blogs/dental-3d-printing-articles.atom",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "admatec",
+      "name": "Admatec",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://admateceurope.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "america-makes",
+      "name": "America Makes",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.americamakes.us/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "amug",
+      "name": "AMUG",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.amug.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "anycubic",
+      "name": "Anycubic",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://store.anycubic.com/blogs/news.atom",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "aon3d",
+      "name": "AON3D",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.aon3d.com/category/press/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "asiga",
+      "name": "Asiga",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.asiga.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "axtra3d",
+      "name": "Axtra3D",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://axtra3d.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "bambu-lab",
+      "name": "Bambu Lab",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://blog.bambulab.com/rss/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "basf-forward-am",
+      "name": "BASF Forward AM",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://forward-am.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "bcn3d",
+      "name": "BCN3D",
+      "kind": "web_list",
+      "config": {
+        "url": "https://bcn3d.com/blog/",
+        "itemSelector": ".b3d-minipost",
+        "linkSelector": ".uk-card-body a:has(h3)",
+        "detail": {
+          "maxFetches": 1,
+          "titleSelector": "h1",
+          "titleAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        },
+        "titleSelector": "h3",
+        "publishedAtSelector": ".minipost-date"
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "carbon",
+      "name": "Carbon",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.carbon3d.com/resources/category/blogs",
+        "itemSelector": "a[href=\"https://www.carbon3d.com/resources/case-study/sherpa-design-collaborates-with-monterey-bay-aquarium-research-institute-to-address-manufacturing-challenge-for-underwater-robot\"], a[href=\"https://www.carbon3d.com/resources/case-study/closing-the-digital-gap-how-carbon-keystone-industries-fp3d-brought-precision-predictability-and-patient-satisfaction-to-removable-partial-dentures\"]",
+        "linkSelector": "a",
+        "detail": {
+          "maxFetches": 1,
+          "titleSelector": "h1",
+          "titleAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "cellink",
+      "name": "CELLINK",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.cellink.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "cobod",
+      "name": "COBOD",
+      "kind": "web_list",
+      "config": {
+        "url": "https://cobod.com/press/",
+        "itemSelector": "article.elementor-post",
+        "linkSelector": ".elementor-post__title a",
+        "detail": {
+          "maxFetches": 1,
+          "titleSelector": "h1",
+          "titleAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        },
+        "titleSelector": ".elementor-post__title"
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "dws",
+      "name": "DWS",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.dwssystems.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "eos",
+      "name": "EOS",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.eos.info/press-media/press-center/press-releases",
+        "itemSelector": ".teaser-list__item a[href*=\"/press-releases/\"]",
+        "linkSelector": "a",
+        "detail": {
+          "maxFetches": 1,
+          "titleSelector": "h1",
+          "titleAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "eplus3d",
+      "name": "Eplus3D",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.eplus3d.com/blog/",
+        "itemSelector": ".article-item",
+        "linkSelector": "a.thumb-title",
+        "detail": {
+          "maxFetches": 1,
+          "titleSelector": "h1",
+          "titleAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        },
+        "titleSelector": "a.thumb-title"
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "farsoon",
+      "name": "Farsoon",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.farsoon-gl.com/act/news/",
+        "itemSelector": "a[href*=\"/news/\"]",
+        "linkSelector": "a",
+        "detail": {
+          "maxFetches": 1,
+          "titleSelector": "h1",
+          "titleAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "formlabs",
+      "name": "Formlabs",
+      "kind": "web_list",
+      "config": {
+        "url": "https://formlabs.com/company/press/",
+        "itemSelector": "ul[class*=\"Press_press_list\"] li",
+        "linkSelector": "a[href^=\"/company/press/\"]",
+        "detail": {
+          "maxFetches": 1,
+          "titleSelector": "h1",
+          "titleAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        },
+        "publishedAtSelector": "span[class*=\"Press_date\"]",
+        "sortByPublishedAt": true
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "henkel-loctite",
+      "name": "Henkel LOCTITE 3D",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.loctiteam.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "intamsys",
+      "name": "INTAMSYS",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://blog.intamsys.com/blog/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "kexcelled",
+      "name": "Kexcelled",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://kexcelled3d.com/blogs/news.atom",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "liqcreate",
+      "name": "Liqcreate",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.liqcreate.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "lithoz",
+      "name": "Lithoz",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.lithoz.com/en/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "make3d",
+      "name": "Make3D",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://make3d.in/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "overture",
+      "name": "Overture",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://overture3d.com/blogs/overture-blogs.atom",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "polymaker",
+      "name": "Polymaker",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://polymaker.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "prusa",
+      "name": "Prusa / Prusament",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://blog.prusa3d.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "rapid-shape",
+      "name": "Rapid Shape",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://rapidshape3d.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "roboze",
+      "name": "Roboze",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.roboze.com/en/press",
+        "itemSelector": "a[href*=\"/en/press/\"]",
+        "linkSelector": "a",
+        "detail": {
+          "maxFetches": 1,
+          "titleSelector": "h1",
+          "titleAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "saremco",
+      "name": "SAREMCO Dental",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://saremco.ch/en/blogs/news.atom",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "shining3d",
+      "name": "SHINING 3D",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.shining3ddental.com/news-post/rss.xml",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "siraya-tech",
+      "name": "Siraya Tech",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://siraya.tech/blogs/news.atom",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "solukon",
+      "name": "Solukon",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.solukon.de/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "sprintray",
+      "name": "SprintRay",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://sprintray.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "stratasys",
+      "name": "Stratasys",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://investors.stratasys.com/news-events/press-releases/rss",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "tct",
+      "name": "TCT Magazine",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.tctmagazine.com/rss/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
         }
       },
       "tier": "T2",
       "first_party": false,
-      "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 60,
-      "tags": [
-        "媒体"
-      ],
       "site_fulltext": false,
-      "syndicate_fulltext": false
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
     },
     {
-      "id": "rss-ars-technica-ai",
-      "name": "Ars Technica · AI",
+      "id": "tpm3d",
+      "name": "TPM3D",
       "kind": "rss",
       "config": {
-        "feedUrl": "https://arstechnica.com/ai/feed/",
+        "feedUrl": "https://english.tpm3d.com/feed/",
         "_aihot": {
-          "initialBackfillLimit": 8
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "trideo",
+      "name": "Trideo",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.trideo3d.com/blog",
+        "itemSelector": "a[href*=\"/blog-posts/\"]",
+        "linkSelector": "a",
+        "detail": {
+          "maxFetches": 1,
+          "titleSelector": "h1",
+          "titleAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "uniontech",
+      "name": "UnionTech",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.uniontech3d.com/blog/",
+        "itemSelector": "a[href=\"https://www.uniontech3d.com/3d-printing-is-heading-towards-design.html\"], a[href=\"https://www.uniontech3d.com/hair-dryer-gets-3d-printed-from-evonik-3010l-dlp-material.html\"]",
+        "linkSelector": "a",
+        "detail": {
+          "maxFetches": 1,
+          "titleSelector": "h1",
+          "titleAuthoritative": true
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
+    },
+    {
+      "id": "voxelmatters",
+      "name": "VoxelMatters",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.voxelmatters.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1,
+          "initialBackfillMonths": 12
         }
       },
       "tier": "T2",
       "first_party": false,
-      "owner_entity_id": null,
       "participation_mode": "editorial",
-      "interval_minutes": 60,
-      "tags": [
-        "媒体"
-      ],
       "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-mit-tech-review-ai",
-      "name": "MIT Technology Review · AI",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.technologyreview.com/topic/artificial-intelligence/feed",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-the-decoder",
-      "name": "The Decoder",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://the-decoder.com/feed/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 60,
-      "tags": [
-        "媒体"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-simon-willison",
-      "name": "Simon Willison",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://simonwillison.net/atom/everything/",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 120,
-      "tags": [
-        "个人"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-import-ai",
-      "name": "Import AI",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://importai.substack.com/feed",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 180,
-      "tags": [
-        "个人",
-        "周刊"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
-    },
-    {
-      "id": "rss-latent-space",
-      "name": "Latent Space",
-      "kind": "rss",
-      "config": {
-        "feedUrl": "https://www.latent.space/feed",
-        "_aihot": {
-          "initialBackfillLimit": 8
-        }
-      },
-      "tier": "T2",
-      "first_party": false,
-      "owner_entity_id": null,
-      "participation_mode": "editorial",
-      "interval_minutes": 180,
-      "tags": [
-        "个人"
-      ],
-      "site_fulltext": false,
-      "syndicate_fulltext": false
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "tags": []
     }
   ]
 }

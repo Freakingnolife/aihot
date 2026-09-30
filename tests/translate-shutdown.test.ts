@@ -20,6 +20,8 @@ const provider = await stub(async (_hit, req) => {
 
 function runTranslation() {
   const script = `
+    import { SITE } from "@aihot/industry/site";
+    Object.assign(SITE, { locale: "zh-CN" });
     import { translatePending } from '@aihot/backend/editorial/translate';
     import { shutdownSignal } from '@aihot/backend/jobs/queue';
     import { closeDb } from '@aihot/backend/db';
@@ -55,7 +57,7 @@ for (const misaligned of [false, true]) test(`SIGTERM finishes the sent ${misali
   const second = misaligned ? `Second paragraph ${T}.` : `Second paragraph ${T}. ${'More English '.repeat(170)}`;
   const { articleId } = await upsertMaterial({ sourceId: SOURCE, url: `https://example.org/translation-shutdown-${T}/${misaligned}`, title: `Shutdown ${T}`, bodyHtml: `<p>${first}</p><p>${second}</p>`, bodyText: first + second, bodyStatus: 'ok', language: 'en', via: 'fetch', publishedAt: new Date(), discoveredAt: new Date(Date.now() + 86_400_000) });
   await sql`INSERT INTO analyses (article_id,input_revision,origin,relevance,category,title_zh,summary_zh,reason_zh,score,selected)
-    VALUES (${articleId},1,'rule','pass','ai-models',${`终止测试${T}`},'摘要','理由',90,true)`;
+    VALUES (${articleId},1,'rule','pass','products',${`终止测试${T}`},'摘要','理由',90,true)`;
   await publishArticle(articleId, { releasedAt: new Date(Date.now() - 60_000) });
   const interrupted = runTranslation();
   await Promise.race([active.asked.promise, interrupted.done.then(() => assert.fail('translation ended before a request'))]);

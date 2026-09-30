@@ -266,15 +266,15 @@ export interface ImportReport {
 
 /** Merge: existing stars are not overwritten, read ids are unioned, theme only if unset. */
 export function importBundle(text: string): ImportReport {
-  if (text.length > IMPORT_MAX_CHARS) throw new Error("文件过大（上限 2,000,000 字符）");
+  if (text.length > IMPORT_MAX_CHARS) throw new Error("File exceeds 2,000,000 characters");
   let data: unknown;
   try {
     data = JSON.parse(text);
   } catch {
-    throw new Error("不是有效的 JSON 文件");
+    throw new Error("Invalid JSON file");
   }
   const d = data as Partial<ExportBundle>;
-  if (!d || typeof d !== "object" || d.version !== 1) throw new Error("文件格式不对（需要 version: 1）");
+  if (!d || typeof d !== "object" || d.version !== 1) throw new Error("Unsupported file format. Expected version: 1.");
   return mergeLocalData({
     starred: Array.isArray(d.starred) ? d.starred : [],
     read: Array.isArray(d.read) ? d.read : [],
@@ -298,7 +298,7 @@ export function mergeLocalData(incoming: { starred: unknown[]; read: unknown[]; 
   starredSkipped += additions.length - accepted.length;
   const mergedStarred = [...current, ...accepted].sort((a, b) => Date.parse(b.savedAt) - Date.parse(a.savedAt));
   // An import is reported only after it was written; a failure here leaves the browser as it was.
-  if (!writeRaw(KEYS.starred, JSON.stringify(mergedStarred))) throw new Error("浏览器存储已满或不可用，这次没有导入任何内容。");
+  if (!writeRaw(KEYS.starred, JSON.stringify(mergedStarred))) throw new Error("Browser storage is full or unavailable. Nothing was imported.");
 
   const readIds = getReadIds();
   const readHave = new Set(readIds);

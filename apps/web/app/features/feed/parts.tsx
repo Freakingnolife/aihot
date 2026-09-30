@@ -32,7 +32,7 @@ export function MediaThumbs({ media, className = "" }: { media: MediaView[]; cla
       {shown.map((m) => {
         const Wrapper = m.kind === "image" ? "button" : "span";
         return (
-        <Wrapper key={m.url} {...(m.kind === "image" ? { type: "button" as const, "aria-label": `查看图片${m.alt ? `：${m.alt}` : ""}`, onClick: (e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); setIndex(images.findIndex((image) => image.src === (m.fullUrl ?? m.url))); } } : {})} className={`relative ${m.kind === "image" ? "z-10 cursor-zoom-in" : ""} shrink-0 overflow-hidden rounded-control border border-line-soft bg-bg-sunk ${shown.length === 1 ? "max-w-[240px]" : "w-[112px]"}`}>
+        <Wrapper key={m.url} {...(m.kind === "image" ? { type: "button" as const, "aria-label": `View image${m.alt ? `：${m.alt}` : ""}`, onClick: (e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); setIndex(images.findIndex((image) => image.src === (m.fullUrl ?? m.url))); } } : {})} className={`relative ${m.kind === "image" ? "z-10 cursor-zoom-in" : ""} shrink-0 overflow-hidden rounded-control border border-line-soft bg-bg-sunk ${shown.length === 1 ? "max-w-[240px]" : "w-[112px]"}`}>
           <img src={m.poster ?? m.url} srcSet={m.srcSet} sizes={shown.length === 1 ? `${m.width && m.height ? Math.min(240, Math.ceil(112 * m.width / m.height)) : 240}px` : "112px"} width={m.width ?? undefined} height={m.height ?? undefined} alt={m.alt ?? ""} loading="lazy" decoding="async" className={`h-[112px] object-cover ${shown.length === 1 ? "w-auto max-w-[240px]" : "w-[112px]"}`} />
           {m.kind === "video" && (
             <span className="absolute inset-0 grid place-items-center" aria-hidden="true">
@@ -51,7 +51,7 @@ export function MediaThumbs({ media, className = "" }: { media: MediaView[]; cla
   );
 }
 
-/** Bookmark toggle kept in this browser (收藏). */
+/** Bookmark toggle kept in this browser (Bookmarks). */
 export function StarButton({ item, size = 26, className = "" }: { item: Pick<FeedItemSummary, "id" | "title" | "summary" | "source" | "publishedAt" | "score" | "selected">; size?: number; className?: string }) {
   const starred = useIsStarred(item.id);
   const [pulse, setPulse] = useState(0);
@@ -60,8 +60,8 @@ export function StarButton({ item, size = 26, className = "" }: { item: Pick<Fee
     <button
       type="button"
       aria-pressed={on}
-      aria-label={on ? "取消收藏" : "收藏"}
-      title={on ? "取消收藏" : "收藏"}
+      aria-label={on ? "Remove bookmark" : "Bookmarks"}
+      title={on ? "Remove bookmark" : "Bookmarks"}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();

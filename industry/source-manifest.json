@@ -1,0 +1,2484 @@
+{
+  "inventory_path": "/Users/marcus/Developer/AdditiveOS/docs/research/am-radar-sources/registry.json",
+  "inventory_sha256": "1829f32bb4c3bce9074cbdea79ccc15e249cfa28d53909d4ce64e07fbc5f8640",
+  "inventory_date": "2026-09-30",
+  "inventory_identities": 1059,
+  "configured_identities": 44,
+  "note": "Observed collection routes only; no OEM operating-status, factual-validation or publication-rights claim. Private pilot authorized; publisher rights remain unresolved. RSS preferred where two routes exist.",
+  "sources": [
+    {
+      "id": "3d-printing-industry",
+      "name": "3D Printing Industry",
+      "category": "trade_publication",
+      "route": {
+        "role": "feed",
+        "url": "https://3dprintingindustry.com/feed/",
+        "final_url": "https://3dprintingindustry.com/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:20:07.675031+00:00",
+        "evidence_ref": "obs-c593966091c2d62d",
+        "discovered_on": "https://3dprintingindustry.com/",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://3dprintingindustry.com/news/ama-software-2026-speakers-announced-255181/?utm_source=rss&utm_medium=rss&utm_campaign=ama-software-2026-speakers-announced",
+            "title": "AMA: Software 2026 \u2013 Speakers Announced"
+          },
+          {
+            "url": "https://3dprintingindustry.com/news/llnl-3d-prints-solid-state-bioreactor-that-turns-waste-methane-into-succinate-255148/?utm_source=rss&utm_medium=rss&utm_campaign=llnl-3d-prints-solid-state-bioreactor-that-turns-waste-methane-into-succinate",
+            "title": "LLNL 3D Prints Solid-State Bioreactor That Turns Waste"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://3dprintingindustry.com/feed/",
+          "final_url": "https://3dprintingindustry.com/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:20:07.675031+00:00",
+          "evidence_ref": "obs-c593966091c2d62d",
+          "discovered_on": "https://3dprintingindustry.com/",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://3dprintingindustry.com/news/ama-software-2026-speakers-announced-255181/?utm_source=rss&utm_medium=rss&utm_campaign=ama-software-2026-speakers-announced",
+              "title": "AMA: Software 2026 \u2013 Speakers Announced"
+            },
+            {
+              "url": "https://3dprintingindustry.com/news/llnl-3d-prints-solid-state-bioreactor-that-turns-waste-methane-into-succinate-255148/?utm_source=rss&utm_medium=rss&utm_campaign=llnl-3d-prints-solid-state-bioreactor-that-turns-waste-methane-into-succinate",
+              "title": "LLNL 3D Prints Solid-State Bioreactor That Turns Waste"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "3d-systems",
+      "name": "3D Systems",
+      "category": "equipment_oem",
+      "route": {
+        "role": "news",
+        "url": "https://www.3dsystems.com/press-releases",
+        "final_url": "https://www.3dsystems.com/press-releases",
+        "status": "verified_web_list",
+        "checked_at": "2026-09-29T19:38:48.746602+00:00",
+        "evidence_ref": "obs-acddcdf78278f15d",
+        "discovered_on": null,
+        "link_label": "Observed primary navigation or proposal source URL",
+        "feed_entries": null,
+        "sample_article_links": [
+          {
+            "url": "https://www.3dsystems.com/press-releases/3d-systems-launches-partnership-savannah-river-national-laboratory-advance-3d",
+            "title": "3D Systems Launches Partnership with Savannah River National"
+          },
+          {
+            "url": "https://www.3dsystems.com/press-releases/3d-systems-receives-9-million-contract-award-us-air-force-advanced-large-format",
+            "title": "3D Systems Receives $9 Million Contract Award from"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "news",
+          "url": "https://www.3dsystems.com/press-releases",
+          "final_url": "https://www.3dsystems.com/press-releases",
+          "status": "verified_web_list",
+          "checked_at": "2026-09-29T19:38:48.746602+00:00",
+          "evidence_ref": "obs-acddcdf78278f15d",
+          "discovered_on": null,
+          "link_label": "Observed primary navigation or proposal source URL",
+          "feed_entries": null,
+          "sample_article_links": [
+            {
+              "url": "https://www.3dsystems.com/press-releases/3d-systems-launches-partnership-savannah-river-national-laboratory-advance-3d",
+              "title": "3D Systems Launches Partnership with Savannah River National"
+            },
+            {
+              "url": "https://www.3dsystems.com/press-releases/3d-systems-receives-9-million-contract-award-us-air-force-advanced-large-format",
+              "title": "3D Systems Receives $9 Million Contract Award from"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "3dxtech",
+      "name": "3DXTech",
+      "category": "material_supplier",
+      "route": {
+        "role": "feed",
+        "url": "https://www.3dxtech.com/blogs/featured.atom",
+        "final_url": "https://www.3dxtech.com/blogs/featured.atom",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:17:39.271292+00:00",
+        "evidence_ref": "obs-9a2e9ea48053296f",
+        "discovered_on": "https://www.3dxtech.com/blogs/featured",
+        "link_label": null,
+        "feed_entries": 30,
+        "sample_article_links": [
+          {
+            "url": "https://www.3dxtech.com/blogs/featured/how-to-dry-filament",
+            "title": "How to Dry 3D Printer Filament and Stop"
+          },
+          {
+            "url": "https://www.3dxtech.com/blogs/featured/made-in-usa-filament-supplier",
+            "title": "How to Choose a Made in USA Filament"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://www.3dxtech.com/blogs/featured.atom",
+          "final_url": "https://www.3dxtech.com/blogs/featured.atom",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:17:39.271292+00:00",
+          "evidence_ref": "obs-9a2e9ea48053296f",
+          "discovered_on": "https://www.3dxtech.com/blogs/featured",
+          "link_label": null,
+          "feed_entries": 30,
+          "sample_article_links": [
+            {
+              "url": "https://www.3dxtech.com/blogs/featured/how-to-dry-filament",
+              "title": "How to Dry 3D Printer Filament and Stop"
+            },
+            {
+              "url": "https://www.3dxtech.com/blogs/featured/made-in-usa-filament-supplier",
+              "title": "How to Choose a Made in USA Filament"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "ackuretta",
+      "name": "Ackuretta",
+      "category": "equipment_oem",
+      "route": {
+        "role": "feed",
+        "url": "https://ackuretta.com/blogs/dental-3d-printing-articles.atom",
+        "final_url": "https://ackuretta.com/blogs/dental-3d-printing-articles.atom",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:17:38.459073+00:00",
+        "evidence_ref": "obs-58216d8b2bd4aad4",
+        "discovered_on": "https://ackuretta.com/blogs/dental-3d-printing-articles",
+        "link_label": null,
+        "feed_entries": 30,
+        "sample_article_links": [
+          {
+            "url": "https://ackuretta.com/blogs/dental-3d-printing-articles/3d-printed-inlay-characterization-with-rodin-glaze-n2-free",
+            "title": "3D Printed Inlay Characterization with Rodin Glaze N2-Free"
+          },
+          {
+            "url": "https://ackuretta.com/blogs/dental-3d-printing-articles/the-role-of-mechanical-properties-in-3d-printed-dental-models",
+            "title": "The Role of Mechanical Properties in 3D-Printed Dental"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://ackuretta.com/blogs/dental-3d-printing-articles.atom",
+          "final_url": "https://ackuretta.com/blogs/dental-3d-printing-articles.atom",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:17:38.459073+00:00",
+          "evidence_ref": "obs-58216d8b2bd4aad4",
+          "discovered_on": "https://ackuretta.com/blogs/dental-3d-printing-articles",
+          "link_label": null,
+          "feed_entries": 30,
+          "sample_article_links": [
+            {
+              "url": "https://ackuretta.com/blogs/dental-3d-printing-articles/3d-printed-inlay-characterization-with-rodin-glaze-n2-free",
+              "title": "3D Printed Inlay Characterization with Rodin Glaze N2-Free"
+            },
+            {
+              "url": "https://ackuretta.com/blogs/dental-3d-printing-articles/the-role-of-mechanical-properties-in-3d-printed-dental-models",
+              "title": "The Role of Mechanical Properties in 3D-Printed Dental"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "admatec",
+      "name": "Admatec",
+      "category": "equipment_oem",
+      "route": {
+        "role": "feed",
+        "url": "https://admateceurope.com/feed/",
+        "final_url": "https://admateceurope.com/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:20:33.017633+00:00",
+        "evidence_ref": "obs-68ff9a6c7624ec58",
+        "discovered_on": "https://admateceurope.com/",
+        "link_label": null,
+        "feed_entries": 7,
+        "sample_article_links": [
+          {
+            "url": "https://admateceurope.com/news/admatec-joins-rapidtct/",
+            "title": "Admatec joins Rapid + TCT"
+          },
+          {
+            "url": "https://admateceurope.com/news/admatec-joins-formnext/",
+            "title": "Admatec joins Formnext"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://admateceurope.com/feed/",
+          "final_url": "https://admateceurope.com/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:20:33.017633+00:00",
+          "evidence_ref": "obs-68ff9a6c7624ec58",
+          "discovered_on": "https://admateceurope.com/",
+          "link_label": null,
+          "feed_entries": 7,
+          "sample_article_links": [
+            {
+              "url": "https://admateceurope.com/news/admatec-joins-rapidtct/",
+              "title": "Admatec joins Rapid + TCT"
+            },
+            {
+              "url": "https://admateceurope.com/news/admatec-joins-formnext/",
+              "title": "Admatec joins Formnext"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "america-makes",
+      "name": "America Makes",
+      "category": "association",
+      "route": {
+        "role": "feed",
+        "url": "https://www.americamakes.us/feed/",
+        "final_url": "https://www.americamakes.us/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:20:29.230401+00:00",
+        "evidence_ref": "obs-9ea97f677644010f",
+        "discovered_on": "https://www.americamakes.us/",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://www.americamakes.us/america-makes-welcomes-yash-parikh-ph-d-to-executive-committee/",
+            "title": "America Makes Welcomes Yash Parikh, Ph.D., to Executive"
+          },
+          {
+            "url": "https://www.americamakes.us/america-makes-to-celebrate-national-manufacturing-day-with-3d-printing-for-drones-student-experiences-across-five-states/",
+            "title": "America Makes to Celebrate National Manufacturing Day with"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://www.americamakes.us/feed/",
+          "final_url": "https://www.americamakes.us/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:20:29.230401+00:00",
+          "evidence_ref": "obs-9ea97f677644010f",
+          "discovered_on": "https://www.americamakes.us/",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://www.americamakes.us/america-makes-welcomes-yash-parikh-ph-d-to-executive-committee/",
+              "title": "America Makes Welcomes Yash Parikh, Ph.D., to Executive"
+            },
+            {
+              "url": "https://www.americamakes.us/america-makes-to-celebrate-national-manufacturing-day-with-3d-printing-for-drones-student-experiences-across-five-states/",
+              "title": "America Makes to Celebrate National Manufacturing Day with"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "amug",
+      "name": "AMUG",
+      "category": "association",
+      "route": {
+        "role": "feed",
+        "url": "https://www.amug.com/feed/",
+        "final_url": "https://www.amug.com/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:20:14.840392+00:00",
+        "evidence_ref": "obs-84f8c5199c191eb9",
+        "discovered_on": "https://www.amug.com/",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://www.amug.com/newsletter/amug-newsletter-september-2026/",
+            "title": "AMUG September 2026"
+          },
+          {
+            "url": "https://www.amug.com/news/2027-conference-registration/",
+            "title": "2027 Conference Registration"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://www.amug.com/feed/",
+          "final_url": "https://www.amug.com/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:20:14.840392+00:00",
+          "evidence_ref": "obs-84f8c5199c191eb9",
+          "discovered_on": "https://www.amug.com/",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://www.amug.com/newsletter/amug-newsletter-september-2026/",
+              "title": "AMUG September 2026"
+            },
+            {
+              "url": "https://www.amug.com/news/2027-conference-registration/",
+              "title": "2027 Conference Registration"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "anycubic",
+      "name": "Anycubic",
+      "category": "equipment_oem",
+      "route": {
+        "role": "feed",
+        "url": "https://store.anycubic.com/blogs/news.atom",
+        "final_url": "https://store.anycubic.com/blogs/news.atom",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:17:39.247151+00:00",
+        "evidence_ref": "obs-76378fc5ce78809d",
+        "discovered_on": "https://store.anycubic.com/blogs/news",
+        "link_label": null,
+        "feed_entries": 30,
+        "sample_article_links": [
+          {
+            "url": "https://store.anycubic.com/blogs/news/anycubic-software-2-0-new-printer-settings-across-slicer-app-printer",
+            "title": "Anycubic Software 2.0: New Printer Settings Across Slicer,"
+          },
+          {
+            "url": "https://store.anycubic.com/blogs/news/anycubic-11th-anniversary-sale-2026-3d-printer-discount-material-deals",
+            "title": "Anycubic 11th Anniversary Sale 2026: 3D Printer Discount"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://store.anycubic.com/blogs/news.atom",
+          "final_url": "https://store.anycubic.com/blogs/news.atom",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:17:39.247151+00:00",
+          "evidence_ref": "obs-76378fc5ce78809d",
+          "discovered_on": "https://store.anycubic.com/blogs/news",
+          "link_label": null,
+          "feed_entries": 30,
+          "sample_article_links": [
+            {
+              "url": "https://store.anycubic.com/blogs/news/anycubic-software-2-0-new-printer-settings-across-slicer-app-printer",
+              "title": "Anycubic Software 2.0: New Printer Settings Across Slicer,"
+            },
+            {
+              "url": "https://store.anycubic.com/blogs/news/anycubic-11th-anniversary-sale-2026-3d-printer-discount-material-deals",
+              "title": "Anycubic 11th Anniversary Sale 2026: 3D Printer Discount"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "aon3d",
+      "name": "AON3D",
+      "category": "equipment_oem",
+      "route": {
+        "role": "feed",
+        "url": "https://www.aon3d.com/category/press/feed/",
+        "final_url": "https://www.aon3d.com/category/press/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:22:33.410578+00:00",
+        "evidence_ref": "obs-6cbddef4c8bfffc2",
+        "discovered_on": "https://www.aon3d.com/about/",
+        "link_label": null,
+        "feed_entries": 7,
+        "sample_article_links": [
+          {
+            "url": "https://www.aon3d.com/press/aon3d-signs-leading-north-american-reseller-dynamism/",
+            "title": "AON3D Signs Leading North American Reseller, Dynamism"
+          },
+          {
+            "url": "https://www.aon3d.com/applications/superslicer-release/",
+            "title": "AON M2+ Adds New Feature-Rich Slicer Option"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://www.aon3d.com/category/press/feed/",
+          "final_url": "https://www.aon3d.com/category/press/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:22:33.410578+00:00",
+          "evidence_ref": "obs-6cbddef4c8bfffc2",
+          "discovered_on": "https://www.aon3d.com/about/",
+          "link_label": null,
+          "feed_entries": 7,
+          "sample_article_links": [
+            {
+              "url": "https://www.aon3d.com/press/aon3d-signs-leading-north-american-reseller-dynamism/",
+              "title": "AON3D Signs Leading North American Reseller, Dynamism"
+            },
+            {
+              "url": "https://www.aon3d.com/applications/superslicer-release/",
+              "title": "AON M2+ Adds New Feature-Rich Slicer Option"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "asiga",
+      "name": "Asiga",
+      "category": "equipment_oem",
+      "route": {
+        "role": "feed",
+        "url": "https://www.asiga.com/feed/",
+        "final_url": "https://www.asiga.com/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:17:46.939193+00:00",
+        "evidence_ref": "obs-1a588545b0909c34",
+        "discovered_on": "https://www.asiga.com/news/",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://www.asiga.com/see-us-at-lmt-lab-day-east/",
+            "title": "See us at LMT Lab Day East"
+          },
+          {
+            "url": "https://www.asiga.com/from-digital-workflows-to-better-patient-care/",
+            "title": "From digital workflows to better patient care"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://www.asiga.com/feed/",
+          "final_url": "https://www.asiga.com/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:17:46.939193+00:00",
+          "evidence_ref": "obs-1a588545b0909c34",
+          "discovered_on": "https://www.asiga.com/news/",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://www.asiga.com/see-us-at-lmt-lab-day-east/",
+              "title": "See us at LMT Lab Day East"
+            },
+            {
+              "url": "https://www.asiga.com/from-digital-workflows-to-better-patient-care/",
+              "title": "From digital workflows to better patient care"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "axtra3d",
+      "name": "Axtra3D",
+      "category": "equipment_oem",
+      "route": {
+        "role": "feed",
+        "url": "https://axtra3d.com/feed/",
+        "final_url": "https://axtra3d.com/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:17:43.926849+00:00",
+        "evidence_ref": "obs-c977733732098dc0",
+        "discovered_on": "https://axtra3d.com/press-media/",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://axtra3d.com/axtra3d-to-showcase-production-ready-additive-manufacturing-platform-at-imts-2026/",
+            "title": "Axtra3D to Showcase Production-Ready Additive Manufacturing Platform at"
+          },
+          {
+            "url": "https://axtra3d.com/axtra3d-announces-new-vp-of-revenue-and-growth-emea-row/",
+            "title": "Axtra3D Announces New VP of Revenue and Growth"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://axtra3d.com/feed/",
+          "final_url": "https://axtra3d.com/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:17:43.926849+00:00",
+          "evidence_ref": "obs-c977733732098dc0",
+          "discovered_on": "https://axtra3d.com/press-media/",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://axtra3d.com/axtra3d-to-showcase-production-ready-additive-manufacturing-platform-at-imts-2026/",
+              "title": "Axtra3D to Showcase Production-Ready Additive Manufacturing Platform at"
+            },
+            {
+              "url": "https://axtra3d.com/axtra3d-announces-new-vp-of-revenue-and-growth-emea-row/",
+              "title": "Axtra3D Announces New VP of Revenue and Growth"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "bambu-lab",
+      "name": "Bambu Lab",
+      "category": "equipment_oem",
+      "route": {
+        "role": "feed",
+        "url": "https://blog.bambulab.com/rss/",
+        "final_url": "https://blog.bambulab.com/rss/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:17:45.107670+00:00",
+        "evidence_ref": "obs-27d3e6644c2dd286",
+        "discovered_on": "https://blog.bambulab.com/",
+        "link_label": null,
+        "feed_entries": 15,
+        "sample_article_links": [
+          {
+            "url": "https://blog.bambulab.com/big-job-light-work-bambu-lab-launches-r1/",
+            "title": "Big Job. Light Work. Bambu Lab Launches R1"
+          },
+          {
+            "url": "https://blog.bambulab.com/when-3d-printing-meets-a-sweet-treat-bambu-lab-and-bambu-desserts-drinks-team-up-for-a-one-of-a-kind-collaboration/",
+            "title": "When 3D printing meets a sweet treat: Bambu"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://blog.bambulab.com/rss/",
+          "final_url": "https://blog.bambulab.com/rss/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:17:45.107670+00:00",
+          "evidence_ref": "obs-27d3e6644c2dd286",
+          "discovered_on": "https://blog.bambulab.com/",
+          "link_label": null,
+          "feed_entries": 15,
+          "sample_article_links": [
+            {
+              "url": "https://blog.bambulab.com/big-job-light-work-bambu-lab-launches-r1/",
+              "title": "Big Job. Light Work. Bambu Lab Launches R1"
+            },
+            {
+              "url": "https://blog.bambulab.com/when-3d-printing-meets-a-sweet-treat-bambu-lab-and-bambu-desserts-drinks-team-up-for-a-one-of-a-kind-collaboration/",
+              "title": "When 3D printing meets a sweet treat: Bambu"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "basf-forward-am",
+      "name": "BASF Forward AM",
+      "category": "material_supplier",
+      "route": {
+        "role": "feed",
+        "url": "https://forward-am.com/feed/",
+        "final_url": "https://forward-am.com/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:17:52.229794+00:00",
+        "evidence_ref": "obs-edb668ccb0631326",
+        "discovered_on": "https://forward-am.com/gain-knowledge/blog/",
+        "link_label": null,
+        "feed_entries": 1,
+        "sample_article_links": [
+          {
+            "url": "https://forward-am.com/gain-knowledge/blog/layerbylayer-a-conversation-with-ken-burns-of-forecast-3d/",
+            "title": "LAYERbyLAYER: A Conversation with Ken Burns, VP of"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://forward-am.com/feed/",
+          "final_url": "https://forward-am.com/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:17:52.229794+00:00",
+          "evidence_ref": "obs-edb668ccb0631326",
+          "discovered_on": "https://forward-am.com/gain-knowledge/blog/",
+          "link_label": null,
+          "feed_entries": 1,
+          "sample_article_links": [
+            {
+              "url": "https://forward-am.com/gain-knowledge/blog/layerbylayer-a-conversation-with-ken-burns-of-forecast-3d/",
+              "title": "LAYERbyLAYER: A Conversation with Ken Burns, VP of"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "bcn3d",
+      "name": "BCN3D",
+      "category": "equipment_oem",
+      "route": {
+        "role": "news",
+        "url": "https://bcn3d.com/blog/",
+        "final_url": "https://bcn3d.com/blog/",
+        "status": "verified_web_list",
+        "checked_at": "2026-09-29T19:17:45.549719+00:00",
+        "evidence_ref": "obs-eade874e36cbce59",
+        "discovered_on": "https://bcn3d.com/technical-safety-datasheets/",
+        "link_label": "Blog",
+        "feed_entries": null,
+        "sample_article_links": [
+          {
+            "url": "https://bcn3d.com/introducing-supernova-new-company-carve-out-viscous-lithography-manufacturing-vlm/",
+            "title": "Introducing Supernova: A New Company Born from the"
+          },
+          {
+            "url": "https://bcn3d.com/new-bcn3d-omega-i60-g2/",
+            "title": "Engineering the Next Generation: Inside the Upgrades of"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "news",
+          "url": "https://bcn3d.com/blog/",
+          "final_url": "https://bcn3d.com/blog/",
+          "status": "verified_web_list",
+          "checked_at": "2026-09-29T19:17:45.549719+00:00",
+          "evidence_ref": "obs-eade874e36cbce59",
+          "discovered_on": "https://bcn3d.com/technical-safety-datasheets/",
+          "link_label": "Blog",
+          "feed_entries": null,
+          "sample_article_links": [
+            {
+              "url": "https://bcn3d.com/introducing-supernova-new-company-carve-out-viscous-lithography-manufacturing-vlm/",
+              "title": "Introducing Supernova: A New Company Born from the"
+            },
+            {
+              "url": "https://bcn3d.com/new-bcn3d-omega-i60-g2/",
+              "title": "Engineering the Next Generation: Inside the Upgrades of"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "carbon",
+      "name": "Carbon",
+      "category": "equipment_oem",
+      "route": {
+        "role": "news",
+        "url": "https://www.carbon3d.com/resources/category/blogs/",
+        "final_url": "https://www.carbon3d.com/resources/category/blogs",
+        "status": "verified_web_list",
+        "checked_at": "2026-09-29T19:17:51.402388+00:00",
+        "evidence_ref": "obs-aad223baf003a22d",
+        "discovered_on": "https://www.carbon3d.com/materials",
+        "link_label": "Carbon Blog",
+        "feed_entries": null,
+        "sample_article_links": [
+          {
+            "url": "https://www.carbon3d.com/resources/case-study/sherpa-design-collaborates-with-monterey-bay-aquarium-research-institute-to-address-manufacturing-challenge-for-underwater-robot",
+            "title": "Sherpa Design Collaborates with Monterey Bay Aquarium Research"
+          },
+          {
+            "url": "https://www.carbon3d.com/resources/case-study/closing-the-digital-gap-how-carbon-keystone-industries-fp3d-brought-precision-predictability-and-patient-satisfaction-to-removable-partial-dentures",
+            "title": "Closing the Digital Gap: How Carbon & Keystone"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "news",
+          "url": "https://www.carbon3d.com/resources/category/blogs/",
+          "final_url": "https://www.carbon3d.com/resources/category/blogs",
+          "status": "verified_web_list",
+          "checked_at": "2026-09-29T19:17:51.402388+00:00",
+          "evidence_ref": "obs-aad223baf003a22d",
+          "discovered_on": "https://www.carbon3d.com/materials",
+          "link_label": "Carbon Blog",
+          "feed_entries": null,
+          "sample_article_links": [
+            {
+              "url": "https://www.carbon3d.com/resources/case-study/sherpa-design-collaborates-with-monterey-bay-aquarium-research-institute-to-address-manufacturing-challenge-for-underwater-robot",
+              "title": "Sherpa Design Collaborates with Monterey Bay Aquarium Research"
+            },
+            {
+              "url": "https://www.carbon3d.com/resources/case-study/closing-the-digital-gap-how-carbon-keystone-industries-fp3d-brought-precision-predictability-and-patient-satisfaction-to-removable-partial-dentures",
+              "title": "Closing the Digital Gap: How Carbon & Keystone"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "cellink",
+      "name": "CELLINK",
+      "category": "equipment_oem",
+      "route": {
+        "role": "feed",
+        "url": "https://www.cellink.com/feed/",
+        "final_url": "https://www.cellink.com/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:20:35.881556+00:00",
+        "evidence_ref": "obs-0534bc33fae12110",
+        "discovered_on": "https://www.cellink.com/",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://www.cellink.com/stefan-blomsterberg-appointed-as-new-ceo-of-cellink-bioprinting-ab/",
+            "title": "Stefan Blomsterberg appointed as new CEO of CELLINK"
+          },
+          {
+            "url": "https://www.cellink.com/cellink-and-ossiform-enter-a-strategic-partnership-to-launch-ossi-ink-a-printable-bioink-based-on-ossiforms-p3d-bone-material/",
+            "title": "CELLINK and Ossiform Enter a Strategic Partnership to"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://www.cellink.com/feed/",
+          "final_url": "https://www.cellink.com/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:20:35.881556+00:00",
+          "evidence_ref": "obs-0534bc33fae12110",
+          "discovered_on": "https://www.cellink.com/",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://www.cellink.com/stefan-blomsterberg-appointed-as-new-ceo-of-cellink-bioprinting-ab/",
+              "title": "Stefan Blomsterberg appointed as new CEO of CELLINK"
+            },
+            {
+              "url": "https://www.cellink.com/cellink-and-ossiform-enter-a-strategic-partnership-to-launch-ossi-ink-a-printable-bioink-based-on-ossiforms-p3d-bone-material/",
+              "title": "CELLINK and Ossiform Enter a Strategic Partnership to"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "cobod",
+      "name": "COBOD",
+      "category": "equipment_oem",
+      "route": {
+        "role": "news",
+        "url": "https://cobod.com/press/",
+        "final_url": "https://cobod.com/press/",
+        "status": "verified_web_list",
+        "checked_at": "2026-09-29T19:20:25.878383+00:00",
+        "evidence_ref": "obs-12b5c657505a9525",
+        "discovered_on": "https://cobod.com/company/",
+        "link_label": "News & press",
+        "feed_entries": null,
+        "sample_article_links": [
+          {
+            "url": "https://cobod.com/europes-largest-3d-printed-project-completed-below-denmarks-social-housing-cost-cap/",
+            "title": "Europe\u2019s Largest 3D Printed Project Completed Below Denmark\u2019s"
+          },
+          {
+            "url": "https://cobod.com/german-construction-giant-launches-3d-printing-division-after-printing-its-own-headquarters/",
+            "title": "German Construction Giant Launches 3D Printing Division After"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "news",
+          "url": "https://cobod.com/press/",
+          "final_url": "https://cobod.com/press/",
+          "status": "verified_web_list",
+          "checked_at": "2026-09-29T19:20:25.878383+00:00",
+          "evidence_ref": "obs-12b5c657505a9525",
+          "discovered_on": "https://cobod.com/company/",
+          "link_label": "News & press",
+          "feed_entries": null,
+          "sample_article_links": [
+            {
+              "url": "https://cobod.com/europes-largest-3d-printed-project-completed-below-denmarks-social-housing-cost-cap/",
+              "title": "Europe\u2019s Largest 3D Printed Project Completed Below Denmark\u2019s"
+            },
+            {
+              "url": "https://cobod.com/german-construction-giant-launches-3d-printing-division-after-printing-its-own-headquarters/",
+              "title": "German Construction Giant Launches 3D Printing Division After"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "dws",
+      "name": "DWS",
+      "category": "equipment_oem",
+      "route": {
+        "role": "feed",
+        "url": "https://www.dwssystems.com/feed/",
+        "final_url": "https://www.dwssystems.com/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:17:59.229611+00:00",
+        "evidence_ref": "obs-d2bed4ea7d8b15fe",
+        "discovered_on": "https://www.dwssystems.com/blog/",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://www.dwssystems.com/blog/dws-formnext-2026/",
+            "title": "DWS Systems at Formnext 2026"
+          },
+          {
+            "url": "https://www.dwssystems.com/blog/dws-systems-at-vicenzaoro-september-2026/",
+            "title": "DWS Systems at Vicenzaoro September 2026"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://www.dwssystems.com/feed/",
+          "final_url": "https://www.dwssystems.com/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:17:59.229611+00:00",
+          "evidence_ref": "obs-d2bed4ea7d8b15fe",
+          "discovered_on": "https://www.dwssystems.com/blog/",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://www.dwssystems.com/blog/dws-formnext-2026/",
+              "title": "DWS Systems at Formnext 2026"
+            },
+            {
+              "url": "https://www.dwssystems.com/blog/dws-systems-at-vicenzaoro-september-2026/",
+              "title": "DWS Systems at Vicenzaoro September 2026"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "eos",
+      "name": "EOS",
+      "category": "equipment_oem",
+      "route": {
+        "role": "news",
+        "url": "https://www.eos.info/press-media/press-center/press-releases",
+        "final_url": "https://www.eos.info/press-media/press-center/press-releases",
+        "status": "verified_web_list",
+        "checked_at": "2026-09-29T19:38:49.241487+00:00",
+        "evidence_ref": "obs-6ca6645adeae9487",
+        "discovered_on": null,
+        "link_label": "Observed primary navigation or proposal source URL",
+        "feed_entries": null,
+        "sample_article_links": [
+          {
+            "url": "https://www.eos.info/press-media/press-center/press-releases/2026/axiomatek_mexico_channel_partner",
+            "title": "Sep 2026 \u00b7 Reading time 4 min. EOS"
+          },
+          {
+            "url": "https://www.eos.info/press-media/press-center/press-releases/2026/eos-joins-mat\u2011h2-consortium",
+            "title": "Jul 2026 \u00b7 Reading time 3 min. EOS"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "news",
+          "url": "https://www.eos.info/press-media/press-center/press-releases",
+          "final_url": "https://www.eos.info/press-media/press-center/press-releases",
+          "status": "verified_web_list",
+          "checked_at": "2026-09-29T19:38:49.241487+00:00",
+          "evidence_ref": "obs-6ca6645adeae9487",
+          "discovered_on": null,
+          "link_label": "Observed primary navigation or proposal source URL",
+          "feed_entries": null,
+          "sample_article_links": [
+            {
+              "url": "https://www.eos.info/press-media/press-center/press-releases/2026/axiomatek_mexico_channel_partner",
+              "title": "Sep 2026 \u00b7 Reading time 4 min. EOS"
+            },
+            {
+              "url": "https://www.eos.info/press-media/press-center/press-releases/2026/eos-joins-mat\u2011h2-consortium",
+              "title": "Jul 2026 \u00b7 Reading time 3 min. EOS"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "eplus3d",
+      "name": "Eplus3D",
+      "category": "equipment_oem",
+      "route": {
+        "role": "news",
+        "url": "https://www.eplus3d.com/blog/",
+        "final_url": "https://www.eplus3d.com/blog/",
+        "status": "verified_web_list",
+        "checked_at": "2026-09-29T19:17:56.876859+00:00",
+        "evidence_ref": "obs-0fbb5d757868a94a",
+        "discovered_on": "https://www.eplus3d.com/products/additive-manufacturing-polymer-material/",
+        "link_label": "Resources",
+        "feed_entries": null,
+        "sample_article_links": [
+          {
+            "url": "https://www.eplus3d.com/investigation-of-manufacturing-316l-stainless-steel-closed-impeller-using-eplus3d-laser-powder-bed-fusion-machine.html",
+            "title": "Investigation of Manufacturing 316L Stainless Steel Closed Impeller"
+          },
+          {
+            "url": "https://www.eplus3d.com/eplus3ds-exploration-and-practice-support-free-metal-3d-printing.html",
+            "title": "Eplus3D's Exploration and Practice: Support-free Metal 3D Printing"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "news",
+          "url": "https://www.eplus3d.com/blog/",
+          "final_url": "https://www.eplus3d.com/blog/",
+          "status": "verified_web_list",
+          "checked_at": "2026-09-29T19:17:56.876859+00:00",
+          "evidence_ref": "obs-0fbb5d757868a94a",
+          "discovered_on": "https://www.eplus3d.com/products/additive-manufacturing-polymer-material/",
+          "link_label": "Resources",
+          "feed_entries": null,
+          "sample_article_links": [
+            {
+              "url": "https://www.eplus3d.com/investigation-of-manufacturing-316l-stainless-steel-closed-impeller-using-eplus3d-laser-powder-bed-fusion-machine.html",
+              "title": "Investigation of Manufacturing 316L Stainless Steel Closed Impeller"
+            },
+            {
+              "url": "https://www.eplus3d.com/eplus3ds-exploration-and-practice-support-free-metal-3d-printing.html",
+              "title": "Eplus3D's Exploration and Practice: Support-free Metal 3D Printing"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "farsoon",
+      "name": "Farsoon",
+      "category": "equipment_oem",
+      "route": {
+        "role": "news",
+        "url": "https://www.farsoon-gl.com/act/news/",
+        "final_url": "https://www.farsoon-gl.com/act/news/",
+        "status": "verified_web_list",
+        "checked_at": "2026-09-29T19:18:03.730932+00:00",
+        "evidence_ref": "obs-2bc6cde8e17005fa",
+        "discovered_on": "https://www.farsoon-gl.com/plastic-3d-printing-materials/",
+        "link_label": "News Room",
+        "feed_entries": null,
+        "sample_article_links": [
+          {
+            "url": "https://www.farsoon-gl.com/news/scaling-serial-production-100-farsoon-polymer-pbf-systems-deployed-in-the-rapid-manufacturing/",
+            "title": "May. 21, 2026 Scaling Serial Production: 100+ Farsoon"
+          },
+          {
+            "url": "https://www.farsoon-gl.com/news/farsoon-expands-industrial-additive-manufacturing-reach-in-australia-through-partnership-with-emlogic/",
+            "title": "Apr. 23, 2026 Farsoon Expands Industrial Additive Manufacturing"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "news",
+          "url": "https://www.farsoon-gl.com/act/news/",
+          "final_url": "https://www.farsoon-gl.com/act/news/",
+          "status": "verified_web_list",
+          "checked_at": "2026-09-29T19:18:03.730932+00:00",
+          "evidence_ref": "obs-2bc6cde8e17005fa",
+          "discovered_on": "https://www.farsoon-gl.com/plastic-3d-printing-materials/",
+          "link_label": "News Room",
+          "feed_entries": null,
+          "sample_article_links": [
+            {
+              "url": "https://www.farsoon-gl.com/news/scaling-serial-production-100-farsoon-polymer-pbf-systems-deployed-in-the-rapid-manufacturing/",
+              "title": "May. 21, 2026 Scaling Serial Production: 100+ Farsoon"
+            },
+            {
+              "url": "https://www.farsoon-gl.com/news/farsoon-expands-industrial-additive-manufacturing-reach-in-australia-through-partnership-with-emlogic/",
+              "title": "Apr. 23, 2026 Farsoon Expands Industrial Additive Manufacturing"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "formlabs",
+      "name": "Formlabs",
+      "category": "equipment_oem",
+      "route": {
+        "role": "web_list",
+        "url": "https://formlabs.com/company/press/",
+        "final_url": "https://formlabs.com/company/press/",
+        "status": "verified_web_list",
+        "checked_at": "2026-09-30T05:53:10.365547+00:00",
+        "evidence_ref": "radar-repair-20260930/formlabs-list.html",
+        "discovered_on": "https://formlabs.com/company/press/",
+        "sample_article_links": [
+          {
+            "url": "https://formlabs.com/company/press/formlabs-board-changes-dan-riccio/",
+            "title": "Formlabs Announces Former Apple Hardware Chief Dan Riccio as a Strategic Advisor and Board Changes"
+          },
+          {
+            "url": "https://formlabs.com/company/press/formlabs-unveils-fuse-x1-large-format-sls-3d-printing/",
+            "title": "Formlabs Unveils Fuse X1: Industrial Large-Format SLS 3D Printing at a Fraction of the Cost"
+          }
+        ],
+        "limitation": "Calendar-date press listing. Current leading press release is August12; no September press publication observed. Existing resource/blog route retained as alternate; some latest case studies expose only month/year and cannot enter precise recent-date view."
+      },
+      "other_verified_routes": [
+        {
+          "role": "news",
+          "url": "https://formlabs.com/resources/?fl_resource_type=news",
+          "final_url": "https://formlabs.com/resources/?fl_resource_type=news",
+          "status": "verified_web_list",
+          "checked_at": "2026-09-29T19:18:08.712642+00:00",
+          "evidence_ref": "obs-c5313a5b546494ff",
+          "discovered_on": "https://formlabs.com/materials/data-sheets/",
+          "link_label": "News",
+          "feed_entries": null,
+          "sample_article_links": [
+            {
+              "url": "https://formlabs.com/blog/announcing-fuse-x1-industrial-sls/",
+              "title": "BlogAnnouncing Fuse X1: The Accessible Industrial SLS 3D"
+            },
+            {
+              "url": "https://formlabs.com/blog/announcing-flexible-80a-resin-v2/",
+              "title": "BlogFlexible 80A Resin V2 Rivals 80A Cast Urethanes"
+            }
+          ]
+        },
+        {
+          "role": "news",
+          "url": "https://formlabs.com/resources/?fl_resource_type=news",
+          "final_url": "https://formlabs.com/resources/?fl_resource_type=news",
+          "status": "verified_web_list",
+          "checked_at": "2026-09-29T19:18:08.712642+00:00",
+          "evidence_ref": "obs-c5313a5b546494ff",
+          "discovered_on": "https://formlabs.com/materials/data-sheets/",
+          "link_label": "News",
+          "feed_entries": null,
+          "sample_article_links": [
+            {
+              "url": "https://formlabs.com/blog/announcing-fuse-x1-industrial-sls/",
+              "title": "BlogAnnouncing Fuse X1: The Accessible Industrial SLS 3D"
+            },
+            {
+              "url": "https://formlabs.com/blog/announcing-flexible-80a-resin-v2/",
+              "title": "BlogFlexible 80A Resin V2 Rivals 80A Cast Urethanes"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "henkel-loctite",
+      "name": "Henkel LOCTITE 3D",
+      "category": "material_supplier",
+      "route": {
+        "role": "feed",
+        "url": "https://www.loctiteam.com/feed/",
+        "final_url": "https://www.loctiteam.com/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:18:12.366779+00:00",
+        "evidence_ref": "obs-a506cdcdadba6899",
+        "discovered_on": "https://www.loctiteam.com/press-releases/",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://www.loctiteam.com/lets-connect-at-formnext-2025/",
+            "title": "Let\u2019s Connect at Formnext 2025!"
+          },
+          {
+            "url": "https://www.loctiteam.com/advancing-open-material-mode-with-loctite-resins-on-the-form-4/",
+            "title": "Advancing Open Material Mode With Loctite\u00ae Resins on"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://www.loctiteam.com/feed/",
+          "final_url": "https://www.loctiteam.com/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:18:12.366779+00:00",
+          "evidence_ref": "obs-a506cdcdadba6899",
+          "discovered_on": "https://www.loctiteam.com/press-releases/",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://www.loctiteam.com/lets-connect-at-formnext-2025/",
+              "title": "Let\u2019s Connect at Formnext 2025!"
+            },
+            {
+              "url": "https://www.loctiteam.com/advancing-open-material-mode-with-loctite-resins-on-the-form-4/",
+              "title": "Advancing Open Material Mode With Loctite\u00ae Resins on"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "intamsys",
+      "name": "INTAMSYS",
+      "category": "equipment_oem",
+      "route": {
+        "role": "feed",
+        "url": "https://blog.intamsys.com/blog/rss.xml",
+        "final_url": "https://blog.intamsys.com/blog/rss.xml",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:18:22.238805+00:00",
+        "evidence_ref": "obs-ad3e2d77c73db80a",
+        "discovered_on": "https://blog.intamsys.com/blog",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://blog.intamsys.com/blog/why-does-the-310-apollo-print-peek-so-well",
+            "title": "Why Does the 310 APOLLO Print PEEK So"
+          },
+          {
+            "url": "https://blog.intamsys.com/blog/intamsys-and-jlc3dp-announce-mass-production-ready-peek/pekk-3d-printing-service-now-live",
+            "title": "INTAMSYS and JLC3DP Announce Mass Production-Ready PEEK/PEKK 3D"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://blog.intamsys.com/blog/rss.xml",
+          "final_url": "https://blog.intamsys.com/blog/rss.xml",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:18:22.238805+00:00",
+          "evidence_ref": "obs-ad3e2d77c73db80a",
+          "discovered_on": "https://blog.intamsys.com/blog",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://blog.intamsys.com/blog/why-does-the-310-apollo-print-peek-so-well",
+              "title": "Why Does the 310 APOLLO Print PEEK So"
+            },
+            {
+              "url": "https://blog.intamsys.com/blog/intamsys-and-jlc3dp-announce-mass-production-ready-peek/pekk-3d-printing-service-now-live",
+              "title": "INTAMSYS and JLC3DP Announce Mass Production-Ready PEEK/PEKK 3D"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "kexcelled",
+      "name": "Kexcelled",
+      "category": "material_supplier",
+      "route": {
+        "role": "feed",
+        "url": "https://kexcelled3d.com/blogs/news.atom",
+        "final_url": "https://kexcelled3d.com/blogs/news.atom",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:18:17.688943+00:00",
+        "evidence_ref": "obs-36b7d09e0c40e99d",
+        "discovered_on": "https://kexcelled3d.com/blogs/news",
+        "link_label": null,
+        "feed_entries": 18,
+        "sample_article_links": [
+          {
+            "url": "https://kexcelled3d.com/blogs/news/kexcelled-joins-noodo-lab-at-hong-kong-s-design-to-bridge-exhibition-showcasing-sustainable-design-with-3d-printing",
+            "title": "Kexcelled Joins Noodo Lab at Hong Kong\u2019s \u201cDesign"
+          },
+          {
+            "url": "https://kexcelled3d.com/blogs/news/meet-kexcelled-at-manufacturing-world-tokyo-2026",
+            "title": "Meet Kexcelled at Manufacturing World Tokyo 2026"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://kexcelled3d.com/blogs/news.atom",
+          "final_url": "https://kexcelled3d.com/blogs/news.atom",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:18:17.688943+00:00",
+          "evidence_ref": "obs-36b7d09e0c40e99d",
+          "discovered_on": "https://kexcelled3d.com/blogs/news",
+          "link_label": null,
+          "feed_entries": 18,
+          "sample_article_links": [
+            {
+              "url": "https://kexcelled3d.com/blogs/news/kexcelled-joins-noodo-lab-at-hong-kong-s-design-to-bridge-exhibition-showcasing-sustainable-design-with-3d-printing",
+              "title": "Kexcelled Joins Noodo Lab at Hong Kong\u2019s \u201cDesign"
+            },
+            {
+              "url": "https://kexcelled3d.com/blogs/news/meet-kexcelled-at-manufacturing-world-tokyo-2026",
+              "title": "Meet Kexcelled at Manufacturing World Tokyo 2026"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "liqcreate",
+      "name": "Liqcreate",
+      "category": "material_supplier",
+      "route": {
+        "role": "feed",
+        "url": "https://www.liqcreate.com/feed/",
+        "final_url": "https://www.liqcreate.com/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:18:18.223313+00:00",
+        "evidence_ref": "obs-90ae095202164766",
+        "discovered_on": "https://www.liqcreate.com/news/",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://www.liqcreate.com/liqcreate-introduces-liqcreate-tray-a-ce-class-1-certified-resin-for-fast-and-reliable-custom-dental-impression-trays/",
+            "title": "Liqcreate Introduces Liqcreate Tray, a CE Class 1"
+          },
+          {
+            "url": "https://www.liqcreate.com/biocompatible-flexible-3dprint-resin/",
+            "title": "Liqcreate introduces Bio Med Flex, a biocompatible flexible"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://www.liqcreate.com/feed/",
+          "final_url": "https://www.liqcreate.com/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:18:18.223313+00:00",
+          "evidence_ref": "obs-90ae095202164766",
+          "discovered_on": "https://www.liqcreate.com/news/",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://www.liqcreate.com/liqcreate-introduces-liqcreate-tray-a-ce-class-1-certified-resin-for-fast-and-reliable-custom-dental-impression-trays/",
+              "title": "Liqcreate Introduces Liqcreate Tray, a CE Class 1"
+            },
+            {
+              "url": "https://www.liqcreate.com/biocompatible-flexible-3dprint-resin/",
+              "title": "Liqcreate introduces Bio Med Flex, a biocompatible flexible"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "lithoz",
+      "name": "Lithoz",
+      "category": "equipment_oem",
+      "route": {
+        "role": "feed",
+        "url": "https://www.lithoz.com/en/feed/",
+        "final_url": "https://www.lithoz.com/en/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:20:25.324426+00:00",
+        "evidence_ref": "obs-b2912d21b66e885c",
+        "discovered_on": "https://www.lithoz.com/en/",
+        "link_label": null,
+        "feed_entries": 6,
+        "sample_article_links": [
+          {
+            "url": "https://www.lithoz.com/en/kls-martin-delivers-their-500th-lithoz-lcm-printed-bioceramic-implant-by-end-of-q3-2026-via-their-surgeon-facing-order-platform-ips-gate/",
+            "title": "KLS Martin delivers their 500th Lithoz LCM-printed bioceramic"
+          },
+          {
+            "url": "https://www.lithoz.com/en/lithoz-ceramic-material-revenue-up-40-yoy-fueled-by-medtech-and-lcm-contract-manufacturers/",
+            "title": "Lithoz Ceramic Material Revenue Up 40% YOY, Fueled"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "news",
+          "url": "https://www.lithoz.com/en/press-events/",
+          "final_url": "https://www.lithoz.com/en/press-events/",
+          "status": "verified_web_list",
+          "checked_at": "2026-09-29T19:20:23.724452+00:00",
+          "evidence_ref": "obs-918a6d888addd9f8",
+          "discovered_on": "https://www.lithoz.com/en/",
+          "link_label": "Press & Events",
+          "feed_entries": null,
+          "sample_article_links": [
+            {
+              "url": "https://www.lithoz.com/en/kls-martin-delivers-their-500th-lithoz-lcm-printed-bioceramic-implant-by-end-of-q3-2026-via-their-surgeon-facing-order-platform-ips-gate/",
+              "title": "KLS Martin delivers their 500th Lithoz LCM-printed bioceramic"
+            },
+            {
+              "url": "https://www.lithoz.com/en/lithoz-ceramic-material-revenue-up-40-yoy-fueled-by-medtech-and-lcm-contract-manufacturers/",
+              "title": "Lithoz Ceramic Material Revenue Up 40% YOY, Fueled"
+            }
+          ]
+        },
+        {
+          "role": "feed",
+          "url": "https://www.lithoz.com/en/feed/",
+          "final_url": "https://www.lithoz.com/en/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:20:25.324426+00:00",
+          "evidence_ref": "obs-b2912d21b66e885c",
+          "discovered_on": "https://www.lithoz.com/en/",
+          "link_label": null,
+          "feed_entries": 6,
+          "sample_article_links": [
+            {
+              "url": "https://www.lithoz.com/en/kls-martin-delivers-their-500th-lithoz-lcm-printed-bioceramic-implant-by-end-of-q3-2026-via-their-surgeon-facing-order-platform-ips-gate/",
+              "title": "KLS Martin delivers their 500th Lithoz LCM-printed bioceramic"
+            },
+            {
+              "url": "https://www.lithoz.com/en/lithoz-ceramic-material-revenue-up-40-yoy-fueled-by-medtech-and-lcm-contract-manufacturers/",
+              "title": "Lithoz Ceramic Material Revenue Up 40% YOY, Fueled"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "make3d",
+      "name": "Make3D",
+      "category": "equipment_oem",
+      "route": {
+        "role": "feed",
+        "url": "https://make3d.in/feed/",
+        "final_url": "https://make3d.in/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:20:39.302341+00:00",
+        "evidence_ref": "obs-f0247f18313b2d3a",
+        "discovered_on": "https://make3d.in/",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://make3d.in/3d-miniature-from-photo-types-price-buying-guide/",
+            "title": "3D Miniature from Photo Types, Price in India"
+          },
+          {
+            "url": "https://make3d.in/reliable-industrial-3d-printer/",
+            "title": "Why Customer Trust is the Real Proof of"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://make3d.in/feed/",
+          "final_url": "https://make3d.in/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:20:39.302341+00:00",
+          "evidence_ref": "obs-f0247f18313b2d3a",
+          "discovered_on": "https://make3d.in/",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://make3d.in/3d-miniature-from-photo-types-price-buying-guide/",
+              "title": "3D Miniature from Photo Types, Price in India"
+            },
+            {
+              "url": "https://make3d.in/reliable-industrial-3d-printer/",
+              "title": "Why Customer Trust is the Real Proof of"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "overture",
+      "name": "Overture",
+      "category": "material_supplier",
+      "route": {
+        "role": "feed",
+        "url": "https://overture3d.com/blogs/overture-blogs.atom",
+        "final_url": "https://overture3d.com/blogs/overture-blogs.atom",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:36:08.742971+00:00",
+        "evidence_ref": "obs-dc42fd3372e55651",
+        "discovered_on": "https://overture3d.com/blogs/overture-blogs",
+        "link_label": null,
+        "feed_entries": 30,
+        "sample_article_links": [
+          {
+            "url": "https://overture3d.com/blogs/overture-blogs/overture-filament-profiles-guide",
+            "title": "3D Printing Troubleshooting: Master Success with PLA, PETG,"
+          },
+          {
+            "url": "https://overture3d.com/blogs/overture-blogs/overture3d-official-webshops-now-open-in-germany-france-spain",
+            "title": "Overture3D Official Webshops Now Open in the UK,"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://overture3d.com/blogs/overture-blogs.atom",
+          "final_url": "https://overture3d.com/blogs/overture-blogs.atom",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:36:08.742971+00:00",
+          "evidence_ref": "obs-dc42fd3372e55651",
+          "discovered_on": "https://overture3d.com/blogs/overture-blogs",
+          "link_label": null,
+          "feed_entries": 30,
+          "sample_article_links": [
+            {
+              "url": "https://overture3d.com/blogs/overture-blogs/overture-filament-profiles-guide",
+              "title": "3D Printing Troubleshooting: Master Success with PLA, PETG,"
+            },
+            {
+              "url": "https://overture3d.com/blogs/overture-blogs/overture3d-official-webshops-now-open-in-germany-france-spain",
+              "title": "Overture3D Official Webshops Now Open in the UK,"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "polymaker",
+      "name": "Polymaker",
+      "category": "material_supplier",
+      "route": {
+        "role": "feed",
+        "url": "https://polymaker.com/feed/",
+        "final_url": "https://polymaker.com/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:18:27.758509+00:00",
+        "evidence_ref": "obs-c516450c062dc29b",
+        "discovered_on": "https://polymaker.com/blog/",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://polymaker.com/looking-for-the-right-settings-for-your-filament-start-printing-with-layerhub/",
+            "title": "Looking for the right settings for your filament?"
+          },
+          {
+            "url": "https://polymaker.com/the-top-5-reasons-petg-filament-strings-on-3d-prints/",
+            "title": "The Top 5 Reasons PETG Filament Strings on"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://polymaker.com/feed/",
+          "final_url": "https://polymaker.com/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:18:27.758509+00:00",
+          "evidence_ref": "obs-c516450c062dc29b",
+          "discovered_on": "https://polymaker.com/blog/",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://polymaker.com/looking-for-the-right-settings-for-your-filament-start-printing-with-layerhub/",
+              "title": "Looking for the right settings for your filament?"
+            },
+            {
+              "url": "https://polymaker.com/the-top-5-reasons-petg-filament-strings-on-3d-prints/",
+              "title": "The Top 5 Reasons PETG Filament Strings on"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "prusa",
+      "name": "Prusa / Prusament",
+      "category": "equipment_oem",
+      "route": {
+        "role": "feed",
+        "url": "https://blog.prusa3d.com/feed/",
+        "final_url": "https://blog.prusa3d.com/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:32:22.876805+00:00",
+        "evidence_ref": "obs-b3dd2f8b7fe9742e",
+        "discovered_on": "https://blog.prusa3d.com/page/3/",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://blog.prusa3d.com/factorio-has-arrived-on-printables_138519/",
+            "title": "Factorio Has Arrived on Printables"
+          },
+          {
+            "url": "https://blog.prusa3d.com/prusament-pla-lw-65-lighter-than-regular-pla-perfect-choice-for-aircraft-cosplay-and-more_138059/",
+            "title": "Prusament PLA Lightweight: 65% lighter than regular PLA."
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://blog.prusa3d.com/feed/",
+          "final_url": "https://blog.prusa3d.com/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:32:22.876805+00:00",
+          "evidence_ref": "obs-b3dd2f8b7fe9742e",
+          "discovered_on": "https://blog.prusa3d.com/page/3/",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://blog.prusa3d.com/factorio-has-arrived-on-printables_138519/",
+              "title": "Factorio Has Arrived on Printables"
+            },
+            {
+              "url": "https://blog.prusa3d.com/prusament-pla-lw-65-lighter-than-regular-pla-perfect-choice-for-aircraft-cosplay-and-more_138059/",
+              "title": "Prusament PLA Lightweight: 65% lighter than regular PLA."
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "rapid-shape",
+      "name": "Rapid Shape",
+      "category": "equipment_oem",
+      "route": {
+        "role": "feed",
+        "url": "https://rapidshape3d.com/feed/",
+        "final_url": "https://rapidshape3d.com/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:18:34.190394+00:00",
+        "evidence_ref": "obs-d61ce25a3685b75d",
+        "discovered_on": "https://rapidshape3d.com/press/",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://rapidshape3d.com/updates/print-studio-multiplying-parts/",
+            "title": "Print Studio: Multiplying Parts"
+          },
+          {
+            "url": "https://rapidshape3d.com/updates/print-studio-send-print-jobs-from-anywhere-via-cloud-2/",
+            "title": "Print Studio: Send Print Jobs from Anywhere via"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://rapidshape3d.com/feed/",
+          "final_url": "https://rapidshape3d.com/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:18:34.190394+00:00",
+          "evidence_ref": "obs-d61ce25a3685b75d",
+          "discovered_on": "https://rapidshape3d.com/press/",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://rapidshape3d.com/updates/print-studio-multiplying-parts/",
+              "title": "Print Studio: Multiplying Parts"
+            },
+            {
+              "url": "https://rapidshape3d.com/updates/print-studio-send-print-jobs-from-anywhere-via-cloud-2/",
+              "title": "Print Studio: Send Print Jobs from Anywhere via"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "roboze",
+      "name": "Roboze",
+      "category": "equipment_oem",
+      "route": {
+        "role": "news",
+        "url": "https://www.roboze.com/en/press",
+        "final_url": "https://www.roboze.com/en/press",
+        "status": "verified_web_list",
+        "checked_at": "2026-09-29T19:18:31.734103+00:00",
+        "evidence_ref": "obs-c4306f5ad8efc68c",
+        "discovered_on": "https://www.roboze.com/en/technology/materials",
+        "link_label": "Press",
+        "feed_entries": null,
+        "sample_article_links": [
+          {
+            "url": "https://www.roboze.com/en/press/high-performance-polymer-research-roboze-and-tor-vergata-university-of-rome-launch-new-collaboration",
+            "title": "High-Performance Polymer Research: Roboze and Tor Vergata University"
+          },
+          {
+            "url": "https://www.roboze.com/en/press/nesst-srl-validates-roboze-high-performance-fff-polymers-for-next-generation-cubesats-in-esa-funded-project",
+            "title": "NESST Srl Validates Roboze High-Performance FFF Polymers for"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "news",
+          "url": "https://www.roboze.com/en/press",
+          "final_url": "https://www.roboze.com/en/press",
+          "status": "verified_web_list",
+          "checked_at": "2026-09-29T19:18:31.734103+00:00",
+          "evidence_ref": "obs-c4306f5ad8efc68c",
+          "discovered_on": "https://www.roboze.com/en/technology/materials",
+          "link_label": "Press",
+          "feed_entries": null,
+          "sample_article_links": [
+            {
+              "url": "https://www.roboze.com/en/press/high-performance-polymer-research-roboze-and-tor-vergata-university-of-rome-launch-new-collaboration",
+              "title": "High-Performance Polymer Research: Roboze and Tor Vergata University"
+            },
+            {
+              "url": "https://www.roboze.com/en/press/nesst-srl-validates-roboze-high-performance-fff-polymers-for-next-generation-cubesats-in-esa-funded-project",
+              "title": "NESST Srl Validates Roboze High-Performance FFF Polymers for"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "saremco",
+      "name": "SAREMCO Dental",
+      "category": "material_supplier",
+      "route": {
+        "role": "feed",
+        "url": "https://saremco.ch/en/blogs/news.atom",
+        "final_url": "https://saremco.ch/en/blogs/news.atom",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:18:36.852563+00:00",
+        "evidence_ref": "obs-b1470ba20626aaf5",
+        "discovered_on": "https://saremco.ch/en/blogs/news",
+        "link_label": null,
+        "feed_entries": 24,
+        "sample_article_links": [
+          {
+            "url": "https://saremco.ch/en/blogs/news/crowntec-eu-mdr",
+            "title": "Milestone Reached: saremco print CROWNTEC Now MDR-Compliant"
+          },
+          {
+            "url": "https://saremco.ch/en/blogs/news/direct-composite-veneers",
+            "title": "Webinar Direct Composite, aesthetics in a single appointment"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://saremco.ch/en/blogs/news.atom",
+          "final_url": "https://saremco.ch/en/blogs/news.atom",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:18:36.852563+00:00",
+          "evidence_ref": "obs-b1470ba20626aaf5",
+          "discovered_on": "https://saremco.ch/en/blogs/news",
+          "link_label": null,
+          "feed_entries": 24,
+          "sample_article_links": [
+            {
+              "url": "https://saremco.ch/en/blogs/news/crowntec-eu-mdr",
+              "title": "Milestone Reached: saremco print CROWNTEC Now MDR-Compliant"
+            },
+            {
+              "url": "https://saremco.ch/en/blogs/news/direct-composite-veneers",
+              "title": "Webinar Direct Composite, aesthetics in a single appointment"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "shining3d",
+      "name": "SHINING 3D",
+      "category": "equipment_oem",
+      "route": {
+        "role": "feed",
+        "url": "https://www.shining3ddental.com/news-post/rss.xml",
+        "final_url": "https://www.shining3ddental.com/news-post/rss.xml",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:18:36.711945+00:00",
+        "evidence_ref": "obs-911c5e7f60fdec72",
+        "discovered_on": "https://www.shining3ddental.com/news-post/shining-3d-dental-launches-ceramix-nano-capsule-3d-printer-10-minute-permanent-ceramic-crowns-chairside",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://www.shining3ddental.com/news-post/shining-3d-news-bites-2026-sept",
+            "title": "SHINING 3D NEWS BITES 2026 Sept"
+          },
+          {
+            "url": "https://www.shining3ddental.com/news-post/shining-3d-launches-accufab-aris-an-entry-level-professional-dental-3d-printer-designed-to-simplify-digital-dentistry",
+            "title": "SHINING 3D Launches AccuFab-Aris: An Entry-level Professional Dental"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://www.shining3ddental.com/news-post/rss.xml",
+          "final_url": "https://www.shining3ddental.com/news-post/rss.xml",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:18:36.711945+00:00",
+          "evidence_ref": "obs-911c5e7f60fdec72",
+          "discovered_on": "https://www.shining3ddental.com/news-post/shining-3d-dental-launches-ceramix-nano-capsule-3d-printer-10-minute-permanent-ceramic-crowns-chairside",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://www.shining3ddental.com/news-post/shining-3d-news-bites-2026-sept",
+              "title": "SHINING 3D NEWS BITES 2026 Sept"
+            },
+            {
+              "url": "https://www.shining3ddental.com/news-post/shining-3d-launches-accufab-aris-an-entry-level-professional-dental-3d-printer-designed-to-simplify-digital-dentistry",
+              "title": "SHINING 3D Launches AccuFab-Aris: An Entry-level Professional Dental"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "siraya-tech",
+      "name": "Siraya Tech",
+      "category": "material_supplier",
+      "route": {
+        "role": "feed",
+        "url": "https://siraya.tech/blogs/news.atom",
+        "final_url": "https://siraya.tech/blogs/news.atom",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:18:41.050810+00:00",
+        "evidence_ref": "obs-231a3dba8866bd4a",
+        "discovered_on": "https://siraya.tech/blogs/news/the-origin-of-siraya-tech",
+        "link_label": null,
+        "feed_entries": 30,
+        "sample_article_links": [
+          {
+            "url": "https://siraya.tech/blogs/news/foaming-tpu-air-85a-vs-foaming-tpu-air-95a",
+            "title": "TPU Air 95A vs 85A: Faster, Stiffer, or"
+          },
+          {
+            "url": "https://siraya.tech/blogs/news/open-source-slicers-lumen-and-the-future-of-resin-3d-printing",
+            "title": "Why Siraya Tech Supports the Open Resin Alliance:"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://siraya.tech/blogs/news.atom",
+          "final_url": "https://siraya.tech/blogs/news.atom",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:18:41.050810+00:00",
+          "evidence_ref": "obs-231a3dba8866bd4a",
+          "discovered_on": "https://siraya.tech/blogs/news/the-origin-of-siraya-tech",
+          "link_label": null,
+          "feed_entries": 30,
+          "sample_article_links": [
+            {
+              "url": "https://siraya.tech/blogs/news/foaming-tpu-air-85a-vs-foaming-tpu-air-95a",
+              "title": "TPU Air 95A vs 85A: Faster, Stiffer, or"
+            },
+            {
+              "url": "https://siraya.tech/blogs/news/open-source-slicers-lumen-and-the-future-of-resin-3d-printing",
+              "title": "Why Siraya Tech Supports the Open Resin Alliance:"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "solukon",
+      "name": "Solukon",
+      "category": "post_processing_supplier",
+      "route": {
+        "role": "feed",
+        "url": "https://www.solukon.de/feed/",
+        "final_url": "https://www.solukon.de/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:23:16.099822+00:00",
+        "evidence_ref": "obs-522631e1d70157f8",
+        "discovered_on": "http://www.solukon.de",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://www.solukon.de/2026/08/06/solukon-auf-der-imts-2026-was-sie-erwartet/",
+            "title": "Solukon auf der IMTS 2026 \u2013 Was Sie"
+          },
+          {
+            "url": "https://www.solukon.de/2026/07/29/entpulverungssystem-ausstattungsmerkmale-lpbf/",
+            "title": "Welche Ausstattungsmerkmale sind bei einem Entpulverungssystem am wichtigsten?"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://www.solukon.de/feed/",
+          "final_url": "https://www.solukon.de/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:23:16.099822+00:00",
+          "evidence_ref": "obs-522631e1d70157f8",
+          "discovered_on": "http://www.solukon.de",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://www.solukon.de/2026/08/06/solukon-auf-der-imts-2026-was-sie-erwartet/",
+              "title": "Solukon auf der IMTS 2026 \u2013 Was Sie"
+            },
+            {
+              "url": "https://www.solukon.de/2026/07/29/entpulverungssystem-ausstattungsmerkmale-lpbf/",
+              "title": "Welche Ausstattungsmerkmale sind bei einem Entpulverungssystem am wichtigsten?"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "sprintray",
+      "name": "SprintRay",
+      "category": "equipment_oem",
+      "route": {
+        "role": "feed",
+        "url": "https://sprintray.com/feed/",
+        "final_url": "https://sprintray.com/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:18:43.999372+00:00",
+        "evidence_ref": "obs-13c4e17c1d58f4ee",
+        "discovered_on": "https://sprintray.com/blog/",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://sprintray.com/midas-restore-definitive-restorative/",
+            "title": "SprintRay Introduces Midas Restore\u2122, a Glass Ceramic and"
+          },
+          {
+            "url": "https://sprintray.com/sprintray-midas-vs-formlabs-4b/",
+            "title": "SprintRay Midas vs. Formlabs Form 4B Printers"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://sprintray.com/feed/",
+          "final_url": "https://sprintray.com/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:18:43.999372+00:00",
+          "evidence_ref": "obs-13c4e17c1d58f4ee",
+          "discovered_on": "https://sprintray.com/blog/",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://sprintray.com/midas-restore-definitive-restorative/",
+              "title": "SprintRay Introduces Midas Restore\u2122, a Glass Ceramic and"
+            },
+            {
+              "url": "https://sprintray.com/sprintray-midas-vs-formlabs-4b/",
+              "title": "SprintRay Midas vs. Formlabs Form 4B Printers"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "stratasys",
+      "name": "Stratasys",
+      "category": "equipment_oem",
+      "route": {
+        "role": "feed",
+        "url": "https://investors.stratasys.com/news-events/press-releases/rss",
+        "final_url": "https://investors.stratasys.com/news-events/press-releases/rss",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:36:11.168296+00:00",
+        "evidence_ref": "obs-6278c7f46eaad239",
+        "discovered_on": "https://investors.stratasys.com/news-events/press-releases",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://investors.stratasys.com/news-events/press-releases/detail/993/stratasys-additive-manufacturing-solutions-to-roll-out",
+            "title": "Stratasys Additive Manufacturing Solutions to Roll Out Across"
+          },
+          {
+            "url": "https://investors.stratasys.com/news-events/press-releases/detail/992/stratasys-brings-production-proven-additive-manufacturing",
+            "title": "Stratasys Brings Production-Proven Additive Manufacturing to IMTS 2026"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "news",
+          "url": "https://www.stratasys.com/en/resources/blog/",
+          "final_url": "https://www.stratasys.com/en/resources/blog/",
+          "status": "verified_web_list",
+          "checked_at": "2026-09-29T19:18:39.837971+00:00",
+          "evidence_ref": "obs-2fab798af99564fc",
+          "discovered_on": "https://www.stratasys.com/en/materials/materials-catalog/",
+          "link_label": "Blogs",
+          "feed_entries": null,
+          "sample_article_links": [
+            {
+              "url": "https://www.stratasys.com/en/resources/blog/industrial-sla-3d-printing-anniversary/",
+              "title": "Industrial SLA 3D Printing: 10 Years of Neo"
+            },
+            {
+              "url": "https://www.stratasys.com/en/resources/blog/additive-manufacturing-medical-devices/",
+              "title": "5 Opportunities to Improve Medical Device 3D Printing"
+            }
+          ]
+        },
+        {
+          "role": "feed",
+          "url": "https://investors.stratasys.com/news-events/press-releases/rss",
+          "final_url": "https://investors.stratasys.com/news-events/press-releases/rss",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:36:11.168296+00:00",
+          "evidence_ref": "obs-6278c7f46eaad239",
+          "discovered_on": "https://investors.stratasys.com/news-events/press-releases",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://investors.stratasys.com/news-events/press-releases/detail/993/stratasys-additive-manufacturing-solutions-to-roll-out",
+              "title": "Stratasys Additive Manufacturing Solutions to Roll Out Across"
+            },
+            {
+              "url": "https://investors.stratasys.com/news-events/press-releases/detail/992/stratasys-brings-production-proven-additive-manufacturing",
+              "title": "Stratasys Brings Production-Proven Additive Manufacturing to IMTS 2026"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "tct",
+      "name": "TCT Magazine",
+      "category": "trade_publication",
+      "route": {
+        "role": "feed",
+        "url": "https://www.tctmagazine.com/rss/",
+        "final_url": "https://www.tctmagazine.com/rss/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:20:06.154353+00:00",
+        "evidence_ref": "obs-6c464f6902cb484c",
+        "discovered_on": "https://www.tctmagazine.com/",
+        "link_label": null,
+        "feed_entries": 15,
+        "sample_article_links": [
+          {
+            "url": "https://www.tctmagazine.com/ornl-boeing-produce-2-ton-stamp-form-die-mould-with-waam-3d-printing/",
+            "title": "ORNL & Boeing produce 2-ton Stamp Form Die"
+          },
+          {
+            "url": "https://www.tctmagazine.com/foundational-carbon-dual-cure-patent-survives-challenge-from-competitor-in-europe-after-appeal/",
+            "title": "Foundational Carbon dual-cure patent survives challenge from competitor"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://www.tctmagazine.com/rss/",
+          "final_url": "https://www.tctmagazine.com/rss/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:20:06.154353+00:00",
+          "evidence_ref": "obs-6c464f6902cb484c",
+          "discovered_on": "https://www.tctmagazine.com/",
+          "link_label": null,
+          "feed_entries": 15,
+          "sample_article_links": [
+            {
+              "url": "https://www.tctmagazine.com/ornl-boeing-produce-2-ton-stamp-form-die-mould-with-waam-3d-printing/",
+              "title": "ORNL & Boeing produce 2-ton Stamp Form Die"
+            },
+            {
+              "url": "https://www.tctmagazine.com/foundational-carbon-dual-cure-patent-survives-challenge-from-competitor-in-europe-after-appeal/",
+              "title": "Foundational Carbon dual-cure patent survives challenge from competitor"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "tpm3d",
+      "name": "TPM3D",
+      "category": "equipment_oem",
+      "route": {
+        "role": "feed",
+        "url": "https://english.tpm3d.com/feed/",
+        "final_url": "https://english.tpm3d.com/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:18:47.441715+00:00",
+        "evidence_ref": "obs-b64f93b154c252d2",
+        "discovered_on": "https://english.tpm3d.com/news-blog/",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://english.tpm3d.com/200000-cycle-bending-test-tpm3d-sls-3d-printed-footwear/",
+            "title": "200,000-Cycle Bending Test Highlights TPM3D\u2019s SLS 3D Printed"
+          },
+          {
+            "url": "https://english.tpm3d.com/tpm3d-showcases-cf250pps250-at-formnext-asia-shenzhen/",
+            "title": "TPM3D Showcases New CF250+PPS250 SLS System at Formnext"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://english.tpm3d.com/feed/",
+          "final_url": "https://english.tpm3d.com/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:18:47.441715+00:00",
+          "evidence_ref": "obs-b64f93b154c252d2",
+          "discovered_on": "https://english.tpm3d.com/news-blog/",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://english.tpm3d.com/200000-cycle-bending-test-tpm3d-sls-3d-printed-footwear/",
+              "title": "200,000-Cycle Bending Test Highlights TPM3D\u2019s SLS 3D Printed"
+            },
+            {
+              "url": "https://english.tpm3d.com/tpm3d-showcases-cf250pps250-at-formnext-asia-shenzhen/",
+              "title": "TPM3D Showcases New CF250+PPS250 SLS System at Formnext"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "trideo",
+      "name": "Trideo",
+      "category": "equipment_oem",
+      "route": {
+        "role": "news",
+        "url": "https://www.trideo3d.com/blog",
+        "final_url": "https://www.trideo3d.com/blog",
+        "status": "verified_web_list",
+        "checked_at": "2026-09-29T19:20:29.084429+00:00",
+        "evidence_ref": "obs-e3af07cf186f1caa",
+        "discovered_on": "https://www.trideo3d.com/",
+        "link_label": "Blog",
+        "feed_entries": null,
+        "sample_article_links": [
+          {
+            "url": "https://www.trideo3d.com/blog-posts/pared-de-11-metros-impresa-en-3d-trideo-fabricacion-aditiva",
+            "title": "Aplicaciones-September 15, 2026\u00bfUna pared de 11 metros impresa"
+          },
+          {
+            "url": "https://www.trideo3d.com/blog-posts/trideo-3d-estrena-nueva-sede-en-sao-paulo",
+            "title": "Trideo estrena nueva sede en S\u00e3o Paulo: m\u00e1s"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "news",
+          "url": "https://www.trideo3d.com/blog",
+          "final_url": "https://www.trideo3d.com/blog",
+          "status": "verified_web_list",
+          "checked_at": "2026-09-29T19:20:29.084429+00:00",
+          "evidence_ref": "obs-e3af07cf186f1caa",
+          "discovered_on": "https://www.trideo3d.com/",
+          "link_label": "Blog",
+          "feed_entries": null,
+          "sample_article_links": [
+            {
+              "url": "https://www.trideo3d.com/blog-posts/pared-de-11-metros-impresa-en-3d-trideo-fabricacion-aditiva",
+              "title": "Aplicaciones-September 15, 2026\u00bfUna pared de 11 metros impresa"
+            },
+            {
+              "url": "https://www.trideo3d.com/blog-posts/trideo-3d-estrena-nueva-sede-en-sao-paulo",
+              "title": "Trideo estrena nueva sede en S\u00e3o Paulo: m\u00e1s"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "uniontech",
+      "name": "UnionTech",
+      "category": "equipment_oem",
+      "route": {
+        "role": "news",
+        "url": "https://www.uniontech3d.com/blog/",
+        "final_url": "https://www.uniontech3d.com/blog/",
+        "status": "verified_web_list",
+        "checked_at": "2026-09-29T19:18:44.626982+00:00",
+        "evidence_ref": "obs-f0e161c90ba38d20",
+        "discovered_on": "https://www.uniontech3d.com/dlp-and-lcd-materials/",
+        "link_label": "Resources",
+        "feed_entries": null,
+        "sample_article_links": [
+          {
+            "url": "https://www.uniontech3d.com/3d-printing-is-heading-towards-design.html",
+            "title": "UnionTech + ZW3D \u2013 3D Printing is Heading"
+          },
+          {
+            "url": "https://www.uniontech3d.com/hair-dryer-gets-3d-printed-from-evonik-3010l-dlp-material.html",
+            "title": "Hair dryer gets 3D printed from Evonik 3010L"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "news",
+          "url": "https://www.uniontech3d.com/blog/",
+          "final_url": "https://www.uniontech3d.com/blog/",
+          "status": "verified_web_list",
+          "checked_at": "2026-09-29T19:18:44.626982+00:00",
+          "evidence_ref": "obs-f0e161c90ba38d20",
+          "discovered_on": "https://www.uniontech3d.com/dlp-and-lcd-materials/",
+          "link_label": "Resources",
+          "feed_entries": null,
+          "sample_article_links": [
+            {
+              "url": "https://www.uniontech3d.com/3d-printing-is-heading-towards-design.html",
+              "title": "UnionTech + ZW3D \u2013 3D Printing is Heading"
+            },
+            {
+              "url": "https://www.uniontech3d.com/hair-dryer-gets-3d-printed-from-evonik-3010l-dlp-material.html",
+              "title": "Hair dryer gets 3D printed from Evonik 3010L"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    },
+    {
+      "id": "voxelmatters",
+      "name": "VoxelMatters",
+      "category": "trade_publication",
+      "route": {
+        "role": "feed",
+        "url": "https://www.voxelmatters.com/feed/",
+        "final_url": "https://www.voxelmatters.com/feed/",
+        "status": "verified_feed",
+        "checked_at": "2026-09-29T19:20:10.281296+00:00",
+        "evidence_ref": "obs-e91df62fa0f005d7",
+        "discovered_on": "https://www.voxelmatters.com/",
+        "link_label": null,
+        "feed_entries": 10,
+        "sample_article_links": [
+          {
+            "url": "https://www.voxelmatters.com/stuttgart-researchers-develop-am-fuel-injector-for-gas-turbines/",
+            "title": "Stuttgart researchers develop AM fuel injector for gas"
+          },
+          {
+            "url": "https://www.voxelmatters.com/anouk-wipprecht-creates-brain-controlled-hypnotize-dress/",
+            "title": "Anouk Wipprecht creates brain-controlled Hypnotize Dress"
+          }
+        ]
+      },
+      "other_verified_routes": [
+        {
+          "role": "feed",
+          "url": "https://www.voxelmatters.com/feed/",
+          "final_url": "https://www.voxelmatters.com/feed/",
+          "status": "verified_feed",
+          "checked_at": "2026-09-29T19:20:10.281296+00:00",
+          "evidence_ref": "obs-e91df62fa0f005d7",
+          "discovered_on": "https://www.voxelmatters.com/",
+          "link_label": null,
+          "feed_entries": 10,
+          "sample_article_links": [
+            {
+              "url": "https://www.voxelmatters.com/stuttgart-researchers-develop-am-fuel-injector-for-gas-turbines/",
+              "title": "Stuttgart researchers develop AM fuel injector for gas"
+            },
+            {
+              "url": "https://www.voxelmatters.com/anouk-wipprecht-creates-brain-controlled-hypnotize-dress/",
+              "title": "Anouk Wipprecht creates brain-controlled Hypnotize Dress"
+            }
+          ]
+        }
+      ],
+      "permissions": {
+        "collection": "unreviewed",
+        "reuse": "unreviewed",
+        "publication": "unreviewed"
+      },
+      "origin_policy": "Determine per item. A reproduced OEM release remains OEM-origin; publishing domains are not independent corroboration."
+    }
+  ]
+}

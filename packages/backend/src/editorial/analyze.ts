@@ -21,7 +21,7 @@ import { buildMaterial, firstImagePart, loadAnalyzeInput, type AnalyzeInputArtic
 import { pageFetchable } from "../content/extract.ts";
 import { shutdownSignal } from "../jobs/queue.ts";
 import {
-  buildArticlePrompt, buildLongTweetPrompt, buildShortTweetPrompt, finalizeCopy, isShortTweetInput, looksZh, MAX_BODY_CHARS, missingEvidence,
+  buildArticlePrompt, buildLongTweetPrompt, buildShortTweetPrompt, finalizeCopy, fallbackTitle, isShortTweetInput, looksZh, MAX_BODY_CHARS, missingEvidence,
   needsShortTweetTranslation, parseTranslateOutput, PREFILTER_SYSTEM, prefilterUser, translateInputOf, UNDERSTAND_SYSTEM, understandUser,
   type IdentityGuard,
 } from "./writing.ts";
@@ -305,7 +305,7 @@ async function runSummarize(a: AnalyzeInputArticle, opts: StepOpts): Promise<Non
   const plain = { reasonZh: null, tags: null, receiptIds: [] as number[], reused: true };
   // A short post already in Chinese is its own copy, and too little text is not written up from a title.
   if (short && !needsShortTweetTranslation(main)) return { kind: "verbatim", model: null, titleZh: main, summaryZh: main, ...plain };
-  if (!short && t.text.trim().length < 20) return { kind: "none", model: null, titleZh: looksZh(t.title) ? t.title : "", summaryZh: "", ...plain };
+  if (!short && t.text.trim().length < 20) return { kind: "none", model: null, titleZh: fallbackTitle(t.title), summaryZh: "", ...plain };
   const model = await modelFor("summarize");
   checkAnalysisRunning();
   const res = await chatJson({
@@ -324,10 +324,10 @@ async function runSummarize(a: AnalyzeInputArticle, opts: StepOpts): Promise<Non
   });
   const p = res.data;
   const draft = short
-    ? { titleZh: p.titleZh || (looksZh(main) ? main : ""), summaryZh: p.bodyZh || p.summaryZh }
+    ? { titleZh: p.titleZh || (fallbackTitle(main)), summaryZh: p.bodyZh || p.summaryZh }
     : isX
       ? { titleZh: p.titleZh, summaryZh: p.summaryZh || p.bodyZh }
-      : { titleZh: p.titleZh || (looksZh(t.title) ? t.title : ""), summaryZh: p.summaryZh };
+      : { titleZh: p.titleZh || (fallbackTitle(t.title)), summaryZh: p.summaryZh };
   const copy = finalizeCopy(t, draft);
   return { kind: "summarize", model: res.model, titleZh: copy.titleZh, summaryZh: copy.summaryZh, reasonZh: null, tags: null, identityGuard: copy.identityGuard, receiptIds: [res.receiptId], reused: res.reused };
 }

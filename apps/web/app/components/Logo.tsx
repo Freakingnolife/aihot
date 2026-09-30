@@ -4,9 +4,8 @@ import { SITE } from "@aihot/industry/site";
 
 export function Wordmark({ size = 22, className = "" }: { size?: number; className?: string }) {
   return (
-    <span className={`inline-flex items-center font-black leading-none tracking-[-0.03em] ${className}`} style={{ fontSize: size }} aria-label={SITE.name} role="img">
-      <span aria-hidden="true" className="mr-[0.3em] inline-block size-[0.42em] rounded-full bg-accent" />
-      <span aria-hidden="true">{SITE.name}</span>
+    <span className={`inline-flex min-w-0 max-w-full items-center font-black leading-[1.1] tracking-[-0.03em] ${className}`} style={{ fontSize: size }} aria-label={SITE.name} role="img">
+      <span aria-hidden="true" className="min-w-0 [overflow-wrap:anywhere]">Additive<span className="text-accent">OS</span> Radar</span>
     </span>
   );
 }

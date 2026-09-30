@@ -916,7 +916,7 @@
       "get": {
         "operationId": "dailies",
         "summary": "List daily-report archive entries",
-        "description": "Date index of past daily reports, newest first. Reports are published once a day at 08:00 Asia/Shanghai, so checking this more than a few times a day is wasted work.",
+        "description": "Date index of stored daily reports, newest first. This private pilot uses manual collection and has no report cron or scheduled release. The index may be empty.",
         "parameters": [
           {
             "$ref": "#/components/parameters/ActorUserAgent"
@@ -1084,7 +1084,7 @@
       "get": {
         "operationId": "latestDaily",
         "summary": "Get the latest daily report",
-        "description": "The most recent daily report, published once a day at 08:00 Asia/Shanghai. A client that only wants the daily digest should wake up shortly after 08:00 rather than poll around the clock. Agent or tool runtimes that cache a stable URL beyond HTTP cache headers should first request /api/v1/dailies?limit=1 and then fetch /api/v1/dailies/{returned-date}; never guess a date.",
+        "description": "The most recent stored daily report. This private pilot has no report cron or scheduled release. Agent or tool runtimes that cache a stable URL beyond HTTP cache headers should first request /api/v1/dailies?limit=1 and then fetch /api/v1/dailies/{returned-date}; never guess a date.",
         "responses": {
           "200": {
             "description": "OK",
@@ -2126,7 +2126,7 @@
                   "string",
                   "null"
                 ],
-                "description": "Chinese audience wording for display, e.g. 所有付费用户. Unfamiliar conditions stay quoted in the original."
+                "description": "Audience wording for display, for example all paid users. Unfamiliar conditions stay quoted in the original."
               },
               "productsZh": {
                 "type": [
@@ -2581,7 +2581,7 @@
               "string",
               "null"
             ],
-            "description": "Reader-facing recommendation reason, the same text shown as 推荐理由 on the website. Always present on /api/v1/items; null when the item is not selected or has no reader-facing reason. Selected snapshot and changes do not include this field yet."
+            "description": "Reader-facing recommendation reason, the same recommendation text shown on the website. Always present on /api/v1/items; null when the item is not selected or has no reader-facing reason. Selected snapshot and changes do not include this field yet."
           },
           "attribution": {
             "$ref": "#/components/schemas/Attribution"

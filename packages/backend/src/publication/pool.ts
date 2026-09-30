@@ -103,6 +103,7 @@ async function poolCount(key: string | null, query: () => Promise<Array<{ n: num
 }
 
 export interface PoolQuery extends TimelineFilters {
+  mode?: "recent" | "archive";
   q?: string | null;
   tab?: "time" | "relevance";
   page?: number;
@@ -116,11 +117,15 @@ export async function loadPool(query: PoolQuery): Promise<PoolResponse> {
   const q = query.q?.trim() || null;
   const tab = q && query.tab === "relevance" ? "relevance" : "time";
   const terms = q ? searchTerms(q) : [];
-  const filters = sql`${channelCondition(query.channel)} ${categoryCondition(query.category)} ${tagCondition(query.tag)} ${topicCondition(query.topicTags)}`;
+  const period = query.mode === "recent" ? sql`AND p.published_at >= ${new Date(now.getTime() - 30 * 86400000)} AND p.published_at <= ${now}` : sql``;
+  const order = query.mode ? sql`p.published_at DESC NULLS LAST, p.article_id DESC` : sql`p.timeline_at DESC, p.article_id DESC`;
+  const rankedOrder = query.mode ? sql`published_at DESC NULLS LAST, article_id DESC` : sql`timeline_at DESC, article_id DESC`;
+  const hydratedOrder = query.mode ? sql`hydrated.published_at DESC NULLS LAST, hydrated.id DESC` : sql`hydrated.timeline_at DESC, hydrated.id DESC`;
+  const filters = sql`${period} ${channelCondition(query.channel)} ${categoryCondition(query.category)} ${tagCondition(query.tag)} ${topicCondition(query.topicTags)}`;
   const offset = (page - 1) * POOL_PAGE_SIZE;
   const cap = POOL_MAX_PAGES * POOL_PAGE_SIZE;
   // A fixed clock (tests, replays) never shares cached totals.
-  const filterKey = query.now ? null : JSON.stringify([query.channel, query.category, query.tag, query.topicTags ?? null]);
+  const filterKey = query.now ? null : JSON.stringify([query.channel, query.category, query.tag, query.topicTags ?? null, query.mode ?? null]);
 
   // Searches go through pool_search (eligible items only): trigram indexes for longer terms, a small
   // table to scan for one- and two-character ones.
@@ -131,9 +136,9 @@ export async function loadPool(query: PoolQuery): Promise<PoolResponse> {
       const rows = await db<ItemRow[]>`
         WITH page AS (
           SELECT p.article_id FROM publications p WHERE ${listedCondition(now)} AND p.eligible ${filters}
-          ORDER BY p.timeline_at DESC, p.article_id DESC LIMIT ${POOL_PAGE_SIZE} OFFSET ${offset})
+          ORDER BY ${order} LIMIT ${POOL_PAGE_SIZE} OFFSET ${offset})
         SELECT ${ITEM_COLUMNS} ${ITEM_FROM} WHERE p.article_id IN (SELECT article_id FROM page)
-        ORDER BY p.timeline_at DESC, p.article_id DESC`;
+        ORDER BY ${order}`;
       return { rows, total: await poolCount(filterKey, () => db<{ n: number }[]>`
         SELECT count(*) AS n FROM (SELECT 1 FROM publications p WHERE ${listedCondition(now)} AND p.eligible ${filters} LIMIT ${cap}) t`) };
     }
@@ -160,16 +165,16 @@ export async function loadPool(query: PoolQuery): Promise<PoolResponse> {
       type RankedRow = Omit<ItemRow, "id"> & { id: string | null; rel: number; total: number };
       const result = await db<RankedRow[]>`
         WITH matches AS ${splitFields ? sql`MATERIALIZED` : sql`NOT MATERIALIZED`} (${matches}), scored AS MATERIALIZED (
-          SELECT p.article_id, p.timeline_at, matches.part + (${titleScore}) AS rel
+          SELECT p.article_id, p.timeline_at, p.published_at, matches.part + (${titleScore}) AS rel
           FROM matches JOIN publications p ON p.article_id = matches.article_id JOIN sources s ON s.id = p.source_id
           WHERE ${listedCondition(now)} AND p.eligible ${filters}
         ), page AS MATERIALIZED (
-          SELECT article_id, rel FROM scored ORDER BY rel DESC, timeline_at DESC, article_id DESC
+          SELECT article_id, rel FROM scored ORDER BY rel DESC, ${rankedOrder}
           LIMIT ${POOL_PAGE_SIZE} OFFSET ${offset}
         ), total AS (SELECT count(*) AS n FROM (SELECT 1 FROM scored LIMIT ${cap}) capped)
         SELECT hydrated.*, total.n AS total FROM total LEFT JOIN LATERAL (
           SELECT ${ITEM_COLUMNS}, page.rel ${ITEM_FROM} JOIN page ON page.article_id = p.article_id
-        ) hydrated ON true ORDER BY hydrated.rel DESC, hydrated.timeline_at DESC, hydrated.id DESC`;
+        ) hydrated ON true ORDER BY hydrated.rel DESC, ${hydratedOrder}`;
       const rows = result.filter((r): r is ItemRow & { rel: number; total: number } => r.id !== null);
       return { rows, total: Number(result[0]!.total) };
     }
@@ -178,9 +183,9 @@ export async function loadPool(query: PoolQuery): Promise<PoolResponse> {
     const rows = await db<ItemRow[]>`
       WITH page AS (
         SELECT p.article_id FROM publications p WHERE ${listedCondition(now)} AND p.eligible ${filters} ${directMatchCondition(terms)}
-        ORDER BY p.timeline_at DESC, p.article_id DESC LIMIT ${POOL_PAGE_SIZE} OFFSET ${offset})
+        ORDER BY ${order} LIMIT ${POOL_PAGE_SIZE} OFFSET ${offset})
       SELECT ${ITEM_COLUMNS} ${ITEM_FROM} WHERE p.article_id IN (SELECT article_id FROM page)
-      ORDER BY p.timeline_at DESC, p.article_id DESC`;
+      ORDER BY ${order}`;
     const direct = terms.reduce((acc, t) => sql`${acc} AND ${like(sql`ps.direct`, t)}`, sql``);
     const { n } = one(await db<{ n: number }[]>`
       SELECT count(*) AS n FROM (SELECT 1 FROM pool_search ps JOIN publications p ON p.article_id = ps.article_id
@@ -192,11 +197,11 @@ export async function loadPool(query: PoolQuery): Promise<PoolResponse> {
   const today = beijingDate(now);
   const meta = one(await sql<{ today_count: number; updated_at: Date | null }[]>`
     SELECT (SELECT count(*) FROM publications p
-      WHERE ${listedCondition(now)} AND p.eligible AND p.timeline_at >= ${beijingMidnight(today)} ${filters}) AS today_count,
+      WHERE ${listedCondition(now)} AND p.eligible AND ${query.mode ? sql`p.published_at` : sql`p.timeline_at`} >= ${beijingMidnight(today)} ${query.mode ? sql`AND p.published_at <= ${now}` : sql``} ${filters}) AS today_count,
       (SELECT max(p.updated_at) FROM publications p WHERE p.eligible) AS updated_at`);
 
   return {
-    filters: { channel: query.channel, category: query.category, tag: query.tag, topic: query.topic ?? null, q, tab },
+    filters: { channel: query.channel, category: query.category, tag: query.tag, topic: query.topic ?? null, q, tab, ...(query.mode ? { mode: query.mode } : {}) },
     items: rows.map(toFeedItemSummary),
     page,
     pageCount: Math.min(POOL_MAX_PAGES, Math.max(1, Math.ceil(total / POOL_PAGE_SIZE))),

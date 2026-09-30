@@ -12,7 +12,7 @@ export function headers() {
 }
 
 export function meta() {
-  return pageMeta({ title: "使用规则", description: `本站网站、RSS、公开 API 与 MCP 的使用规则。`, path: "/terms", image: "/og/pages/terms.png" });
+  return pageMeta({ title: "Working use notice", description: `Unapproved working notice for this private pilot.`, path: "/terms", image: "/og/pages/terms.png" });
 }
 
 export default function TermsPage() {
@@ -21,7 +21,7 @@ export default function TermsPage() {
       doc={TERMS.doc}
       rendered={TERMS.rendered}
       eyebrow={SITE.name}
-      footer={<LegalFooterLinks links={[{ to: "/privacy", label: "隐私说明" }, { to: "/agent", label: "Agent 接入页" }]} note={`使用规则 ${TERMS.doc.meta["版本"] ?? ""} · ${TERMS.doc.meta["生效日期"] ?? ""}`} />}
+      footer={<LegalFooterLinks links={[{ to: "/privacy", label: "Working privacy notice" }, { to: "/agent", label: "API & MCP" }]} note={`Working use notice ${TERMS.doc.meta["Status"] ?? ""} · ${TERMS.doc.meta["Updated"] ?? ""}`} />}
     />
   );
 }

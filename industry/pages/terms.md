@@ -1,34 +1,22 @@
-# 使用规则
+# Private-pilot use notice
 
-这是开源框架自带的模板。上线前请按你的实际情况改写（运营主体、允许和不允许的用途、联系方式），必要时请专业人士审阅。
+| Status | Unapproved working notice |
+| Updated | 2026-09-30 |
 
-| 项 | 值 |
-|---|---|
-| 版本 | 0.1（模板） |
-| 生效日期 | 请填写 |
-| 运营主体 | 请填写 |
-| 联系方式 | 请填写 |
+## Private draft only
 
-页首说明：
+This is an unapproved working notice for the AdditiveOS Radar private pilot. It is not an approved public legal policy. Public release requires separate approval.
 
-> 本站聚合公开信源，用模型生成中文摘要与精选，原文版权归各来源所有。网站、RSS、公开 API 与 MCP 均可匿名使用。
+## Reading the drafts
 
-## 1. 内容与版权
+Summaries report publisher claims and link to their sources. They are not independently validated engineering advice, material suitability findings or commercial recommendations. Check original sources before relying on a claim.
 
-本站展示的标题、摘要和推荐理由由模型根据公开来源生成，可能有误，重要信息请以原文为准。原文版权归各来源所有；站内只在来源允许时展示全文，其余只展示摘要和原文链接。
+Original publication dates determine the Recent view. Older stories and stories without a known original date remain in Archive. Import time does not establish recency.
 
-## 2. 来源方的更正与下架
+## Source material
 
-如果你是来源方，希望更正、下架或调整展示方式，请通过反馈页联系我们，我们会尽快处理。
+Original material remains subject to its source's rights and restrictions. This notice grants no new rights to copy, redistribute or use source content. The pilot provides summaries and original links. Full-text display remains disabled unless separately permitted by the source.
 
-## 3. 使用本站的数据
+## Corrections
 
-请写明你允许的用途（例如个人阅读、组织内部使用），以及需要事先取得你同意的用途（例如商业产品、公开转载、批量再分发）。
-
-## 4. 接口与频率
-
-RSS、公开 API 和 MCP 为匿名只读接口。请按响应中的缓存时间轮询，遇到 429 请遵守 Retry-After，不要并发重试。
-
-## 5. 免责
-
-本站按“现状”提供，不保证内容完整、准确和持续可用。
+Use [Feedback](/feedback) to identify an article and request a correction or removal. Do not submit secrets or unrelated sensitive information.

@@ -94,7 +94,7 @@ async function openApiJson(): Promise<string> {
     .replaceAll("{{siteName}}", SITE.name)
     .replaceAll("{{siteUrl}}", config.siteUrl)
     .replaceAll("{{categoryList}}", CATEGORY_KEYS.join(", "));
-  const doc = JSON.parse(raw) as { paths: Record<string, unknown>; components?: { parameters?: Record<string, { schema?: { enum?: string[] } }> } };
+  const doc = JSON.parse(raw) as { paths: Record<string, unknown>; components?: { schemas?: Record<string, unknown>; parameters?: Record<string, { schema?: { enum?: string[] } }> } };
   // Categories follow the industry pack.
   const walk = (node: unknown) => {
     if (!node || typeof node !== "object") return;
@@ -103,7 +103,10 @@ async function openApiJson(): Promise<string> {
     for (const v of Object.values(o)) walk(v);
   };
   walk(doc);
-  if (!FEATURES.codexResetMonitor) for (const p of Object.keys(doc.paths)) if (p.startsWith("/api/v1/codex-resets")) delete doc.paths[p];
+  if (!FEATURES.codexResetMonitor) {
+    for (const p of Object.keys(doc.paths)) if (p.startsWith("/api/v1/codex-resets")) delete doc.paths[p];
+    for (const name of Object.keys(doc.components?.schemas ?? {})) if (name.startsWith("CodexReset")) delete doc.components!.schemas![name];
+  }
   openApi = JSON.stringify(doc, null, 2);
   return openApi;
 }
