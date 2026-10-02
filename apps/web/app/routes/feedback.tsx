@@ -142,7 +142,7 @@ export default function FeedbackPage() {
             Reference <span className="mono font-semibold text-ink">#{state.id}</span>. Keep this reference for follow-up.
           </p>
           <Link to="/" className="mt-8 inline-flex h-10 items-center rounded-full bg-ink px-6 text-[14px] font-medium text-bg transition-opacity hover:opacity-90">
-            Back to recent drafts
+            Back to latest news
           </Link>
         </div>
       </ReadingLayout>

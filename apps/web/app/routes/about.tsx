@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link, useLoaderData } from "react-router";
 import type { SiteStats } from "@aihot/contracts/site";
 import { apiGet } from "../lib/api.server";
-import { shortSourceName } from "../lib/format";
+import { displayTitle, shortSourceName } from "../lib/format";
 import { ABOUT, SITE, withSubject } from "@aihot/industry/site";
 import { organizationLd, pageMeta } from "../lib/seo";
 import { Kicker } from "../components/ui/Kicker";
@@ -94,14 +94,14 @@ function stagesOf(stats: SiteStats | null): Stage[] {
     {
       no: "02",
       title: "Archive",
-      figure: stats && <Figure n={stats.items} unit=" drafts" />,
+      figure: stats && <Figure n={stats.items} unit=" stories" />,
       text: ABOUT.steps.store,
       note: stats && <>Collected in 24 hours: {stats.day.collected.toLocaleString("en-US")}  items</>,
     },
     {
       no: "03",
-      title: "Selected",
-      figure: stats && <Figure n={stats.selected} unit=" selected drafts" />,
+      title: "Featured",
+      figure: stats && <Figure n={stats.selected} unit=" featured stories" />,
       text: ABOUT.steps.select,
       note: stats && <>In the past 24 hours: {stats.day.selected}  items selected</>,
     },
@@ -183,9 +183,9 @@ function Latest({ item, className = "" }: { item: SiteStats["latest"][number] | 
   if (!item) return null;
   return (
     <Link to={`/items/${item.id}`} prefetch="intent" className={`group block ${className}`}>
-      <span className="text-[11px] font-semibold tracking-[0.2em] text-accent">Recent selected drafts</span>
+      <span className="text-[11px] font-semibold tracking-[0.2em] text-accent">Recent featured stories</span>
       <span key={item.id} className="animate-fade-up mt-1.5 block">
-        <span className="line-clamp-2 text-[13.5px] font-semibold leading-[1.55] text-ink transition-colors group-hover:text-accent">{item.title}</span>
+        <span className="line-clamp-2 text-[13.5px] font-semibold leading-[1.55] text-ink transition-colors group-hover:text-accent">{displayTitle(item.title, item.source)}</span>
         <span className="mt-1 block truncate text-[12px] text-ink-4">{shortSourceName(item.source)}</span>
       </span>
     </Link>
@@ -229,7 +229,7 @@ export default function AboutPage() {
         </div>
         <div className="flex flex-wrap gap-3 lg:pb-2">
           <Link to="/" prefetch="intent" className={buttonClass("primary", "lg")}>
-            Browse recent drafts <IconArrowRight size={15} />
+            Browse latest news <IconArrowRight size={15} />
           </Link>
         </div>
       </header>

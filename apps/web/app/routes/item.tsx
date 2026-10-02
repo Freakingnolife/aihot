@@ -5,10 +5,9 @@ import type { Route } from "./+types/item";
 import type { SiteItemDetail } from "@aihot/contracts/site";
 import { loadOr404 } from "../lib/api.server";
 import { breadcrumbLd, pageMeta, siteUrl, titled } from "../lib/seo";
-import { beijingDate, fullDateTime } from "../lib/format";
+import { beijingDate, displayTitle, fullDateTime } from "../lib/format";
 import { markRead } from "../lib/local-state";
 import { SelectedBadge } from "../components/ui/Badge";
-import { ScoreLabel } from "../components/ui/Score";
 import { PillTabs } from "../components/ui/Tabs";
 import { ArticleLayout, RailSection } from "../components/ui/Page";
 import { Menu, MenuItem } from "../components/ui/Menu";
@@ -27,10 +26,10 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 }
 
 export function meta({ loaderData }: Route.MetaArgs) {
-  if (!loaderData) return [{ title: titled("Draft not found") }, { name: "robots", content: "noindex" }];
+  if (!loaderData) return [{ title: titled("Story not found") }, { name: "robots", content: "noindex" }];
   const { item } = loaderData;
   return pageMeta({
-    title: item.title,
+    title: displayTitle(item.title, item.source.name),
     description: item.summary ?? undefined,
     path: `/items/${item.id}`,
     image: `/og/items/${item.id}.png`,
@@ -39,7 +38,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
     jsonLd: breadcrumbLd([
       { name: SITE.name, path: "/" },
       { name: "Archive", path: "/all?mode=archive" },
-      { name: item.title, path: `/items/${item.id}` },
+      { name: displayTitle(item.title, item.source.name), path: `/items/${item.id}` },
     ]),
   });
 }
@@ -81,14 +80,15 @@ function hostOf(url: string): string {
   }
 }
 
-async function shareOrCopy(item: Pick<SiteItemDetail, "id" | "title">): Promise<"shared" | "copied" | null> {
+async function shareOrCopy(item: Pick<SiteItemDetail, "id" | "title" | "source">): Promise<"shared" | "copied" | null> {
+  const title = displayTitle(item.title, item.source.name);
   const url = `${siteUrl()}/items/${item.id}`;
   try {
     if (navigator.share && matchMedia("(pointer: coarse)").matches) {
-      await navigator.share({ title: item.title, url });
+      await navigator.share({ title, url });
       return "shared";
     }
-    await navigator.clipboard.writeText(`${item.title}\n${url}`);
+    await navigator.clipboard.writeText(`${title}\n${url}`);
     return "copied";
   } catch {
     return null;
@@ -183,10 +183,9 @@ export default function ItemPage() {
       {moreMenu}
     </div>
   );
-  const verdict = (item.selected || item.score !== null) && (
+  const verdict = item.selected && (
     <div className="flex items-center gap-2">
-      {item.selected && <SelectedBadge />}
-      <ScoreLabel score={item.score} />
+      <SelectedBadge />
     </div>
   );
 
@@ -227,7 +226,7 @@ export default function ItemPage() {
           <p className="text-[13.5px] leading-[1.8] text-ink-2">{item.reason}</p>
         </RailSection>
       ) : (
-        verdict && <RailSection title="Relevance score (provisional)">{verdict}</RailSection>
+        verdict && <RailSection title="Status">{verdict}</RailSection>
       )}
       {item.tags.length > 0 && (
         <RailSection title="Tags">
@@ -285,20 +284,14 @@ export default function ItemPage() {
             {isX && <span>· @{item.x!.handle} · X</span>}
             <span>·</span>
             {!item.publishedAt && <span>Original date unknown · discovered</span>}
-            {item.backfill && <span>Historical import ·</span>}
             <time dateTime={publishedIso} className="mono">{publishedLabel}</time>
             {item.selected && (
               <span className="ml-1 min-w-0 max-w-full lg:hidden">
                 <SelectedBadge />
               </span>
             )}
-            {item.score !== null && (
-              <span className="ml-1 min-w-0 max-w-full lg:hidden">
-                <ScoreLabel score={item.score} />
-              </span>
-            )}
           </div>
-          {!isX && <h1 className="text-[30px] font-normal leading-[1.15] tracking-[-0.035em] text-ink lg:text-[40px] xl:text-[44px]">{item.title}</h1>}
+          {!isX && <h1 className="text-[30px] font-normal leading-[1.15] tracking-[-0.035em] text-ink lg:text-[40px] xl:text-[44px]">{displayTitle(item.title, item.source.name)}</h1>}
 
           {item.summary && (
             <section className={isX ? "mt-4" : "mt-7 xl:mt-8"}>
@@ -388,7 +381,7 @@ export default function ItemPage() {
 
       {posterRequested && (
         <Suspense fallback={null}>
-          <PosterSheet id={item.id} title={item.title} open={posterOpen} onClose={closePoster} />
+          <PosterSheet id={item.id} title={displayTitle(item.title, item.source.name)} open={posterOpen} onClose={closePoster} />
         </Suspense>
       )}
       {toast && (

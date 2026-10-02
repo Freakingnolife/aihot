@@ -60,7 +60,7 @@ export default function TopicPage() {
         <p className="mt-1 max-w-[640px] text-[13px] leading-relaxed text-ink-3">{topic.definition}</p>
         <div className="mt-3 flex flex-wrap items-baseline gap-x-5 gap-y-1">
           <span className="text-[12.5px] text-ink-4">
-            <span className="num mr-1 text-[20px] font-bold text-ink">{topic.total.toLocaleString("en")}</span> selected drafts
+            <span className="num mr-1 text-[20px] font-bold text-ink">{topic.total.toLocaleString("en")}</span> featured stories
           </span>
           {topic.related.length > 0 && (
             <span className="flex flex-wrap items-center gap-1.5 text-[12.5px]">
@@ -76,7 +76,7 @@ export default function TopicPage() {
       </header>
 
       <div className="mb-1 mt-2 flex items-baseline justify-between">
-        <h2 className="text-[18px] font-bold text-ink">Latest selected drafts</h2>
+        <h2 className="text-[18px] font-bold text-ink">Latest featured stories</h2>
         {items.length > 0 && (
           <span className="num text-[12px] text-ink-4">
             {first}–{last} of {topic.total.toLocaleString("en")} items
@@ -85,7 +85,7 @@ export default function TopicPage() {
       </div>
       {items.length === 0 ? (
         <div className="lg:card">
-          <EmptyState title="No selected drafts for this topic yet" />
+          <EmptyState title="No featured stories for this topic yet" />
         </div>
       ) : (
         <DayList items={items} />

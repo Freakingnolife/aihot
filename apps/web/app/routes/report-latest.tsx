@@ -15,7 +15,7 @@ import { KIND_LABEL, kindFromPath } from "../features/report/format";
 export async function loader({ request }: Route.LoaderArgs) {
   const kind = kindFromPath(new URL(request.url).pathname);
   const { index, report } = await loadOr404<{ index: ReportNavigationEntry[]; report: ReportDetail | null }>(`/api/site/reports/${kind}/latest-page`, { signal: request.signal });
-  // With no briefing yet the page shows the latest drafts instead of a dead end.
+  // With no briefing yet the page shows the latest news instead of a dead end.
   const latest = report ? null : await loadOr404<PoolResponse>("/api/site/pool?mode=recent", { signal: request.signal });
   return { kind, report, index, latest: latest ? splitLead(latest.items).lead : [], today: beijingDate(Date.now()) };
 }
@@ -40,12 +40,12 @@ export default function ReportLatestPage() {
     <ReportLayout kind={kind} index={index} current={report?.key ?? null} today={today}>
       {report ? <ReportPaper report={report} index={index} /> : (
         <>
-          <EmptyState title={`No automatic report published — ${KIND_LABEL[kind]}`}>The pilot briefing is a manually assembled Markdown draft. No report cron is running.</EmptyState>
+          <EmptyState title={`No automatic report published — ${KIND_LABEL[kind]}`}>The pilot briefing is assembled manually. No report cron is running.</EmptyState>
           {latest.length > 0 && (
             <div className="pt-4">
               <div className="mb-5 flex items-baseline justify-between gap-4">
-                <h2 className="text-[32px] font-normal leading-[1.15] tracking-[-0.035em] text-ink">Latest drafts</h2>
-                <Link to="/all" className="text-[13px] font-medium text-accent hover:text-accent-ink">All recent drafts</Link>
+                <h2 className="text-[32px] font-normal leading-[1.15] tracking-[-0.035em] text-ink">Latest news</h2>
+                <Link to="/all" className="text-[13px] font-medium text-accent hover:text-accent-ink">All latest news</Link>
               </div>
               <LeadStories items={latest} />
             </div>

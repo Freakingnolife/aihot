@@ -1,6 +1,6 @@
 // One report in a feed. Desktop (≥ 961px): a white card beside the time rail. Mobile: a compact row
 // with a divider, the reason in a grey box. One markup, two presentations, as on the original site.
-import { beijingDate, fullDateTime } from "../../lib/format";
+import { displayTitle, fullDateTime } from "../../lib/format";
 import { memo } from "react";
 import { Link } from "react-router";
 import { IntentLink } from "../../components/ui/IntentLink";
@@ -8,7 +8,6 @@ import type { GroupInfo, FeedItemSummary, TimelineFilters } from "@aihot/contrac
 import { CATEGORY_LABELS } from "@aihot/contracts/taxonomy";
 import { SelectedBadge } from "../../components/ui/Badge";
 import { Cover } from "../../components/ui/Cover";
-import { ScoreLabel } from "../../components/ui/Score";
 import { MediaThumbs, SourceLine, StarButton } from "./parts";
 import { GroupDevelopments, GroupSources, LatestDevelopment } from "./ReadingGroup";
 import { QuotedLine } from "../item/QuotedPost";
@@ -41,30 +40,24 @@ export const FeedItem = memo(function FeedItem({ item, group, filters, read = fa
             </span>
           )}
           <span className="ml-auto flex shrink-0 items-center gap-1.5 pl-2">
-            <span className="hidden lg:inline-flex">
-              <ScoreLabel score={item.score} />
-            </span>
-            <span className="lg:hidden">
-              <ScoreLabel score={item.score} compact />
-            </span>
             <span className="-my-1 hidden lg:inline-flex">
               <StarButton item={item} />
             </span>
           </span>
         </header>
 
-        {(item.backfill || !item.publishedAt) && <p className="mt-2 text-xs text-ink-3">{item.backfill ? "Historical import · " : ""}{!item.publishedAt ? `Original date unknown · discovered ${fullDateTime(item.discoveredAt ?? item.timelineAt)}` : `Original publication ${beijingDate(item.publishedAt)}`}</p>}
+        {!item.publishedAt && <p className="mt-2 text-xs text-ink-3">{`Original date unknown · discovered ${fullDateTime(item.discoveredAt ?? item.timelineAt)}`}</p>}
         {isX ? (
           <p className={`mt-2 whitespace-pre-line text-[15px] leading-[1.75] line-clamp-5 lg:line-clamp-4 ${read ? "text-ink-4" : "text-ink"}`}>
             <IntentLink to={`/items/${item.id}`} onClick={open} className="after:absolute after:inset-0 after:content-['']">
-              {item.summary ?? item.title}
+              {item.summary ?? displayTitle(item.title, item.source.name)}
             </IntentLink>
           </p>
         ) : (
           <>
             <h3 className={`mt-2 line-clamp-3 text-[17px] font-bold leading-[1.55] lg:line-clamp-none lg:font-[650] ${read ? "text-ink-4" : "text-ink"}`}>
               <IntentLink to={`/items/${item.id}`} onClick={open} className="after:absolute after:inset-0 after:content-['']">
-                {item.title}
+                {displayTitle(item.title, item.source.name)}
               </IntentLink>
             </h3>
             {item.summary && <p className="mt-1.5 line-clamp-2 max-w-[75ch] text-[14.5px] leading-[1.75] text-ink-3 lg:mt-2 lg:line-clamp-3 lg:text-[15px]">{item.summary}</p>}

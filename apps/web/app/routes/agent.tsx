@@ -118,7 +118,7 @@ function RssTab({ base }: { base: string }) {
   return (
     <>
       <h2 className="text-[20px] font-bold text-ink">Subscribe with a feed address</h2>
-      <p className="mt-2 text-[14.5px] text-ink-3">Use an RSS 2.0 reader. Selected feeds may be empty because drafts have not met the selection threshold.</p>
+      <p className="mt-2 text-[14.5px] text-ink-3">Use an RSS 2.0 reader. Selected feeds may be empty because no stories have met the selection threshold yet.</p>
       <div className="mt-6 space-y-3">
         {feeds.map(([name, desc, path]) => {
           const url = `${base}${path}`;
@@ -181,7 +181,7 @@ function ApiTab({ base }: { base: string }) {
       </div>
       <Section title="API behavior">
         <Bullets items={[
-          "Omitting mode keeps the API default, selected. Use all to include unselected eligible drafts.",
+          "Omitting mode keeps the API default, selected. Use all to include unselected eligible stories.",
           "Selected snapshots include older records. The items endpoint is limited to recent windows.",
           "items returns summaries, reasons and links, without full article bodies.",
           "There is no push channel. Respect s-maxage and use If-None-Match for 304 responses.",

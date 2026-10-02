@@ -21,11 +21,11 @@ export function Badge({ tone = "neutral", dot = false, children, className = "",
   );
 }
 
-/** The "Selected" mark on a report. */
+/** The "Featured" mark on a report. */
 export function SelectedBadge() {
   return (
     <Badge tone="selected" dot>
-      Selected
+      Featured
     </Badge>
   );
 }

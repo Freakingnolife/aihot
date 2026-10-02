@@ -4,7 +4,7 @@ import { Link } from "react-router";
 import { Presence } from "../components/ui/Presence";
 import { pageMeta } from "../lib/seo";
 import { exportBundle, importBundle, removeStar, useStarred, type ImportReport } from "../lib/local-state";
-import { fullDateTime, shortSourceName } from "../lib/format";
+import { displayTitle, fullDateTime, shortSourceName } from "../lib/format";
 import { IconBookmark, IconDownload, IconClose } from "../components/icons";
 
 /** Shared caches may keep this page for five minutes. */
@@ -98,9 +98,9 @@ export default function StarredPage() {
       {!mounted ? null : starred.length === 0 ? (
         <div className="mt-3 flex flex-col items-center rounded-card border border-dashed border-line-strong px-6 py-12 text-center">
           <IconBookmark size={20} className="text-ink-4" />
-          <p className="mt-3 text-[13px] text-ink-3">No bookmarks yet. Open a draft and use its bookmark button.</p>
+          <p className="mt-3 text-[13px] text-ink-3">No bookmarks yet. Open a story and use its bookmark button.</p>
           <Link to="/" className="mt-4 text-[12.5px] font-medium text-accent hover:text-accent-ink">
-            Browse recent drafts →
+            Browse latest news →
           </Link>
         </div>
       ) : (
@@ -122,16 +122,16 @@ export default function StarredPage() {
                 </div>
                 <h2 className="mt-1.5 text-[16px] font-[650] leading-[1.55] text-ink">
                   {unavailable ? (
-                    s.title
+                    displayTitle(s.title, s.sourceName)
                   ) : (
                     <Link to={`/items/${s.id}`} className="transition-colors after:absolute after:inset-0 after:content-[''] hover:text-accent">
-                      {s.title}
+                      {displayTitle(s.title, s.sourceName)}
                     </Link>
                   )}
                 </h2>
                 {s.summary && <p className="mt-1.5 line-clamp-2 text-[14px] leading-[1.75] text-ink-3">{s.summary}</p>}
-                {unavailable && <p className="mt-2 text-[12.5px] text-hot">This draft is unavailable. Its bookmark remains until removed.</p>}
-                {status === "summary-only" && <p className="mt-2 text-[12.5px] text-amber-ink">This draft provides a summary only.</p>}
+                {unavailable && <p className="mt-2 text-[12.5px] text-hot">This story is unavailable. Its bookmark remains until removed.</p>}
+                {status === "summary-only" && <p className="mt-2 text-[12.5px] text-amber-ink">This story provides a summary only.</p>}
               </li>
             );
           })}

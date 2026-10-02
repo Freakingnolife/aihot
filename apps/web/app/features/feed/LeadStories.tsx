@@ -4,6 +4,7 @@ import type { FeedItemSummary } from "@aihot/contracts/site";
 import { IntentLink } from "../../components/ui/IntentLink";
 import { Cover } from "../../components/ui/Cover";
 import { markRead } from "../../lib/local-state";
+import { displayTitle } from "../../lib/format";
 
 const DAY = new Intl.DateTimeFormat("en-SG", { day: "numeric", month: "short", timeZone: "Asia/Shanghai" });
 
@@ -12,7 +13,6 @@ function Meta({ item }: { item: FeedItemSummary }) {
     <p className="flex flex-wrap items-baseline gap-x-2.5 text-[12.5px] leading-5 text-ink-4">
       <span className="font-semibold text-ink-2">{item.source.name}</span>
       {item.publishedAt && <time dateTime={item.publishedAt}>Published {DAY.format(new Date(item.publishedAt))}</time>}
-      {item.backfill && <span>Historical import</span>}
     </p>
   );
 }
@@ -21,7 +21,7 @@ function Title({ item, className }: { item: FeedItemSummary; className: string }
   return (
     <h2 className={`font-semibold text-ink ${className}`}>
       <IntentLink to={`/items/${item.id}`} onClick={() => markRead(item.id)} className="after:absolute after:inset-0 after:content-['']">
-        {item.title}
+        {displayTitle(item.title, item.source.name)}
       </IntentLink>
     </h2>
   );
@@ -75,7 +75,7 @@ export function WeekOverview({ items }: { items: FeedItemSummary[] }) {
             <Meta item={item} />
             <h3 className="mt-1 text-[16px] font-semibold leading-[1.4] text-ink">
               <IntentLink to={`/items/${item.id}`} onClick={() => markRead(item.id)} className="after:absolute after:inset-0 after:content-['']">
-                {item.title}
+                {displayTitle(item.title, item.source.name)}
               </IntentLink>
             </h3>
             {item.reason && (

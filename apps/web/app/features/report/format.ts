@@ -135,7 +135,7 @@ const METRICS: Array<[key: string, unit: string]> = [
   ["sourcesCount", " sources"],
   ["firstPartyEvents", " first-party releases"],
   ["modelsReleased", " model releases"],
-  ["selectedCount", " selected drafts"],
+  ["selectedCount", " featured stories"],
   ["reportsCovered", " briefings"],
 ];
 export function metricItems(metrics: Record<string, number>): Array<{ value: number; unit: string }> {

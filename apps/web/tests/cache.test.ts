@@ -102,7 +102,7 @@ test("HTML and navigation share freshness; cookies do not personalize public res
   const html = await fetch(`${origin}/all`);
   assert.equal(html.status, 200);
   assert.match(html.headers.get("Cache-Control")!, /^public,/);
-  assert.match(await html.text(), /Recent drafts/);
+  assert.match(await html.text(), /Latest news/);
   const plain = await fetch(`${origin}/about.data`);
   const signedIn = await fetch(`${origin}/about.data?_routes=root`, { headers: { cookie: "admin_session=private; aihot_vid=reader" } });
   assert.match(plain.headers.get("Cache-Control")!, /^public,/);
@@ -221,7 +221,7 @@ test('archive unknown-date group and detail never turn discovery time into publi
   assert.match(html,/Unknown publication date/);assert.ok(html.indexOf('data-item-id="dated-draft"')<html.indexOf('Unknown publication date'));
   assert.doesNotMatch(html,/Discovered today/);
   const detail=await fetch(origin+'/items/unknown-draft');const text=await detail.text();assert.equal(detail.status,200);
-  assert.match(text,/Original date unknown/);assert.match(text,/Historical import/);assert.match(text,/discovered/);
+  assert.match(text,/Original date unknown/);assert.doesNotMatch(text,/Historical import|Relevance score/);assert.match(text,/discovered/);
   assert.doesNotMatch(text.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,''),/Just now|\d+ min ago|\d+ hours ago/);
 });
 

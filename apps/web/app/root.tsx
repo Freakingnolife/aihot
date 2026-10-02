@@ -115,14 +115,14 @@ export function ErrorBoundary() {
         <div className="mono text-[12px] text-ink-4">{status}</div>
         <h1 className="mt-1.5 text-[20px] font-bold text-ink">{notFound ? "No content here" : "Unable to load"}</h1>
         <p className="mt-2 text-[13.5px] leading-relaxed text-ink-3">
-          {notFound ? "This page is unavailable." : "Please retry shortly. Previously loaded drafts remain available."}
+          {notFound ? "This page is unavailable." : "Please retry shortly. Previously loaded stories remain available."}
         </p>
         <div className="mt-6 flex justify-center gap-2.5">
           <Link to="/" className={buttonClass("primary")}>
-            Back to selected drafts
+            Back to latest news
           </Link>
           <Link to="/all" className={buttonClass("secondary")}>
-            Browse all drafts
+            Browse all stories
           </Link>
         </div>
       </div>

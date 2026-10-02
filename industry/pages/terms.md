@@ -7,11 +7,11 @@
 
 This is an unapproved working notice for the AdditiveOS Radar private pilot. It is not an approved public legal policy. Public release requires separate approval.
 
-## Reading the drafts
+## Reading the stories
 
 Summaries report publisher claims and link to their sources. They are not independently validated engineering advice, material suitability findings or commercial recommendations. Check original sources before relying on a claim.
 
-Original publication dates determine the Recent view. Older stories and stories without a known original date remain in Archive. Import time does not establish recency.
+Original publication dates determine the Latest news view. Older stories and stories without a known original date remain in Archive. Import time does not establish recency.
 
 ## Source material
 

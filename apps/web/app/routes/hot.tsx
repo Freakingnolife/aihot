@@ -249,7 +249,7 @@ export default function HotPage() {
 
       {!lead ? (
         <div className="card rounded-sheet">
-          <EmptyState title="No current trending stories">No grouped current events. Historical imports do not generate heat.</EmptyState>
+          <EmptyState title="No current trending stories">No grouped current events right now.</EmptyState>
         </div>
       ) : (
         <>

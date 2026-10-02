@@ -47,3 +47,13 @@ export function sourceInitial(name: string): string {
   const s = shortSourceName(name).replace(/^[^\p{L}\p{N}]+/u, "");
   return (s[0] ?? "A").toUpperCase();
 }
+
+/** A headline for readers: drops a leading "<publisher>: " when it repeats the item's source name exactly (case-insensitive). */
+export function displayTitle(title: string, sourceName: string | null | undefined): string {
+  const name = sourceName?.trim();
+  if (!name) return title;
+  const prefix = `${name}:`;
+  if (!title.toLowerCase().startsWith(prefix.toLowerCase())) return title;
+  const rest = title.slice(prefix.length).trim();
+  return rest || title;
+}

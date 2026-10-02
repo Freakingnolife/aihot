@@ -45,6 +45,7 @@ export function DayHeader({ day, today, count, collapsed, onToggle, todayLabel =
   const date = `${m}/${d}`;
   const weekday = beijingWeekday(day);
   const short = WEEKDAY_SHORT[new Date(`${day}T12:00:00+08:00`).getUTCDay()] ?? "";
+  const countLabel = count ? <><span className="num">{count}</span> {todayLabel === "Published today" && day === today ? "published today" : "stories"}</> : null;
   return (
     <div className="sticky top-0 z-20 -mx-4 bg-daybar px-4 lg:mx-0 lg:bg-bg lg:px-0">
       {/* Phones: a full-width day bar. */}
@@ -59,7 +60,7 @@ export function DayHeader({ day, today, count, collapsed, onToggle, todayLabel =
           <span className="text-[18px] font-semibold leading-8 text-ink">{date}</span>
           <span className="text-[13px] text-ink-4">
             {weekday}
-            {count !== null && <>{" · "}<span className="num">{count}</span> drafts</>}
+            {countLabel && <>{" · "}{countLabel}</>}
           </span>
         </div>
       )}
@@ -83,12 +84,7 @@ export function DayHeader({ day, today, count, collapsed, onToggle, todayLabel =
         )}
         <span className="text-[13px] text-ink-4">
           {weekday}
-          {count !== null && (
-            <>
-              {" · "}
-              <span className="num">{count}</span> drafts
-            </>
-          )}
+          {countLabel && <>{" · "}{countLabel}</>}
         </span>
       </div>
     </div>
@@ -282,7 +278,7 @@ export function Timeline({ initial, filters }: { initial: TimelineResponse; filt
     <div className="relative">
       {days.length === 0 && (
         <div className="lg:card">
-          <EmptyState title="No selected drafts for this filter">Try another category or browse all drafts.</EmptyState>
+          <EmptyState title="No featured stories for this filter">Try another category or browse all stories.</EmptyState>
         </div>
       )}
 
@@ -334,7 +330,7 @@ export function FeedEnd({ loading, error, hasMore, manual, empty, onMore }: { lo
           </button>
         )
       ) : (
-        !empty && <span className="text-[12px] text-ink-4">End of drafts</span>
+        !empty && <span className="text-[12px] text-ink-4">End of stories</span>
       )}
     </div>
   );

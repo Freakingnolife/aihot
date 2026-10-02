@@ -9,7 +9,7 @@ import { SITE } from "@aihot/industry/site";
 import { useState, type ReactNode } from "react";
 import { Link } from "react-router";
 import type { ReportCitation, ReportDetail, ReportNavigationEntry } from "@aihot/contracts/site";
-import { shortSourceName } from "../../lib/format";
+import { displayTitle, shortSourceName } from "../../lib/format";
 import { Badge } from "../../components/ui/Badge";
 import { IconArrowLeft, IconArrowRight, IconArrowUpRight } from "../../components/icons";
 import { Kicker } from "../../components/ui/Kicker";
@@ -109,10 +109,10 @@ function Story({ c, dated, className = "" }: { c: ReportCitation; dated: boolean
           <h3 className="mt-3 text-[19px] font-bold leading-[1.5] tracking-[-0.01em] text-ink [overflow-wrap:anywhere] [text-wrap:pretty] @[880px]:text-[20px]">
             {c.itemId ? (
               <Link to={`/items/${c.itemId}`} prefetch="intent" className="transition-colors hover:text-accent">
-                {c.title}
+                {displayTitle(c.title, c.sourceName)}
               </Link>
             ) : (
-              c.title
+              displayTitle(c.title, c.sourceName)
             )}
           </h3>
           {c.summary && <p className="mt-2 line-clamp-4 text-[15px] leading-[1.85] text-ink-2 [overflow-wrap:anywhere] @[560px]:text-justify">{c.summary}</p>}

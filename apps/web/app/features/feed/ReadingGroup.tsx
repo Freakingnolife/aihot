@@ -5,7 +5,7 @@ import { Link, useLocation } from "react-router";
 import { Collapse } from "../../components/ui/Presence";
 import type { Development, GroupInfo, GroupReport, TimelineFilters } from "@aihot/contracts/site";
 import { IconArrowUpRight, IconChevronDown } from "../../components/icons";
-import { monthDayTime, shortSourceName } from "../../lib/format";
+import { displayTitle, monthDayTime, shortSourceName } from "../../lib/format";
 import { isReload } from "./restore";
 import { sessionCache } from "./session-cache";
 
@@ -171,7 +171,7 @@ export function GroupSources({ group, filters, parentId }: { group: GroupInfo; f
             <li key={r.id} className="flex items-baseline gap-2 py-1.5 text-[13px]">
               <span className="w-[108px] shrink-0 truncate text-ink-4">{shortSourceName(r.source.name)}</span>
               <Link to={`/items/${r.id}`} className="min-w-0 flex-1 truncate text-ink-2 hover:text-accent">
-                {r.title}
+                {displayTitle(r.title, r.source.name)}
               </Link>
               <a href={r.originalUrl} target="_blank" rel="noopener noreferrer" aria-label="Read original" className="shrink-0 text-ink-4 hover:text-accent">
                 <IconArrowUpRight size={13} />
@@ -209,7 +209,7 @@ export function GroupDevelopments({ group, filters, parentId }: { group: GroupIn
             <li key={d.factId} className="relative">
               <span className={`absolute -left-[13.5px] top-[7px] size-[7px] rounded-full ring-2 ring-bg-sunk dark:ring-bg-muted ${d.representative.id === parentId ? "bg-accent" : "bg-line-strong"}`} />
               <Link to={`/items/${d.representative.id}`} className="block text-[13px] leading-snug text-ink-2 hover:text-accent">
-                {d.title}
+                {displayTitle(d.title, d.representative.source.name)}
               </Link>
               <div className="mt-0.5 text-[11.5px] text-ink-4">
                 {shortSourceName(d.representative.source.name)} · <span className="num">{monthDayTime(d.representative.timelineAt)}</span>

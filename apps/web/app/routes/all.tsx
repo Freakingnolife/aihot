@@ -37,8 +37,8 @@ export function meta({ loaderData }: Route.MetaArgs) {
   const q = f?.q;
   const page = loaderData?.data.page ?? 1;
   return pageMeta({
-    title: q ? `Search: ${q}` : `${f?.mode === "archive" ? "Archive" : "Recent"} drafts`,
-    description: `Private drafts from ${SITE.name}, filtered by original publication date.`,
+    title: q ? `Search: ${q}` : f?.mode === "archive" ? "Archive" : "Latest news",
+    description: `Latest additive manufacturing news from ${SITE.name}, filtered by original publication date.`,
     path: listPath("/all", { mode: f?.mode, channel: f && f.channel !== "all" ? f.channel : null, category: f?.category, tag: f?.tag, q, tab: f?.tab === "relevance" ? "relevance" : null, page: page > 1 ? page : null }),
     noindex: !!q,
   });
@@ -94,7 +94,7 @@ export default function AllPage() {
       {/* Desktop: the title with the period switch, then one filter row with the search field on the right. */}
       <div className="hidden lg:block">
         <div className="flex items-center justify-between gap-4">
-          <h1 className="text-[clamp(32px,3.4vw,44px)] font-normal leading-[1.15] tracking-[-0.035em] text-ink">{title ?? `${mode === "archive" ? "Archive" : "Recent"} drafts`}</h1>
+          <h1 className="text-[clamp(32px,3.4vw,44px)] font-normal leading-[1.15] tracking-[-0.035em] text-ink">{title ?? (mode === "archive" ? "Archive" : "Latest news")}</h1>
           <PeriodTabs mode={mode} href={modeHref} layoutId="pool-mode-desk" />
         </div>
         <div className="mb-6 mt-4 flex flex-wrap items-center justify-between gap-3">
@@ -106,10 +106,10 @@ export default function AllPage() {
       {/* Phones: title with today's count, the search bar, then the same filter row. */}
       <div className="lg:hidden">
         <div className="flex flex-wrap items-baseline justify-between gap-2 pb-3 pt-5">
-          <h1 className="text-[32px] font-normal leading-[1.15] tracking-[-0.035em] text-ink">{title ?? `${mode === "archive" ? "Archive" : "Recent"} drafts`}</h1>
-          {!f.q && (
+          <h1 className="text-[32px] font-normal leading-[1.15] tracking-[-0.035em] text-ink">{title ?? (mode === "archive" ? "Archive" : "Latest news")}</h1>
+          {!f.q && data.todayCount > 0 && (
             <span className="text-[12.5px] text-ink-4">
-              Published today <span className="num">{data.todayCount}</span> drafts
+              <span className="num">{data.todayCount}</span> published today
             </span>
           )}
         </div>
@@ -132,7 +132,7 @@ export default function AllPage() {
             items={(["time", "relevance"] as const).map((t) => ({ key: t, label: t === "time" ? "Latest (titles and summaries)" : "Full text", to: searchTabHref(t) }))}
           />
           <span className="text-[12px] text-ink-4">
-            Found <span className="num">{data.total >= 2000 ? "2000+" : data.total}</span> drafts
+            Found <span className="num">{data.total >= 2000 ? "2000+" : data.total}</span> stories
           </span>
         </div>
       )}
@@ -141,7 +141,7 @@ export default function AllPage() {
         {data.items.length === 0 ? (
           <div className="mt-2 lg:card">
             <EmptyState
-              title="No matching drafts"
+              title="No matching stories"
               action={
                 f.q && f.tab === "time" ? (
                   <Link to={searchTabHref("relevance")} className="text-[13px] font-medium text-accent hover:underline">
@@ -150,7 +150,7 @@ export default function AllPage() {
                 ) : undefined
               }
             >
-              {f.q ? "Try different words or clear the filters." : "No drafts match this filter."}
+              {f.q ? "Try different words or clear the filters." : "No stories match this filter."}
             </EmptyState>
           </div>
         ) : (
@@ -163,10 +163,10 @@ export default function AllPage() {
       </div>
       <Pagination page={data.page} pageCount={data.pageCount} href={(p) => pageHref(params, p)} />
       <div className="mt-8 space-y-1 border-t border-line pt-4 text-[12.5px] leading-relaxed text-ink-4">
-        <p>{mode === "recent" ? "Recent shows original publication dates within the last 30 days. Older and unknown-date drafts are in Archive." : "Archive shows all available drafts, including older and unknown publication dates. Search relevance can place unknown-date matches first."}</p>
+        <p>{mode === "recent" ? "Recent shows original publication dates within the last 30 days. Older and unknown-date stories are in Archive." : "Archive shows all available stories, including older and unknown publication dates. Search relevance can place unknown-date matches first."}</p>
         <p>Manual collection only. No continuous collection or scheduled reports. Import time does not make a story recent.</p>
       </div>
-      {data.page >= 50 && <p className="mt-4 text-center text-[12px] text-ink-4">Up to 50 pages. Search for older drafts.</p>}
+      {data.page >= 50 && <p className="mt-4 text-center text-[12px] text-ink-4">Up to 50 pages. Search for older stories.</p>}
     </div>
   );
 }
@@ -178,8 +178,8 @@ export function SearchBusy() {
       <h1 className="text-[20px] font-bold text-ink">Search is busy</h1>
       <p className="mt-2 text-[14px] leading-relaxed text-ink-3">Search is busy. Try again shortly or browse the list.</p>
       <div className="mt-6 flex justify-center gap-2.5">
-        <Link to="/all" className="inline-flex h-9 items-center rounded-full bg-accent px-4 text-[13.5px] font-medium text-accent-contrast hover:bg-accent-ink">Browse recent drafts</Link>
-        <Link to="/" className="inline-flex h-9 items-center rounded-full border border-line-strong bg-surface px-4 text-[13.5px] text-ink-2 hover:border-ink-4">Recent drafts</Link>
+        <Link to="/all" className="inline-flex h-9 items-center rounded-full bg-accent px-4 text-[13.5px] font-medium text-accent-contrast hover:bg-accent-ink">Browse latest news</Link>
+        <Link to="/" className="inline-flex h-9 items-center rounded-full border border-line-strong bg-surface px-4 text-[13.5px] text-ink-2 hover:border-ink-4">Latest news</Link>
       </div>
     </div>
   );

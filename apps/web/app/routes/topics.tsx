@@ -38,7 +38,7 @@ export default function TopicsPage() {
       <header className="pb-2 pt-5 lg:pt-1">
         <h1 className="text-[24px] font-semibold leading-[1.3] text-ink">AM topics</h1>
         <p className="mt-1.5 text-[13px] leading-relaxed text-ink-3">
-          Browse <span className="num">{topics.length}</span> topics from the selected draft archive.
+          Browse <span className="num">{topics.length}</span> topics from the featured story archive.
         </p>
       </header>
       {GROUPS.map((g) => (
@@ -57,13 +57,13 @@ export default function TopicsPage() {
                   <Link
                     to={`/topics/${t.slug}`}
                     prefetch="intent"
-                    aria-label={`View${t.name} selected drafts`}
+                    aria-label={`View ${t.name} featured stories`}
                     className="card card-hover group flex h-full flex-col px-5 py-[18px]"
                   >
                     <span className="text-[15px] font-bold text-ink transition-colors group-hover:text-accent">{t.name}</span>
                     <span className="mt-1.5 line-clamp-2 flex-1 text-[12.5px] leading-[1.7] text-ink-3">{t.definition}</span>
                     <span className="mono mt-3 text-[11.5px] text-accent">
-                      View {t.total}  selected drafts <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5">→</span>
+                      View {t.total} featured stories <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5">→</span>
                     </span>
                   </Link>
                 </li>

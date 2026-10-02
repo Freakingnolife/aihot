@@ -5,7 +5,7 @@ import type { Route } from "./+types/story";
 import type { StoryDetail, StoryReportView } from "@aihot/contracts/site";
 import { data as routeData } from "react-router";
 import { breadcrumbLd, pageMeta, titled } from "../lib/seo";
-import { beijingDate, beijingTime, monthDayTime, relativeTime, shortSourceName } from "../lib/format";
+import { beijingDate, beijingTime, displayTitle, monthDayTime, relativeTime, shortSourceName } from "../lib/format";
 import { HeatChart } from "../features/story/HeatChart";
 import { Badge, SelectedBadge } from "../components/ui/Badge";
 import { PillTabs } from "../components/ui/Tabs";
@@ -131,7 +131,7 @@ function TimelineRow({ r }: { r: StoryReportView }) {
           {r.selected && <SelectedBadge />}
         </div>
         <Link to={`/items/${r.id}`} prefetch="intent" className="mt-1 block text-[16px] font-[650] leading-[1.6] text-ink transition-colors hover:text-accent lg:text-[15.5px]">
-          {r.title}
+          {displayTitle(r.title, r.source.name)}
         </Link>
         {r.summary && (
           <>
@@ -284,10 +284,10 @@ export default function StoryPage() {
                       {monthDayTime(d.firstReportAt)} · {d.reportCount} reports
                     </div>
                     <Link to={`/items/${d.representative.id}`} className="mt-0.5 block text-[15px] font-semibold leading-snug text-ink transition-colors hover:text-accent">
-                      {d.title}
+                      {displayTitle(d.title, d.representative.source.name)}
                     </Link>
                     <div className="mt-0.5 truncate text-[12.5px] text-ink-4">
-                      {shortSourceName(d.representative.source.name)}：{d.representative.title}
+                      {shortSourceName(d.representative.source.name)}：{displayTitle(d.representative.title, d.representative.source.name)}
                     </div>
                   </li>
                 ))}
@@ -390,7 +390,7 @@ export default function StoryPage() {
                   <li key={r.id} className="py-3">
                     <div className="truncate text-[11.5px] text-ink-4">{r.source.name}</div>
                     <Link to={`/items/${r.id}`} className="group mt-1 block text-[13.5px] font-semibold leading-[1.6] text-ink transition-colors hover:text-accent">
-                      {r.title}
+                      {displayTitle(r.title, r.source.name)}
                       <IconChevronRight size={13} className="ml-0.5 inline -translate-y-px text-ink-4 transition-transform group-hover:translate-x-0.5" />
                     </Link>
                   </li>
