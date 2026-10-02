@@ -1,7 +1,7 @@
 // Feed filters: the channel and category row, and search.
 import { useEffect, useRef, useState } from "react";
 import { Form, Link, useNavigation, useSearchParams } from "react-router";
-import { CATEGORY_KEYS, CATEGORY_LABELS, CHANNEL_LABELS, type CategoryKey, type ChannelKey } from "@aihot/contracts/taxonomy";
+import { CATEGORY_KEYS, CATEGORY_LABELS, type CategoryKey, type ChannelKey } from "@aihot/contracts/taxonomy";
 import { IconClose, IconSearch } from "../../components/icons";
 import { PillTabs } from "../../components/ui/Tabs";
 
@@ -19,18 +19,16 @@ export function hrefWith(base: string, params: URLSearchParams, patch: Record<st
 }
 
 /**
- * The feed's one filter row (Selected and All drafts alike): All, First party, then the categories. One choice at a
- * time: picking First party clears the category and picking a category clears First party. Older News / X links
- * still filter; the row then shows All.
+ * The feed's one filter row (Selected and All drafts alike): All, then the categories. Picking a category clears
+ * any channel filter. Older First party / News / X links still filter; the row then shows All.
  */
 export function CategoryTabs({ base, category, channel = "all", layoutId, size = "md", className = "" }: { base: string; category: CategoryKey | null; channel?: ChannelKey; layoutId: string; size?: "md" | "sm"; className?: string }) {
   const [params] = useSearchParams();
   const items = [
     { key: "all", label: "All", to: hrefWith(base, params, { category: null, channel: null }) },
-    { key: "firstParty", label: CHANNEL_LABELS.firstParty, to: hrefWith(base, params, { category: null, channel: "firstParty" }) },
     ...CATEGORY_KEYS.map((k) => ({ key: k, label: CATEGORY_LABELS[k], to: hrefWith(base, params, { category: k, channel: null }) })),
   ];
-  const active = channel === "firstParty" ? "firstParty" : (category ?? "all");
+  const active = category ?? "all";
   return <PillTabs items={items} active={active} layoutId={layoutId} label="Filter" size={size} className={className} />;
 }
 
