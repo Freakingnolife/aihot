@@ -1,8 +1,25 @@
 {
-  "latestVersion": "2026-09-30T13:00",
-  "releases": [{
-    "date": "2026-09-30", "time": "13:00", "kind": "Notice",
-    "title": "Private AM reader pilot",
-    "body": ["AdditiveOS Radar has an English private reader and attributed draft summaries from a bounded manual collection batch.", "This is not a public launch. Selection remains provisional, source permissions remain restricted, and no continuous collection or report job is running."]
-  }]
+  "latestVersion": "2026-10-03T12:00",
+  "releases": [
+    {
+      "date": "2026-10-03",
+      "time": "12:00",
+      "kind": "Notice",
+      "title": "AdditiveOS News is public",
+      "body": [
+        "Additive manufacturing news at additiveos.com: AI-written summaries of publisher reports, each credited and linked, with the strongest stories featured and a weekly top-stories list.",
+        "Sources are collected twice a day. The AdditiveOS Advisor waitlist moves to /advisor."
+      ]
+    },
+    {
+      "date": "2026-09-30",
+      "time": "13:00",
+      "kind": "Notice",
+      "title": "Private AM reader pilot",
+      "body": [
+        "AdditiveOS Radar has an English private reader and attributed draft summaries from a bounded manual collection batch.",
+        "This is not a public launch. Selection remains provisional, source permissions remain restricted, and no continuous collection or report job is running."
+      ]
+    }
+  ]
 }

@@ -1,5 +1,6 @@
 import { SITE, withSubject } from "@aihot/industry/site";
 import { Link, useLoaderData } from "react-router";
+import type { Route } from "./+types/daily-archive";
 import type { ReportIndexEntry } from "@aihot/contracts/site";
 import { apiGet } from "../lib/api.server";
 import { pageMeta } from "../lib/seo";
@@ -14,8 +15,8 @@ export async function loader({ request }: { request: Request }) {
   return { index, today: beijingDate(Date.now()) };
 }
 
-export function meta() {
-  return pageMeta({ title: `${withSubject("Daily briefing")} · Archive`, description: `${SITE.name} report archive.`, path: "/daily/archive", image: "/og/pages/daily.png" });
+export function meta({ loaderData }: Route.MetaArgs) {
+  return pageMeta({ title: `${withSubject("Daily briefing")} · Archive`, description: `${SITE.name} report archive.`, path: "/daily/archive", image: "/og/pages/daily.png", noindex: !loaderData?.index.length });
 }
 
 export function headers() {

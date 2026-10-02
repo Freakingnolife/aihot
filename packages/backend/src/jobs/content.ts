@@ -130,7 +130,7 @@ export async function processArticle(articleId: string, opts: { attemptTag?: str
 }
 
 /** Waits and retries for passing trouble; marks "failed" for refusals and exhausted retries. */
-async function afterFailure(articleId: string, error: unknown): Promise<{ state: string; retryAt?: Date }> {
+export async function afterFailure(articleId: string, error: unknown): Promise<{ state: string; retryAt?: Date }> {
   // Let pg-boss retry this job after restart, reusing settled receipts. A deploy is not an article
   // failure and must neither consume processing_attempts nor turn an incomplete chain terminal.
   if (error instanceof AnalysisInterruptedError || shutdownSignal.signal.aborted) throw error;

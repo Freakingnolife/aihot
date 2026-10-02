@@ -21,6 +21,7 @@ export function meta() {
     description: "Source discussion activity, not independent corroboration or factual reliability.",
     path: "/hot",
     image: "/og/pages/hot.png",
+    noindex: true,
   });
 }
 

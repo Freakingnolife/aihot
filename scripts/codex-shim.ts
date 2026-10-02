@@ -2,7 +2,7 @@
 // default model route (LLM_BASE_URL) can run on his Codex allowance. Private, loopback only, at most two
 // requests at a time by default. Each request starts a locked-down `codex exec`: empty working folder, read-only sandbox, no user
 // config, rules or project docs, no saved session, stdin closed. Images are not passed through.
-//   node scripts/codex-shim.ts   (CODEX_SHIM_PORT=4340 CODEX_MODEL=gpt-6.1-sol CODEX_EFFORT=medium)
+//   node scripts/codex-shim.ts   (CODEX_SHIM_HOST=127.0.0.1 CODEX_SHIM_PORT=4340 CODEX_MODEL=gpt-6.1-sol CODEX_EFFORT=medium)
 // Then: LLM_BASE_URL=http://127.0.0.1:4340/v1, LLM_API_KEY=local-codex, LLM_MODEL=<same model>.
 import { spawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
@@ -11,6 +11,7 @@ import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
+const HOST = process.env.CODEX_SHIM_HOST ?? "127.0.0.1"; // 0.0.0.0 only inside a private container network (deploy/nas)
 const PORT = Number(process.env.CODEX_SHIM_PORT ?? 4340);
 const MODEL = process.env.CODEX_MODEL ?? "gpt-6.1-sol";
 const EFFORT = process.env.CODEX_EFFORT ?? "medium";
@@ -107,4 +108,4 @@ createServer(async (req, res) => {
     res.writeHead(502, { "content-type": "application/json" });
     res.end(JSON.stringify({ error: { message: String(error).slice(0, 500) } }));
   }
-}).listen(PORT, "127.0.0.1", () => console.log(`codex shim on http://127.0.0.1:${PORT}/v1 using ${MODEL} (${EFFORT})`));
+}).listen(PORT, HOST, () => console.log(`codex shim on http://${HOST}:${PORT}/v1 using ${MODEL} (${EFFORT})`));

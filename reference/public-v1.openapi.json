@@ -916,7 +916,7 @@
       "get": {
         "operationId": "dailies",
         "summary": "List daily-report archive entries",
-        "description": "Date index of stored daily reports, newest first. This private pilot uses manual collection and has no report cron or scheduled release. The index may be empty.",
+        "description": "Date index of stored daily reports, newest first. Reports are not generated on a schedule. The index may be empty.",
         "parameters": [
           {
             "$ref": "#/components/parameters/ActorUserAgent"
@@ -1084,7 +1084,7 @@
       "get": {
         "operationId": "latestDaily",
         "summary": "Get the latest daily report",
-        "description": "The most recent stored daily report. This private pilot has no report cron or scheduled release. Agent or tool runtimes that cache a stable URL beyond HTTP cache headers should first request /api/v1/dailies?limit=1 and then fetch /api/v1/dailies/{returned-date}; never guess a date.",
+        "description": "The most recent stored daily report. Reports are not generated on a schedule. Agent or tool runtimes that cache a stable URL beyond HTTP cache headers should first request /api/v1/dailies?limit=1 and then fetch /api/v1/dailies/{returned-date}; never guess a date.",
         "responses": {
           "200": {
             "description": "OK",

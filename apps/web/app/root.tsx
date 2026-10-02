@@ -47,7 +47,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="theme-color" media="(prefers-color-scheme: light)" content="#faf9f6" />
         <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#13191c" />
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
-        <meta name="robots" content="noindex, nofollow" />
+        {/* Pages are indexable unless their own meta says noindex; publisher photos never go to image search. */}
+        <meta name="robots" content="noimageindex" />
         <Meta />
         <Links />
       </head>

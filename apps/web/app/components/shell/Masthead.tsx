@@ -57,7 +57,7 @@ export function Masthead() {
   );
 }
 
-/** The pilot notice on every page; on desktop also About, API and the rest of the "More" pages. */
+/** The disclosure on every page; on desktop also About, API and the rest of the "More" pages. */
 export function SiteFooter() {
   const links = SIDEBAR.at(-1)!.items;
   return (
@@ -77,7 +77,7 @@ export function SiteFooter() {
           )}
         </div>
         <p className="text-[12px] leading-[1.35] lg:mt-3">
-          <strong className="font-semibold text-ink">Private draft pilot.</strong> Attributed publisher reports, not validated engineering advice.
+          Attributed publisher reports, not validated engineering advice.
         </p>
       </div>
     </footer>

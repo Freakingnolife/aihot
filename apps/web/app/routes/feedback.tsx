@@ -246,7 +246,7 @@ export default function FeedbackPage() {
 
         <div className="flex flex-col-reverse gap-4 border-t border-line-soft bg-bg-sunk/50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 dark:bg-bg-muted/30">
           <p className="text-[12px] leading-relaxed text-ink-4 sm:max-w-[400px]">
-            Do not submit secrets, identity documents or unrelated sensitive information. Read the unapproved private-pilot
+            Do not submit secrets, identity documents or unrelated sensitive information. Read the
             <Link to="/privacy" className="text-accent hover:underline">
               privacy notice
             </Link>

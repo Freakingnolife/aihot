@@ -25,9 +25,10 @@ export function meta({ loaderData, location }: Route.MetaArgs) {
   const kind = loaderData?.kind ?? "daily";
   return pageMeta({
     title: `AM ${KIND_LABEL[kind]}`,
-    description: kind === "daily" ? `${SITE.name} private${withSubject("Daily briefing")}。` : kind === "weekly" ? "Weekly archive." : "Monthly archive.",
+    description: kind === "daily" ? `${SITE.name} ${withSubject("Daily briefing")}.` : kind === "weekly" ? "Weekly archive." : "Monthly archive.",
     path: location.pathname,
     image: `/og/pages/${kind}.png`,
+    noindex: !loaderData?.report,
   });
 }
 
@@ -41,7 +42,7 @@ export default function ReportLatestPage() {
     <ReportLayout kind={kind} index={index} current={report?.key ?? null} today={today}>
       {report ? <ReportPaper report={report} index={index} /> : (
         <>
-          <EmptyState title={`No automatic report published — ${KIND_LABEL[kind]}`}>The pilot briefing is assembled manually. No report cron is running.</EmptyState>
+          <EmptyState title={`No automatic report published — ${KIND_LABEL[kind]}`}>Briefings are not generated on a schedule.</EmptyState>
           {lead && (
             <div className="pt-4">
               <div className="mb-5 flex items-baseline justify-between gap-4">

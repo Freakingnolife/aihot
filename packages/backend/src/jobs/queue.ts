@@ -45,7 +45,10 @@ const ensured = new Set<string>();
 export async function getBoss(): Promise<PgBoss> {
   if (boss) return boss;
   starting ??= (async () => {
-    const b = new PgBoss({ connectionString: config.databaseUrl, max: 4, schema: "pgboss", application_name: "aihot-jobs" });
+    // PGBOSS_PASSIVE=true (the scheduled refresh runner): this process may only add jobs. No maintenance,
+    // no cron and no migration, so jobs already queued are left exactly as they are.
+    const passive = process.env.PGBOSS_PASSIVE === "true" ? { supervise: false, schedule: false, migrate: false } : {};
+    const b = new PgBoss({ connectionString: config.databaseUrl, max: 4, schema: "pgboss", application_name: "aihot-jobs", ...passive });
     b.on("error", (err) => console.error("[pg-boss]", err));
     await b.start();
     boss = b;

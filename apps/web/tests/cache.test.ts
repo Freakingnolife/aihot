@@ -184,6 +184,26 @@ test("browser caching preserves noindex and private sign-in responses", async ()
   await login.text();
 });
 
+test("public reader pages can be indexed; admin, feedback, bookmarks, errors and search results cannot", async () => {
+  const robots = async (path: string) => {
+    const res = await fetch(origin + path);
+    const html = await res.text();
+    return { status: res.status, tags: [...html.matchAll(/<meta name="robots" content="([^"]*)"/g)].map((m) => m[1]!) };
+  };
+  for (const path of ["/all", "/about", "/privacy"]) {
+    const { status, tags } = await robots(path);
+    assert.equal(status, 200, path);
+    assert.ok(tags.every((t) => !/noindex|nofollow/.test(t)), `${path} must be indexable: ${tags}`);
+    assert.ok(tags.includes("noimageindex"), `${path} keeps photos out of image search`);
+  }
+  for (const path of ["/feedback", "/starred", "/more", "/hot", "/all?q=metal", "/does-not-exist"]) {
+    const { tags } = await robots(path);
+    assert.ok(tags.some((t) => /noindex/.test(t)), `${path} must be noindex: ${tags}`);
+  }
+  const login = await robots("/admin/login");
+  assert.ok(login.tags.some((t) => /noindex/.test(t)));
+});
+
 test("a visitor cannot name its own address to the api without a trusted proxy in front", async () => {
   const res = await fetch(`${origin}/api/site/echo-client`, { headers: { "X-Forwarded-For": "6.6.6.6", "X-Real-IP": "6.6.6.6" } });
   assert.deepEqual(await res.json(), { forwarded: "127.0.0.1", real: "127.0.0.1" });
@@ -202,8 +222,10 @@ test('reader manuals, notices and shared controls render in English', async () =
     const html=await response.text();
     const reader=html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,'');
     assert.doesNotMatch(reader,/[\u4e00-\u9fff]/u,path);
-    if(path.startsWith('/agent')) {assert.match(reader,/manual collection/i);assert.doesNotMatch(reader,/08:00/);}
-    if(path==='/terms'||path==='/privacy') assert.match(reader,/unapproved/i);
+    if(path.startsWith('/agent')) {assert.match(reader,/twice a day/i);assert.doesNotMatch(reader,/08:00|manual collection/i);}
+    if(path==='/terms') assert.match(reader,/removal by emailing marcus@additiveos\.com/);
+    if(path==='/terms'||path==='/privacy') assert.doesNotMatch(reader,/unapproved|pilot|working notice/i);
+    if(path==='/privacy') {assert.doesNotMatch(reader,/unapproved/i);assert.match(reader,/Harmony Wave Pte\. Ltd\./);assert.match(reader,/marcus@additiveos\.com/);}
   }
 });
 

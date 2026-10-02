@@ -26,7 +26,7 @@ export async function loader({ request }: { request: Request }) {
 }
 
 export function meta() {
-  return pageMeta({ title: "Changes", description: `${SITE.name} private-pilot change notes.`, path: "/changelog", image: "/og/pages/changelog.png" });
+  return pageMeta({ title: "Changes", description: `${SITE.name} change notes.`, path: "/changelog", image: "/og/pages/changelog.png" });
 }
 
 const KIND_DOT: Record<Release["kind"], string> = {
@@ -125,7 +125,7 @@ export default function ChangelogPage() {
     <ReadingLayout aside={aside}>
       <header className="pb-6">
         <h1 className="text-[24px] font-semibold leading-[1.3] text-ink">Changes</h1>
-        <p className="mt-1.5 text-[13px] text-ink-3">Recorded changes to this private pilot.</p>
+        <p className="mt-1.5 text-[13px] text-ink-3">Recorded changes to this site.</p>
       </header>
       <div className="space-y-4">
         {[...groups.entries()].map(([date, releases]) => {

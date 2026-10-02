@@ -6,6 +6,8 @@ import { looseQuery } from "../http/respond.ts";
 
 export function registerMedia(app: FastifyInstance) {
   app.get("/api/img-proxy", async (req, reply) => {
+    // Publisher photos stay out of search engines' image indexes, whatever the answer below is.
+    reply.header("X-Robots-Tag", "noindex, noimageindex");
     const q = looseQuery(req);
     const verdict = verifyProxyRequest({ u: q.u, mode: q.mode, exp: q.exp, sig: q.sig });
     // A caching proxy (nginx auth_request) can check every request with this HEAD sub-request before it reads its image cache (keyed

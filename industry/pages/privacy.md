@@ -1,13 +1,13 @@
 # Privacy notice
 
-| Applies to | additiveos.com — AdditiveOS News and the AdditiveOS waitlist |
+| Applies to | additiveos.com — AdditiveOS News (AdditiveOS Radar) and the AdditiveOS waitlist |
 | Operated by | Harmony Wave Pte. Ltd., Singapore |
 | Contact | marcus@additiveos.com |
 | Updated | 2026-10-03 |
 
 ## What this notice covers
 
-This notice covers the AdditiveOS News site (the news pages at additiveos.com) and the AdditiveOS waitlist (the signup form on the Advisor page). It does not cover the AdditiveOS application, which is not yet released.
+This notice covers the AdditiveOS News (AdditiveOS Radar) site (the news pages at additiveos.com) and the AdditiveOS waitlist (the signup form on the Advisor page). It does not cover the AdditiveOS application, which is not yet released.
 
 ## Reading the news
 

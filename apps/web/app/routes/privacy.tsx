@@ -12,7 +12,7 @@ export function headers() {
 }
 
 export function meta() {
-  return pageMeta({ title: "Working privacy notice", description: `Unapproved working privacy notice for the private pilot.`, path: "/privacy", image: "/og/pages/privacy.png" });
+  return pageMeta({ title: "Privacy notice", description: "How the AdditiveOS news site and the AdditiveOS waitlist handle personal information.", path: "/privacy", image: "/og/pages/privacy.png" });
 }
 
 export default function PrivacyPage() {
@@ -21,7 +21,7 @@ export default function PrivacyPage() {
       doc={PRIVACY.doc}
       rendered={PRIVACY.rendered}
       eyebrow={SITE.name}
-      footer={<LegalFooterLinks links={[{ to: "/terms", label: "Working use notice" }, { to: "/feedback", label: "Feedback" }]} note={`Working privacy notice ${PRIVACY.doc.meta["Status"] ?? ""} · ${PRIVACY.doc.meta["Updated"] ?? ""}`} />}
+      footer={<LegalFooterLinks links={[{ to: "/terms", label: "Use notice" }, { to: "/feedback", label: "Feedback" }]} note={`Privacy notice · Updated ${PRIVACY.doc.meta["Updated"] ?? ""}`} />}
     />
   );
 }

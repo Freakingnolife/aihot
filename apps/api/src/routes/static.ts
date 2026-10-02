@@ -59,7 +59,9 @@ function robotsTxt(): string {
     "Allow: /api/v1/",
     "Allow: /api/mcp",
     "Disallow: /api/",
-    "Disallow: /admin/",
+    // Publisher photos come through the image proxy: keep them out of image search (responses also send X-Robots-Tag).
+    "Disallow: /api/img-proxy",
+    "Disallow: /admin",
     "Disallow: /starred",
     "Disallow: /feedback",
     "",

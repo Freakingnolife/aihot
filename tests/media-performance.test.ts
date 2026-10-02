@@ -181,11 +181,13 @@ test("image HTTP responses keep issued URLs valid, reject tampering before fetch
   invalidParams.set("sig", "invalid");
   const invalid = await app.inject({ url: `/api/img-proxy?${invalidParams}` });
   assert.equal(invalid.statusCode, 403);
+  assert.equal(invalid.headers["x-robots-tag"], "noindex, noimageindex");
   assert.equal(imageHits, before);
   const first = await app.inject({ url: `/api/img-proxy?${params}`, headers: { accept: "image/avif" } });
   const second = await app.inject({ url: `/api/img-proxy?${params}`, headers: { accept: "image/webp" } });
   assert.equal(first.statusCode, 200);
   assert.equal(first.headers["content-type"], "image/webp");
+  assert.equal(first.headers["x-robots-tag"], "noindex, noimageindex");
   assert.deepEqual(first.rawPayload, second.rawPayload);
   const old = new URLSearchParams({ u: url, exp, sig: signature(url, "default", exp) });
   assert.equal((await app.inject({ url: `/api/img-proxy?${old}` })).statusCode, 200);

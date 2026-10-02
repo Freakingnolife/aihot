@@ -109,10 +109,10 @@ function McpTab({ base }: { base: string }) {
 
 function RssTab({ base }: { base: string }) {
   const feeds = [
-    ["Selected summaries", "Up to 50 selected summaries with reader and original links. The pilot may have no selected items.", "/feed.xml"],
+    ["Selected summaries", "Up to 50 selected summaries with reader and original links. This feed can be empty.", "/feed.xml"],
     ["Selected full text", "The same selected items. Full text appears only when the source explicitly permits redistribution.", "/feed/full.xml"],
     ["All items from the last 7 days", "Available items from the last 7 days, ordered by original publication date.", "/feed/all.xml"],
-    [withSubject("briefing"), `Stored briefings, up to 30 issues. This private pilot has no scheduled report job.`, "/feed/daily.xml"],
+    [withSubject("briefing"), `Stored briefings, up to 30 issues. Briefings are not generated on a schedule.`, "/feed/daily.xml"],
   ];
   const categories = CATEGORY_KEYS.join("|");
   return (
@@ -246,7 +246,7 @@ export default function AgentPage() {
       <header>
         <h1 className="text-[24px] font-semibold leading-[1.3] text-ink">Read {SITE.name} with your tools</h1>
         <p className="mt-1.5 text-[13px] text-ink-3">MCP, RSS and REST API v1 provide anonymous read-only access. No API key is required.</p>
-        <p className="mt-3 text-[13px] leading-relaxed text-ink-3">Private pilot with manual collection only. Collection is stopped between operator-run batches. There is no report cron or scheduled daily release. Reader visits do not trigger model calls.</p>
+        <p className="mt-3 text-[13px] leading-relaxed text-ink-3">Sources are collected twice a day, at 07:00 and 19:00 Singapore time. Briefings are not generated on a schedule. Reader visits do not trigger model calls.</p>
         <div className="mt-3.5 flex flex-wrap items-center gap-1.5">
           <span className={pill}>Read-only</span>
           <span className={`${pill} mono`}>API v1</span>

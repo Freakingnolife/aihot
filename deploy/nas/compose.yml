@@ -1,0 +1,156 @@
+# AdditiveOS Radar on the NAS: reader, API, scheduled refresh and the Codex connector, behind one router.
+# Run from this directory (docker compose build / up -d); settings come from ./.env (copy .env.example).
+# Only the router listens on the host, on 127.0.0.1:38090; the existing Cloudflare Tunnel points at it.
+# Runbook: README.md
+name: additiveos-radar
+
+x-app: &app
+  build:
+    context: ../..
+    dockerfile: Dockerfile
+  image: additiveos-radar-app:local
+  restart: unless-stopped
+  env_file: .env
+  environment: &app-env
+    NODE_ENV: production
+    AIHOT_ENVIRONMENT: production
+    DATABASE_URL: postgres://radar:${POSTGRES_PASSWORD:-}@db:5432/additiveos_radar
+    AIHOT_DATA_DIR: /data
+    API_BASE_URL: http://api:3001
+    JINA_BODY_FALLBACK: "false"
+  volumes:
+    - data:/data
+
+services:
+  db:
+    image: postgres:17-bookworm
+    restart: unless-stopped
+    stop_grace_period: 60s
+    environment:
+      POSTGRES_USER: radar
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-}
+      POSTGRES_DB: additiveos_radar
+    volumes:
+      - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U radar -d additiveos_radar"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  # Applies pending database migrations, then exits. No seed: sources come from the restored database.
+  migrate:
+    <<: *app
+    restart: "no"
+    command: ["node", "scripts/migrate.ts"]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    <<: *app
+    command: ["node", "apps/api/src/main.ts"]
+    environment:
+      <<: *app-env
+      API_HOST: 0.0.0.0
+      API_PORT: "3001"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/api/health').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # The reader. Not a secrets holder: only what it renders pages with. Its port is on the host's loopback
+  # because the router runs in the host network (see router) and reaches it there.
+  web:
+    image: additiveos-radar-app:local
+    restart: unless-stopped
+    command: ["node", "apps/web/server.ts"]
+    environment:
+      NODE_ENV: production
+      WEB_HOST: 0.0.0.0
+      WEB_PORT: "3000"
+      API_BASE_URL: http://api:3001
+      SITE_URL: ${SITE_URL:-https://additiveos.com}
+      TRUST_PROXY: ${TRUST_PROXY:-true}
+    ports:
+      - "127.0.0.1:${WEB_LOOPBACK_PORT:-38091}:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/privacy').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # Twice a day (07:00 and 19:00 Singapore): collect, fetch pages, process new articles. Never the worker app.
+  # Waits up to 210 s on stop so a model request in flight finishes (an interrupted one leaves an
+  # "outcome unknown" receipt).
+  scheduler:
+    <<: *app
+    command: ["node", "scripts/scheduled-refresh.ts"]
+    stop_grace_period: 210s
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      codex-shim:
+        condition: service_healthy
+
+  # OpenAI-compatible endpoint on the owner's Codex sign-in (scripts/codex-shim.ts runs `codex exec`).
+  # Reachable only inside the compose network. It reads and refreshes auth.json in CODEX_AUTH_DIR.
+  codex-shim:
+    build:
+      context: ../..
+      dockerfile: deploy/nas/codex-shim.Dockerfile
+    image: additiveos-radar-codex-shim:local
+    restart: unless-stopped
+    environment:
+      CODEX_HOME: /home/node/.codex
+      CODEX_SHIM_HOST: 0.0.0.0
+      CODEX_SHIM_PORT: "4340"
+      CODEX_SHIM_MAX_RUNNING: "4"
+      CODEX_MODEL: ${CODEX_MODEL:-gpt-6.1-sol}
+      CODEX_EFFORT: ${CODEX_EFFORT:-medium}
+    volumes:
+      - ${CODEX_AUTH_DIR:-./codex-auth}:/home/node/.codex
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('node:net').connect(4340, '127.0.0.1').on('connect', () => process.exit(0)).on('error', () => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # One hostname, two services: /advisor, /static/* and /api/early-access go to the landing page,
+  # everything else (including /privacy) to the reader. It runs in the host network because the landing
+  # container publishes only 127.0.0.1:38088, which a bridge-network container cannot reach (host-gateway
+  # would arrive on the bridge address, not on loopback). It listens on the host's 127.0.0.1:38090
+  # (`ports` does not apply in host mode).
+  router:
+    image: additiveos-radar-app:local
+    restart: unless-stopped
+    network_mode: host
+    command: ["node", "scripts/combined-preview.ts"]
+    environment:
+      HOST: 127.0.0.1
+      PORT: ${ROUTER_PORT:-38090}
+      NEWS: http://127.0.0.1:${WEB_LOOPBACK_PORT:-38091}
+      LANDING: ${LANDING_UPSTREAM:-http://127.0.0.1:38088}
+    depends_on:
+      web:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:' + process.env.PORT + '/api/health').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  db: {}
+  data: {}

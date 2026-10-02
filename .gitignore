@@ -17,3 +17,6 @@ fontsource-noto-sans-sc-*.tgz
 
 # Local pilot supervision/runtime artifacts
 .local/
+
+# NAS deployment: real settings and the Codex sign-in never go into git
+deploy/nas/codex-auth/

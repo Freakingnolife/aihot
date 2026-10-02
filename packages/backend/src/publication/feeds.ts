@@ -22,10 +22,10 @@ interface FeedMeta {
 }
 
 const FEEDS: Record<"selected" | "selectedFull" | "all" | "daily", FeedMeta> = {
-  selected: { id: "selected", path: "/feed.xml", title: `${SITE.name} — Selected drafts`, description: "Private selected summaries with publisher attribution and original links. Relevance is not factual validation.", homePath: "/", pollHintMinutes: 30 },
-  selectedFull: { id: "selected-full", path: "/feed/full.xml", title: `${SITE.name} — Selected drafts`, description: "Full text requires explicit source permission; this pilot provides summaries only.", homePath: "/", pollHintMinutes: 30 },
-  all: { id: "all", path: "/feed/all.xml", title: `${SITE.name} — All drafts`, description: "Recent eligible drafts from the existing publication read model. Historical imports retain original dates.", homePath: "/all", pollHintMinutes: 30 },
-  daily: { id: "daily", path: "/feed/daily.xml", title: `${SITE.name} — Briefings`, description: "Automatic report archive. No report schedule is running in this private pilot.", homePath: "/daily", pollHintMinutes: 30 },
+  selected: { id: "selected", path: "/feed.xml", title: `${SITE.name} — Selected`, description: "Selected summaries with publisher attribution and original links. Relevance is not factual validation.", homePath: "/", pollHintMinutes: 30 },
+  selectedFull: { id: "selected-full", path: "/feed/full.xml", title: `${SITE.name} — Selected full text`, description: "Full text requires explicit source permission; otherwise summaries only.", homePath: "/", pollHintMinutes: 30 },
+  all: { id: "all", path: "/feed/all.xml", title: `${SITE.name} — All news`, description: "Recent eligible stories from the existing publication read model. Historical imports retain original dates.", homePath: "/all", pollHintMinutes: 30 },
+  daily: { id: "daily", path: "/feed/daily.xml", title: `${SITE.name} — Briefings`, description: "Automatic report archive. Reports are not generated on a schedule.", homePath: "/daily", pollHintMinutes: 30 },
 };
 
 /** RSS <author> needs an address; a no-reply one on the site's own domain. */
@@ -81,7 +81,7 @@ function fullContent(r: FeedRow, aihot: string): string | null {
     html = r.language !== "zh" && r.tr_html && r.tr_complete ? r.tr_html : r.body_html;
   }
   if (!html) return null;
-  return `${proxyBodyImages(html, true, FEED_IMAGE_SECONDS)}<p>Private draft via ${escapeXml(SITE.name)}. Read the source and other drafts at <a href="${aihot}">${aihot}</a></p>`;
+  return `${proxyBodyImages(html, true, FEED_IMAGE_SECONDS)}<p>Via ${escapeXml(SITE.name)}. Read the source and other stories at <a href="${aihot}">${aihot}</a></p>`;
 }
 
 function itemXml(r: FeedRow, includeContent: boolean): string {
@@ -138,7 +138,7 @@ export async function itemFeed(kind: ItemFeedKind, category: PublicApiCategoryKe
     meta = {
       title: includeContent ? `${SITE.name} — ${label} full feed` : `${SITE.name} — ${label}`,
       description: includeContent
-        ? `${SITE.name} selected ${label} drafts. Full text requires explicit source permission.`
+        ? `${SITE.name} selected ${label} stories. Full text requires explicit source permission.`
         : `${SITE.name} selected ${label} draft summaries with original links.`,
       homePath: "/",
       selfPath: includeContent ? `/feed/full/category/${category}.xml` : `/feed/category/${category}.xml`,

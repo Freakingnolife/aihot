@@ -12,7 +12,7 @@ export function headers() {
 }
 
 export function meta() {
-  return pageMeta({ title: "Working use notice", description: `Unapproved working notice for this private pilot.`, path: "/terms", image: "/og/pages/terms.png" });
+  return pageMeta({ title: "Use notice", description: "AdditiveOS Radar publishes attributed publisher reporting, summarised by AdditiveOS. It is not engineering advice.", path: "/terms", image: "/og/pages/terms.png" });
 }
 
 export default function TermsPage() {
@@ -21,7 +21,7 @@ export default function TermsPage() {
       doc={TERMS.doc}
       rendered={TERMS.rendered}
       eyebrow={SITE.name}
-      footer={<LegalFooterLinks links={[{ to: "/privacy", label: "Working privacy notice" }, { to: "/agent", label: "API & MCP" }]} note={`Working use notice ${TERMS.doc.meta["Status"] ?? ""} · ${TERMS.doc.meta["Updated"] ?? ""}`} />}
+      footer={<LegalFooterLinks links={[{ to: "/privacy", label: "Privacy notice" }, { to: "/agent", label: "API & MCP" }]} note={`Use notice · Updated ${TERMS.doc.meta["Updated"] ?? ""}`} />}
     />
   );
 }
