@@ -8,7 +8,8 @@ import { beijingDate } from "../lib/format";
 import { EmptyState } from "../components/ui/Page";
 import { ReportLayout } from "../features/report/ReportLayout";
 import { ReportPaper } from "../features/report/ReportPaper";
-import { LeadStories, splitLead } from "../features/feed/LeadStories";
+import { LeadStories } from "../features/feed/LeadStories";
+import { splitLead } from "../features/feed/lead";
 import { KIND_LABEL, kindFromPath } from "../features/report/format";
 
 export async function loader({ request }: Route.LoaderArgs) {

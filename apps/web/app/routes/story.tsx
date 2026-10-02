@@ -194,8 +194,8 @@ export default function StoryPage() {
   return (
     <div className="mx-auto max-w-[var(--page-max-reading)] pb-10">
       <nav aria-label="Location" className="flex items-center gap-2.5 pb-4 pt-5 text-[12px] text-ink-4 lg:pb-5 lg:pt-4">
-        <Link to="/hot" className="inline-flex items-center gap-1.5 transition-colors hover:text-ink">
-          <IconArrowLeft size={15} /> Trending
+        <Link to="/all" className="inline-flex items-center gap-1.5 transition-colors hover:text-ink">
+          <IconArrowLeft size={15} /> Recent
         </Link>
         <span className="h-3 w-px bg-line-strong" aria-hidden="true" />
         <span>Story details</span>
@@ -376,9 +376,7 @@ export default function StoryPage() {
                 {story.whyHot.rank && (
                   <>
                     <span className="mx-1">·</span>
-                    <Link to="/hot" className="text-accent hover:underline">
-                      Trending rank {story.whyHot.rank}
-                    </Link>
+                    <span>Trending rank {story.whyHot.rank}</span>
                   </>
                 )}
               </p>

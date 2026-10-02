@@ -231,9 +231,6 @@ export default function AboutPage() {
           <Link to="/" prefetch="intent" className={buttonClass("primary", "lg")}>
             Browse recent drafts <IconArrowRight size={15} />
           </Link>
-          <Link to="/daily" prefetch="intent" className={buttonClass("secondary", "lg")}>
-            Browse stored briefings
-          </Link>
         </div>
       </header>
 

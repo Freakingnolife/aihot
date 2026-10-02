@@ -1,18 +1,9 @@
 // The top of the first page: one large lead story and up to three beside it, so the page opens on pictures instead
-// of a wall of text. Stories with the publisher's photo come first; the order among them stays newest first.
+// of a wall of text, then the "This week" overview. Which stories qualify is decided in ./lead.
 import type { FeedItemSummary } from "@aihot/contracts/site";
 import { IntentLink } from "../../components/ui/IntentLink";
 import { Cover } from "../../components/ui/Cover";
 import { markRead } from "../../lib/local-state";
-
-const HERO_COUNT = 4;
-
-/** The lead stories and the rest of the page, in the order the list keeps. */
-export function splitLead(items: FeedItemSummary[]): { lead: FeedItemSummary[]; rest: FeedItemSummary[] } {
-  const news = items.filter((it) => it.channel === "news");
-  const lead = [...news.filter((it) => it.cover), ...news.filter((it) => !it.cover)].slice(0, HERO_COUNT);
-  return { lead, rest: items.filter((it) => !lead.includes(it)) };
-}
 
 const DAY = new Intl.DateTimeFormat("en-SG", { day: "numeric", month: "short", timeZone: "Asia/Shanghai" });
 
@@ -68,6 +59,34 @@ export function LeadStories({ items }: { items: FeedItemSummary[] }) {
     <section aria-label="Top stories" className="mb-8 grid gap-6 border-b border-line pb-8 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:gap-8">
       <Lead item={first} />
       {side.length > 0 && <div className="grid content-start gap-6 lg:gap-7">{side.map((it) => <Side key={it.id} item={it} />)}</div>}
+    </section>
+  );
+}
+
+/** The next featured stories as a compact list: headline, publisher, date and why it matters. */
+export function WeekOverview({ items }: { items: FeedItemSummary[] }) {
+  if (items.length === 0) return null;
+  return (
+    <section aria-labelledby="this-week" className="mb-8 border-b border-line pb-8">
+      <h2 id="this-week" className="text-[18px] font-semibold leading-8 text-ink">This week in 3D printing</h2>
+      <ol className="mt-2 divide-y divide-line-soft">
+        {items.map((item) => (
+          <li key={item.id} className="relative min-w-0 py-3.5" data-item-id={item.id}>
+            <Meta item={item} />
+            <h3 className="mt-1 text-[16px] font-semibold leading-[1.4] text-ink">
+              <IntentLink to={`/items/${item.id}`} onClick={() => markRead(item.id)} className="after:absolute after:inset-0 after:content-['']">
+                {item.title}
+              </IntentLink>
+            </h3>
+            {item.reason && (
+              <p className="mt-1 max-w-[75ch] text-[13px] leading-[1.65] text-ink-3">
+                <span className="font-semibold text-ink-2">Why it matters </span>
+                {item.reason}
+              </p>
+            )}
+          </li>
+        ))}
+      </ol>
     </section>
   );
 }

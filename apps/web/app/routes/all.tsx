@@ -8,7 +8,8 @@ import { listPath, pageMeta } from "../lib/seo";
 import { CategoryTabs, SearchField } from "../features/feed/Filters";
 import { PillTabs } from "../components/ui/Tabs";
 import { DayList, Pagination } from "../features/feed/DayList";
-import { LeadStories, splitLead } from "../features/feed/LeadStories";
+import { LeadStories, WeekOverview } from "../features/feed/LeadStories";
+import { splitLead } from "../features/feed/lead";
 import { EmptyState } from "../components/ui/Page";
 import { RingMark } from "../components/Logo";
 
@@ -84,8 +85,8 @@ export default function AllPage() {
     return `/all?${sp}`;
   };
   const title = f.q ? `Search“${f.q}”` : f.tag ? `#${f.tag}` : null;
-  // Lead stories open the newest page of Recent only; Archive and search keep their plain lists (unknown-date groups stay visible).
-  const { lead, rest } = mode === "recent" && data.page === 1 && !f.q ? splitLead(data.items) : { lead: [], rest: data.items };
+  // Featured lead stories and the "This week" overview open the newest page of Recent only; Archive and search keep their plain lists (unknown-date groups stay visible).
+  const { lead, overview, rest } = mode === "recent" && data.page === 1 && !f.q ? splitLead(data.items) : { lead: [], overview: [], rest: data.items };
 
 
   return (
@@ -155,6 +156,7 @@ export default function AllPage() {
         ) : (
           <>
             <LeadStories items={lead} />
+            <WeekOverview items={overview} />
             <DayList items={rest} todayCount={f.q ? null : data.todayCount} showTags originalDates />
           </>
         )}

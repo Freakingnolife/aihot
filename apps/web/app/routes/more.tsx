@@ -5,7 +5,7 @@ import { Link, useRouteLoaderData } from "react-router";
 import type { loader as rootLoader } from "../root";
 import { useChangelogDot } from "../components/shell/Masthead";
 import { pageMeta } from "../lib/seo";
-import { IconBookmark, IconChart, IconChevronRight, IconFlame, IconGrid, IconHeart, IconHistory, IconMessage, IconPlug } from "../components/icons";
+import { IconBookmark, IconChart, IconChevronRight, IconGrid, IconHeart, IconHistory, IconMessage, IconPlug } from "../components/icons";
 
 /** Shared caches may keep this page for five minutes. */
 export function headers() {
@@ -31,7 +31,6 @@ const GROUPS: Array<{ title: string; rows: Row[] }> = [
   {
     title: "Reading tools",
     rows: [
-      { to: "/hot", label: "Trending", icon: <IconFlame size={18} /> },
       { to: "/starred", label: "Bookmarks", icon: <IconBookmark size={18} /> },
     ],
   },

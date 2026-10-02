@@ -1,10 +1,9 @@
 // Site navigation, one place for the desktop sidebar, the mobile tab bar and the mobile "More" page.
-import { withSubject } from "@aihot/industry/site";
 import { hrefWith } from "../../features/feed/Filters";
 import { FEATURES } from "@aihot/industry/features";
 import type { ReactNode } from "react";
 import {
-  IconApps, IconBolt, IconBookmark, IconChart, IconDoc, IconFlame, IconGrid, IconHeart, IconHistory, IconList, IconMessage, IconPlug,
+  IconApps, IconBolt, IconBookmark, IconChart, IconGrid, IconHeart, IconHistory, IconList, IconMessage, IconPlug,
 } from "../icons";
 
 export interface NavItem {
@@ -23,8 +22,6 @@ export const SIDEBAR: Array<{ title: string; items: NavItem[] }> = [
     items: [
       { to: "/all", label: "Recent", icon: IconBolt, end: true },
       { to: "/all?mode=archive", label: "Archive", icon: IconList },
-      { to: "/hot", label: "Trending", icon: IconFlame },
-      { to: "/daily", label: withSubject("briefings"), icon: IconDoc },
       { to: "/topics", label: "Topics", icon: IconGrid },
       { to: "/starred", label: "Bookmarks", icon: IconBookmark },
     ],
@@ -55,12 +52,12 @@ export const SIDEBAR: Array<{ title: string; items: NavItem[] }> = [
 export const TABBAR: NavItem[] = [
   { to: "/all", label: "Recent", icon: IconBolt, end: true },
   { to: "/all?mode=archive", label: "Archive", icon: IconList },
-  { to: "/daily", label: "Briefings", icon: IconDoc },
+  { to: "/topics", label: "Topics", icon: IconGrid },
   { to: "/more", label: "More", icon: IconApps, changelog: true },
 ];
 
 /** Pages reached from the mobile "More" tab keep that tab highlighted. */
-export const MORE_PATHS = ["/more", "/hot", "/topics", "/starred", "/leaderboard", "/codex-reset", "/agent", "/about", "/changelog", "/feedback", "/terms", "/privacy"];
+export const MORE_PATHS = ["/more", "/hot", "/starred", "/leaderboard", "/codex-reset", "/agent", "/about", "/changelog", "/feedback", "/terms", "/privacy"];
 
 export function tabIsActive(item: NavItem, pathname: string, search = ""): boolean {
   if (item.to.startsWith("/all")) return pathname === "/all" && (new URLSearchParams(search).get("mode") === "archive") === item.to.includes("mode=archive");
