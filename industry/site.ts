@@ -1,6 +1,6 @@
 export const SITE = {
   name: "AdditiveOS Radar", subject: "AM", homeTitle: "AdditiveOS Radar — Private AM intelligence",
-  description: "Attributed additive manufacturing news for application and service-bureau teams. Private drafts, not validated engineering advice.",
+  description: "Attributed additive manufacturing news for professionals who use and evaluate 3D printing. Private drafts, not validated engineering advice.",
   tagline: "What changed in additive manufacturing", locale: "en", defaultUrl: "http://127.0.0.1:4310",
   mcpPrefix: "additiveos_radar", contactEmail: null as string | null,
   footerNote: "Private pilot · Publisher claims remain attributed", icp: null as string | null,

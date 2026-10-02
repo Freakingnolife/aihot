@@ -539,3 +539,4 @@
 @font-face { font-family: Manrope; src: url('/fonts/Manrope-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
 :root, [data-theme="dark"] { color-scheme: light; --bg:#F5F1E6; --bg-sunk:#F5F1E6; --bg-muted:#F9EBE3; --surface:#FFFDF7; --surface-2:#FFFDF7; --raised:#FFFDF7; --sidebar:#F5F1E6; --daybar:#F5F1E6; --field:#FFFDF7; --ink:#192B3F; --ink-2:#192B3F; --ink-3:#606C75; --ink-4:#606C75; --line:#D7D0BF; --line-strong:#7E827E; --line-soft:#D7D0BF; --accent:#B83C22; --accent-ink:#9F301B; --accent-soft:#F9EBE3; --accent-softer:#F8E9E0; --accent-contrast:#fff; --note:#606C75; }
 :focus-visible { outline: 2px solid #192B3F; outline-offset: 3px; }
+:root { --page-max-wide: 1200px; }

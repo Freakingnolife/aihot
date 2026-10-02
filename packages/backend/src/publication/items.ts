@@ -1,8 +1,9 @@
 // Public read layer, item level. Every exit (site API, v1, RSS, MCP, sitemap) reads
 // items through these functions; visibility, release gate and body licences are applied here.
 import type { CategoryKey, ChannelKey } from "@aihot/contracts/taxonomy";
-import type { FeedItemSummary, ItemSummary, MediaView, SourceKind, XPostView } from "@aihot/contracts/site";
+import type { CoverView, FeedItemSummary, ItemSummary, MediaView, SourceKind, XPostView } from "@aihot/contracts/site";
 import { sql, type Db } from "../db.ts";
+import { pickCoverImage } from "../media/cover.ts";
 import { proxiedImage, proxiedImageSet } from "../media/imgproxy.ts";
 import { displayTags } from "./rules.ts";
 
@@ -41,6 +42,7 @@ export interface ItemRow {
   source_mode: string;
   source_icon: string | null;
   x_post: Record<string, any> | null;
+  media: unknown;
   author: string | null;
   language: string | null;
   story_public_id: string | null;
@@ -56,7 +58,7 @@ export const ITEM_COLUMNS = sql`
   p.selected, p.eligible, p.channel, p.url, p.published_at, p.discovered_at, p.timeline_at, p.sort_at, p.first_party, p.visibility,
   p.body_mode, p.syndicate, p.indexable, p.visible_after, p.backfill, p.fact_id, p.story_id,
   s.id AS source_id, s.name AS source_name, s.kind AS source_kind, s.participation_mode AS source_mode, s.icon_url AS source_icon,
-  a.x_post, a.author, a.language,
+  a.x_post, a.media, a.author, a.language,
   st.public_id::text AS story_public_id, st.title AS story_title,
   CASE WHEN p.channel = 'x' THEN tr.body_text END AS zh_text, qt.text_zh AS quoted_zh`;
 
@@ -182,10 +184,19 @@ export function toItemSummary(row: ItemRow): ItemSummary {
   };
 }
 
+/** The article's own picture for a card, credited to its publisher; none for X posts (their media shows in the post). */
+export function coverView(row: Pick<ItemRow, "channel" | "media" | "url" | "source_name">): CoverView | null {
+  const picked = row.channel === "news" ? pickCoverImage(row.media) : null;
+  const url = proxiedImage(picked, "thumb");
+  if (!picked || !url) return null;
+  return { url, srcSet: proxiedImageSet(picked, "card"), largeSrcSet: proxiedImageSet(picked, "hero"), credit: { source: row.source_name, url: row.url } };
+}
+
 /** Project the shared public article into the exact fields a site card renders. */
 export function toFeedItemSummary(row: ItemRow): FeedItemSummary {
   const item = toItemSummary(row);
   return {
+    cover: coverView(row),
     id: item.id, title: item.title, summary: item.summary, reason: item.reason,
     backfill: item.backfill, discoveredAt: item.discoveredAt,
     source: { name: item.source.name }, publishedAt: item.publishedAt, timelineAt: item.timelineAt,

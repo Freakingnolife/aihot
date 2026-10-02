@@ -196,7 +196,7 @@ export default function ItemPage() {
     <RailSection title="Source">
       <div className="text-[14px] font-semibold leading-snug text-ink">{isX ? item.x!.authorName : item.source.name}</div>
       <div className="mt-1 text-[12.5px] leading-relaxed text-ink-3">
-        {isX ? `@${item.x!.handle} · X` : item.author ?? hostOf(item.links.original)}
+        {isX ? `@${item.x!.handle} · X` : hostOf(item.links.original)}
       </div>
       <div className="mt-3 text-[12px] text-ink-4">{item.publishedAt ? "Published" : "Publication date unknown · collected"}</div>
       <time dateTime={publishedIso} className="mono mt-0.5 block text-[12.5px] text-ink-2">
@@ -222,7 +222,7 @@ export default function ItemPage() {
   const notes = (
     <>
       {item.reason && !summaryOnly ? (
-        <RailSection title="Editorial judgment">
+        <RailSection title="Why it matters">
           {verdict && <div className="mb-3">{verdict}</div>}
           <p className="text-[13.5px] leading-[1.8] text-ink-2">{item.reason}</p>
         </RailSection>
@@ -283,7 +283,6 @@ export default function ItemPage() {
           <div className={`flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-ink-3 2xl:hidden ${isX ? "" : "mb-3"}`}>
             <span className="font-semibold text-ink-2">{isX ? item.x!.authorName : item.source.name}</span>
             {isX && <span>· @{item.x!.handle} · X</span>}
-            {item.author && !isX && <span>· {item.author}</span>}
             <span>·</span>
             {!item.publishedAt && <span>Original date unknown · discovered</span>}
             {item.backfill && <span>Historical import ·</span>}
@@ -299,8 +298,7 @@ export default function ItemPage() {
               </span>
             )}
           </div>
-          {!isX && <h1 className="text-[26px] font-bold leading-[1.38] tracking-[-0.01em] text-ink lg:text-[32px] lg:leading-[1.34] xl:text-[36px] xl:leading-[1.3]">{item.title}</h1>}
-          {!isX && item.originalTitle && <p className="mt-2.5 text-[14px] leading-relaxed text-ink-4">{item.originalTitle}</p>}
+          {!isX && <h1 className="text-[30px] font-normal leading-[1.15] tracking-[-0.035em] text-ink lg:text-[40px] xl:text-[44px]">{item.title}</h1>}
 
           {item.summary && (
             <section className={isX ? "mt-4" : "mt-7 xl:mt-8"}>
@@ -311,7 +309,7 @@ export default function ItemPage() {
 
           {item.reason && !summaryOnly && (
             <section className="mt-6 border-t border-line pt-4 lg:hidden">
-              <div className="mb-1 text-[12px] font-semibold text-ink-3">Editorial judgment</div>
+              <div className="mb-1 text-[12px] font-semibold text-ink-3">Why it matters</div>
               <p className="text-[15px] leading-[1.75] text-ink-2">{item.reason}</p>
             </section>
           )}
@@ -352,7 +350,7 @@ export default function ItemPage() {
           {isX && item.x!.quoted?.text && <QuotedPost quoted={item.x!.quoted} original={lang === "original"} />}
 
           <p className="mt-8 text-[13px] text-ink-4">
-            Source：
+            Source:{" "}
             <a href={item.links.original} target="_blank" rel="noopener noreferrer" className="text-ink-3 hover:text-accent">
               {isX ? item.x!.authorName : item.source.name}
             </a>

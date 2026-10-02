@@ -25,6 +25,15 @@ export interface MediaView {
   srcSet?: string;
 }
 
+/** The article's own picture on a card, with the credit shown beside it. */
+export interface CoverView {
+  url: string;
+  srcSet: string | null;
+  /** Wider candidates for the lead story. */
+  largeSrcSet: string | null;
+  credit: { source: string; url: string };
+}
+
 export interface XPostView {
   authorName: string;
   handle: string;
@@ -70,6 +79,7 @@ export interface FeedItemSummary extends Pick<ItemSummary, "id" | "title" | "sum
   backfill?: boolean;
   discoveredAt?: string;
   source: Pick<SourceRef, "name">;
+  cover: CoverView | null;
   x: (Pick<XPostView, "authorName" | "handle" | "avatarUrl" | "avatarSrcSet" | "media"> & {
     quoted: Omit<NonNullable<XPostView["quoted"]>, "url"> | null;
   }) | null;

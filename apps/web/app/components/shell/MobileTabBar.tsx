@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router";
 import { TABBAR, tabIsActive, navHref } from "./nav";
-import { useChangelogDot } from "./Sidebar";
+import { useChangelogDot } from "./Masthead";
 
 /** Bottom tab bar of the mobile shell (up to 960px), as on the original site. */
 export function MobileTabBar({ changelogVersion }: { changelogVersion: string | null }) {

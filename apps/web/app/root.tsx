@@ -7,7 +7,7 @@ import {
 import type { ReactNode } from "react";
 import type { Route } from "./+types/root";
 import "./app.css";
-import { Sidebar } from "./components/shell/Sidebar";
+import { Masthead, SiteFooter } from "./components/shell/Masthead";
 import { MobileTabBar } from "./components/shell/MobileTabBar";
 import { BackToTop, NavigationProgress } from "./components/shell/Chrome";
 import { RingMark } from "./components/Logo";
@@ -67,21 +67,22 @@ export function meta({ error }: Route.MetaArgs) {
   return [{ title: titled(notFound ? "Page not found" : "Unable to load") }, { name: "robots", content: "noindex" }];
 }
 
-/** Sidebar, main column and phone tab bar around a page (or an error). */
+/** Masthead, main column, footer and phone tab bar around a page (or an error). */
 function SiteShell({ changelogVersion, children }: { changelogVersion: string | null; children: ReactNode }) {
   const navigation = useNavigation();
   return (
-    <div className="flex min-h-dvh">
+    <div className="flex min-h-dvh flex-col">
       <NavigationProgress active={navigation.state === "loading"} />
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[70] focus:rounded-control focus:bg-surface focus:px-3 focus:py-2">
         Skip to content
       </a>
-      <Sidebar changelogVersion={changelogVersion} />
-      {/* Mobile shell (≤ 960px): one centred column, the tab bar below. Desktop: the page fills the main area
-          up to the list width (--page-max-wide), centred beyond it. */}
-      <main id="main" className="min-w-0 flex-1 pb-[calc(6rem+env(safe-area-inset-bottom))] lg:px-7 lg:pb-[72px] lg:pt-6">
-        <div className="mx-auto w-full max-w-[640px] px-4 lg:max-w-[var(--page-max-wide)] lg:px-0"><aside className="my-4 border-l-4 border-accent bg-bg-sunk px-4 py-3 text-sm"><strong>Private draft pilot</strong> · Attributed publisher reports, not validated engineering advice. Historical imports retain their original dates.</aside>{children}</div>
+      <Masthead />
+      {/* Mobile shell (≤ 960px): one centred column, the tab bar below. Desktop: the page shares the header's
+          4.5% side margins, so every row starts where the wordmark does. */}
+      <main id="main" className="min-w-0 flex-1 pb-[calc(6rem+env(safe-area-inset-bottom))] lg:px-[4.5%] lg:pb-16 lg:pt-8">
+        <div className="mx-auto w-full max-w-[640px] px-4 lg:max-w-none lg:px-0">{children}</div>
       </main>
+      <SiteFooter />
       <MobileTabBar changelogVersion={changelogVersion} />
       <BackToTop />
     </div>

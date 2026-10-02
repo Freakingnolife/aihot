@@ -8,6 +8,7 @@ import { listPath, pageMeta } from "../lib/seo";
 import { CategoryTabs, SearchField } from "../features/feed/Filters";
 import { PillTabs } from "../components/ui/Tabs";
 import { DayList, Pagination } from "../features/feed/DayList";
+import { LeadStories, splitLead } from "../features/feed/LeadStories";
 import { EmptyState } from "../components/ui/Page";
 import { RingMark } from "../components/Logo";
 
@@ -57,6 +58,15 @@ function pageHref(params: URLSearchParams, page: number) {
   return s ? `/all?${s}` : "/all";
 }
 
+function PeriodTabs({ mode, href, layoutId }: { mode: string; href: (mode: string) => string; layoutId: string }) {
+  return (
+    <PillTabs label="Publication period" layoutId={layoutId} active={mode} items={[
+      { key: "recent", label: "Recent", to: href("recent") },
+      { key: "archive", label: "Archive", to: href("archive") },
+    ]} />
+  );
+}
+
 export default function AllPage() {
   const { data } = useLoaderData<typeof loader>();
   const [params] = useSearchParams();
@@ -74,23 +84,28 @@ export default function AllPage() {
     return `/all?${sp}`;
   };
   const title = f.q ? `Search“${f.q}”` : f.tag ? `#${f.tag}` : null;
+  // Lead stories open the newest page of Recent only; Archive and search keep their plain lists (unknown-date groups stay visible).
+  const { lead, rest } = mode === "recent" && data.page === 1 && !f.q ? splitLead(data.items) : { lead: [], rest: data.items };
 
 
   return (
     <div className="pb-6">
-      {/* Desktop, as on Selected: the title, then one filter row with the search field aligned on the right. */}
+      {/* Desktop: the title with the period switch, then one filter row with the search field on the right. */}
       <div className="hidden lg:block">
-        <h1 className="text-[24px] font-semibold leading-[1.3] text-ink">{title ?? `${mode === "archive" ? "Archive" : "Recent"} drafts`}</h1>
-        <div className="mb-5 mt-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="text-[clamp(32px,3.4vw,44px)] font-normal leading-[1.15] tracking-[-0.035em] text-ink">{title ?? `${mode === "archive" ? "Archive" : "Recent"} drafts`}</h1>
+          <PeriodTabs mode={mode} href={modeHref} layoutId="pool-mode-desk" />
+        </div>
+        <div className="mb-6 mt-4 flex flex-wrap items-center justify-between gap-3">
           <CategoryTabs base="/all" category={f.category} channel={f.channel} layoutId="all-cat-desk" className="min-w-0 max-w-full" />
           <SearchField variant="track" defaultValue={f.q ?? ""} keep={keep} />
         </div>
       </div>
 
-      {/* Phones: title with today's count, the search bar, then the same filter row as Selected. */}
+      {/* Phones: title with today's count, the search bar, then the same filter row. */}
       <div className="lg:hidden">
         <div className="flex flex-wrap items-baseline justify-between gap-2 pb-3 pt-5">
-          <h1 className="text-[22px] font-bold text-ink">{title ?? `${mode === "archive" ? "Archive" : "Recent"} drafts`}</h1>
+          <h1 className="text-[32px] font-normal leading-[1.15] tracking-[-0.035em] text-ink">{title ?? `${mode === "archive" ? "Archive" : "Recent"} drafts`}</h1>
           {!f.q && (
             <span className="text-[12.5px] text-ink-4">
               Published today <span className="num">{data.todayCount}</span> drafts
@@ -101,15 +116,9 @@ export default function AllPage() {
         <div className="-mx-4 mt-3 border-b border-line-soft px-4 pb-3">
           <CategoryTabs base="/all" category={f.category} channel={f.channel} layoutId="all-cat-mobile" size="sm" className="min-w-0 max-w-full" />
         </div>
-      </div>
-
-      <div className="my-4 space-y-2">
-        <PillTabs label="Publication period" layoutId="pool-mode" active={mode} items={[
-          {key: "recent", label: "Recent", to: modeHref("recent")},
-          {key: "archive", label: "Archive", to: modeHref("archive")},
-        ]} />
-        <p className="text-[13px] leading-relaxed text-ink-3">{mode === "recent" ? "Original publication dates within the last 30 days. Older and unknown-date drafts are in Archive." : "All available drafts, including older and unknown publication dates. Search relevance can place unknown-date matches first."}</p>
-        <p className="text-[12px] leading-relaxed text-ink-4">Manual collection only. No continuous collection or scheduled reports. Import time does not make a story recent.</p>
+        <div className="mb-5 mt-3">
+          <PeriodTabs mode={mode} href={modeHref} layoutId="pool-mode-mobile" />
+        </div>
       </div>
 
       {f.q && (
@@ -144,10 +153,17 @@ export default function AllPage() {
             </EmptyState>
           </div>
         ) : (
-          <DayList items={data.items} todayCount={f.q ? null : data.todayCount} showTags originalDates />
+          <>
+            <LeadStories items={lead} />
+            <DayList items={rest} todayCount={f.q ? null : data.todayCount} showTags originalDates />
+          </>
         )}
       </div>
       <Pagination page={data.page} pageCount={data.pageCount} href={(p) => pageHref(params, p)} />
+      <div className="mt-8 space-y-1 border-t border-line pt-4 text-[12.5px] leading-relaxed text-ink-4">
+        <p>{mode === "recent" ? "Recent shows original publication dates within the last 30 days. Older and unknown-date drafts are in Archive." : "Archive shows all available drafts, including older and unknown publication dates. Search relevance can place unknown-date matches first."}</p>
+        <p>Manual collection only. No continuous collection or scheduled reports. Import time does not make a story recent.</p>
+      </div>
       {data.page >= 50 && <p className="mt-4 text-center text-[12px] text-ink-4">Up to 50 pages. Search for older drafts.</p>}
     </div>
   );

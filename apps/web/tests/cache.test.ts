@@ -237,7 +237,7 @@ test('desktop and mobile period navigation keep pool filters and reset paginatio
   for(const mode of ['recent','archive']) {
     const res=await fetch(origin+`/all?mode=${mode}&q=part&category=products&tag=metal&channel=firstParty&tab=relevance&page=2`);
     const html=await res.text();assert.equal(res.status,200);
-    for(const label of ['Main navigation','Mobile navigation']) {
+    for(const label of ['News sections','Mobile navigation']) {
       const nav=html.match(new RegExp(`<nav\\b[^>]*aria-label="${label}"[^>]*>([\\s\\S]*?)</nav>`))![1]!;
       for(const target of ['recent','archive']) {
         const hrefs=[...nav.matchAll(/href="([^"]+)"/g)].map(x=>x[1]!.replaceAll('&amp;','&'));

@@ -5,6 +5,7 @@ import { beijingWeekday } from "../../lib/format";
 export const KINDS: ReportKind[] = ["daily", "weekly", "monthly"];
 export const KIND_PATH: Record<ReportKind, string> = { daily: "/daily", weekly: "/weekly", monthly: "/monthly" };
 export const KIND_LABEL: Record<ReportKind, string> = { daily: "Daily briefing", weekly: "Weekly briefing", monthly: "Monthly briefing" };
+export const KIND_SHORT: Record<ReportKind, string> = { daily: "Daily", weekly: "Weekly", monthly: "Monthly" };
 
 export function kindFromPath(pathname: string): ReportKind {
   if (pathname.startsWith("/weekly")) return "weekly";

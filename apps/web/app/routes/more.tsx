@@ -3,7 +3,7 @@ import { FEATURES } from "@aihot/industry/features";
 import type { ReactNode } from "react";
 import { Link, useRouteLoaderData } from "react-router";
 import type { loader as rootLoader } from "../root";
-import { useChangelogDot } from "../components/shell/Sidebar";
+import { useChangelogDot } from "../components/shell/Masthead";
 import { pageMeta } from "../lib/seo";
 import { IconBookmark, IconChart, IconChevronRight, IconFlame, IconGrid, IconHeart, IconHistory, IconMessage, IconPlug } from "../components/icons";
 

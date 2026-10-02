@@ -40,7 +40,7 @@ function fromResponse(r: TimelineResponse): ListState {
 const WEEKDAY_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 /** Sticky day header: a quiet row on desktop, a grey full-width bar on phones. */
-export function DayHeader({ day, today, count, collapsed, onToggle, todayLabel = "Today" }: { todayLabel?: string; day: string; today: string; count: number | null; collapsed?: boolean; onToggle?: () => void }) {
+export function DayHeader({ day, today, count, collapsed, onToggle, todayLabel = "Today", flat = false }: { todayLabel?: string; day: string; today: string; count: number | null; collapsed?: boolean; onToggle?: () => void; flat?: boolean }) {
   const [, m, d] = day.split("-").map(Number) as [number, number, number];
   const date = `${m}/${d}`;
   const weekday = beijingWeekday(day);
@@ -53,8 +53,18 @@ export function DayHeader({ day, today, count, collapsed, onToggle, todayLabel =
         {day === today && <span className="text-[12.5px] text-ink-4">{date}</span>}
         <span className="text-[12.5px] text-ink-4">{short}</span>
       </div>
+      {/* Desktop without a time rail (lists by original publication date): the date, then the weekday and count. */}
+      {flat && (
+        <div className="hidden h-12 items-baseline gap-3 pt-2 lg:flex">
+          <span className="text-[18px] font-semibold leading-8 text-ink">{date}</span>
+          <span className="text-[13px] text-ink-4">
+            {weekday}
+            {count !== null && <>{" · "}<span className="num">{count}</span> drafts</>}
+          </span>
+        </div>
+      )}
       {/* Desktop: the date ends where the times end, the fold toggle sits on the rail. */}
-      <div className="hidden h-11 grid-cols-[64px_22px_minmax(0,1fr)] items-center lg:grid">
+      <div className={`hidden h-11 grid-cols-[64px_22px_minmax(0,1fr)] items-center ${flat ? "" : "lg:grid"}`}>
         <button type="button" onClick={onToggle} disabled={!onToggle} className="justify-self-end whitespace-nowrap text-right text-[18px] font-semibold leading-6 text-ink">
           {date}
         </button>

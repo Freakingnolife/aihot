@@ -82,7 +82,7 @@ export function PillTabs({
         aria-label={label}
         role={links ? undefined : "tablist"}
         className={`${fill ? "grid w-full" : "inline-flex w-max"} gap-0.5 rounded-full bg-bg-sunk p-[3px] ring-1 ring-inset ring-line-soft dark:bg-bg-muted/60`}
-        style={fill ? { gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` } : undefined}
+        style={fill ? { gridTemplateColumns: `repeat(${items.length}, minmax(max-content, 1fr))` } : undefined}
       >
         {items.map((t) => {
           const on = t.key === active;

@@ -4,11 +4,11 @@ import { Link } from "react-router";
 import type { ReportNavigationEntry, ReportKind } from "@aihot/contracts/site";
 import { PillTabs } from "../../components/ui/Tabs";
 import { IconChevronRight } from "../../components/icons";
-import { KINDS, KIND_LABEL, KIND_PATH, archiveGroups, archiveMark, chipLabel, reportPath } from "./format";
+import { KINDS, KIND_LABEL, KIND_PATH, KIND_SHORT, archiveGroups, archiveMark, chipLabel, reportPath } from "./format";
 
-/** Daily briefing / Weekly briefing / Monthly briefing as the site's pill switch, spread across the column. */
+/** Daily / Weekly / Monthly as the site's pill switch, spread across the column. */
 function KindSwitch({ kind }: { kind: ReportKind }) {
-  return <PillTabs fill layoutId="report-kind" label="Report period" active={kind} items={KINDS.map((k) => ({ key: k, label: KIND_LABEL[k], to: KIND_PATH[k] }))} />;
+  return <PillTabs fill layoutId="report-kind" label="Report period" active={kind} items={KINDS.map((k) => ({ key: k, label: KIND_SHORT[k], to: KIND_PATH[k] }))} />;
 }
 
 /** Desktop archive column: every issue of this kind, grouped, the current one highlighted. */
@@ -16,12 +16,12 @@ export function ReportArchive({ kind, index, current }: { kind: ReportKind; inde
   const groups = archiveGroups(kind, index);
   const openId = groups.find((g) => g.entries.some((e) => e.key === current))?.id ?? groups[0]?.id;
   return (
-    <aside className="sticky top-0 hidden h-dvh w-[280px] shrink-0 flex-col border-r border-line bg-[color-mix(in_srgb,var(--sidebar)_50%,var(--surface))] pl-5 pr-3 lg:flex dark:bg-[color-mix(in_srgb,var(--sidebar)_50%,var(--bg))]">
-      <div className="pb-4 pt-8">
+    <aside className="sticky top-4 hidden max-h-[calc(100dvh-2rem)] w-[280px] shrink-0 flex-col self-start border-r border-line pr-4 lg:flex">
+      <div className="pb-4">
         <KindSwitch kind={kind} />
       </div>
-      <div className="border-b border-line-strong pb-2 pl-1 text-[11.5px] font-semibold tracking-[0.3em] text-ink">Archive</div>
-      <nav aria-label={`${KIND_LABEL[kind]} archive`} className="scrollbar-thin -mr-3 flex-1 overflow-y-auto pb-6 pr-3">
+      <div className="border-b border-line-strong pb-2 pl-1 text-[13px] font-semibold text-ink">Archive</div>
+      <nav aria-label={`${KIND_LABEL[kind]} archive`} className="scrollbar-thin -mr-4 min-h-0 flex-1 overflow-y-auto pb-6 pr-4">
         {groups.map((g) => (
           <ArchiveGroup key={g.id} g={g} kind={kind} current={current} initiallyOpen={g.id === openId} />
         ))}
@@ -94,7 +94,7 @@ export function ReportPhoneNav({ kind, index, current, today }: { kind: ReportKi
   const chip = "inline-flex h-9 shrink-0 items-center rounded-full border px-4 text-[13px] transition-colors";
   return (
     <div className="pt-3 lg:hidden">
-      <PillTabs fill layoutId="report-kind-phone" label="Report period" active={kind} items={KINDS.map((k) => ({ key: k, label: KIND_LABEL[k], to: KIND_PATH[k] }))} />
+      <PillTabs fill layoutId="report-kind-phone" label="Report period" active={kind} items={KINDS.map((k) => ({ key: k, label: KIND_SHORT[k], to: KIND_PATH[k] }))} />
       {recent.length > 0 && (
         <div className="scrollbar-none -mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1">
           {recent.map((e) => {

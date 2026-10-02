@@ -6,7 +6,7 @@ import type { FeedItemSummary } from "@aihot/contracts/site";
 import { IconChevronRight } from "../../components/icons";
 import { beijingDate } from "../../lib/format";
 import { markRead, useReadSet } from "../../lib/local-state";
-import { DayHeader, TimelineSlot } from "./Timeline";
+import { DayHeader } from "./Timeline";
 import { FeedItem } from "./FeedItem";
 
 export function DayList({ items, todayCount = null, showTags = true, animate = false, originalDates = false }: { items: FeedItemSummary[]; todayCount?: number | null; showTags?: boolean; animate?: boolean; originalDates?: boolean }) {
@@ -27,12 +27,16 @@ export function DayList({ items, todayCount = null, showTags = true, animate = f
     <div>
       {days.map(({ day, items: list }) => (
         <section key={`${day}-${list[0]?.id}`} aria-label={day === "unknown" ? "Unknown publication date" : day}>
-          {day === "unknown" ? <h2 className="py-4 text-[16px] font-semibold text-ink">Unknown publication date</h2> : <DayHeader todayLabel={originalDates ? "Published today" : list.every(it => !it.publishedAt) ? "Discovered today" : "Today"} day={day} today={today} count={day === today ? todayCount : null} />}
+          {day === "unknown" ? <h2 className="py-4 text-[16px] font-semibold text-ink">Unknown publication date</h2> : <DayHeader flat todayLabel={originalDates ? "Published today" : list.every(it => !it.publishedAt) ? "Discovered today" : "Today"} day={day} today={today} count={day === today ? todayCount : null} />}
           <ol className="lg:pt-1">
             {list.map((it) => (
-              <TimelineSlot timeLabel={originalDates ? "" : !it.publishedAt ? "—" : undefined} key={it.id} at={originalDates ? it.publishedAt ?? it.timelineAt : it.timelineAt} fresh={animate} delay={animate ? Math.min(order++, 12) * 25 : 0}>
+              <li
+                key={it.id}
+                className={`border-b border-line-soft py-3.5 last:border-b-0 lg:border-b-0 lg:pb-4 lg:pt-0 ${animate ? "animate-fade-up" : ""}`}
+                style={animate ? { animationDelay: `${Math.min(order++, 12) * 25}ms` } : undefined}
+              >
                 <FeedItem item={it} read={readSet.has(it.id)} onOpen={markRead} showTags={showTags} />
-              </TimelineSlot>
+              </li>
             ))}
           </ol>
         </section>
