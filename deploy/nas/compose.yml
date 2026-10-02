@@ -154,3 +154,10 @@ services:
 volumes:
   db: {}
   data: {}
+
+# The NAS has exhausted Docker's default address pools, so this project uses a fixed private range.
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 10.213.40.0/24
