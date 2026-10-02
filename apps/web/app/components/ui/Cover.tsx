@@ -36,11 +36,13 @@ export function CoverArt({ seed }: { seed: string }) {
  * A story's picture: the publisher's own photo with its credit line (a link to the original article), or
  * generated art when the article has no usable photo. Sized by the parent; the credit sits under the picture.
  */
-export function Cover({ cover, seed, sizes, large = false, ratio = "aspect-[3/2]", className = "" }: {
+export function Cover({ cover, seed, sizes, large = false, credit = true, ratio = "aspect-[3/2]", className = "" }: {
   cover: CoverView | null;
   seed: string;
   sizes: string;
   large?: boolean;
+  /** Show the credit line under the picture; small thumbnails may leave it to the article page. */
+  credit?: boolean;
   /** A Tailwind aspect-ratio class. */
   ratio?: string;
   className?: string;
@@ -72,7 +74,7 @@ export function Cover({ cover, seed, sizes, large = false, ratio = "aspect-[3/2]
           <CoverArt seed={seed} />
         )}
       </div>
-      {photo && (
+      {photo && credit && (
         <figcaption className="relative z-10 mt-1 line-clamp-2 break-words text-[11px] leading-4 text-ink-4">
           Image: <a href={photo.credit.url} target="_blank" rel="noopener noreferrer" className="underline decoration-line-strong underline-offset-2 hover:text-ink">{photo.credit.source}</a>
         </figcaption>

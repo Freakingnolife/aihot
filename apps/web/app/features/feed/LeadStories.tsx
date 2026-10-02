@@ -1,5 +1,5 @@
-// The top of the first page: one large lead story and up to three beside it, so the page opens on pictures instead
-// of a wall of text, then the "This week" overview. Which stories qualify is decided in ./lead.
+// The top of the first page, laid out like a front page: the lead story with four more beneath it, a "Latest" stream
+// beside them, then the numbered "Top stories this week". Which stories go where is decided in ./lead.
 import type { FeedItemSummary } from "@aihot/contracts/site";
 import { IntentLink } from "../../components/ui/IntentLink";
 import { Cover } from "../../components/ui/Cover";
@@ -8,78 +8,118 @@ import { displayTitle } from "../../lib/format";
 
 const DAY = new Intl.DateTimeFormat("en-SG", { day: "numeric", month: "short", timeZone: "Asia/Shanghai" });
 
+/** Publisher · date. */
 function Meta({ item }: { item: FeedItemSummary }) {
   return (
-    <p className="flex flex-wrap items-baseline gap-x-2.5 text-[12.5px] leading-5 text-ink-4">
+    <p className="text-[12px] leading-[1.35] text-ink-4">
       <span className="font-semibold text-ink-2">{item.source.name}</span>
-      {item.publishedAt && <time dateTime={item.publishedAt}>Published {DAY.format(new Date(item.publishedAt))}</time>}
+      {item.publishedAt && (
+        <>
+          <span aria-hidden="true"> · </span>
+          <time dateTime={item.publishedAt}>{DAY.format(new Date(item.publishedAt))}</time>
+        </>
+      )}
     </p>
   );
 }
 
-function Title({ item, className }: { item: FeedItemSummary; className: string }) {
+/** A headline whose link covers its whole (relatively positioned) card. */
+function Title({ item, as: Tag = "h2", className }: { item: FeedItemSummary; as?: "h2" | "h3"; className: string }) {
   return (
-    <h2 className={`font-semibold text-ink ${className}`}>
+    <Tag className={`font-semibold text-ink ${className}`}>
       <IntentLink to={`/items/${item.id}`} onClick={() => markRead(item.id)} className="after:absolute after:inset-0 after:content-['']">
         {displayTitle(item.title, item.source.name)}
       </IntentLink>
-    </h2>
+    </Tag>
   );
 }
 
 function Lead({ item }: { item: FeedItemSummary }) {
   return (
     <article className="relative min-w-0" data-item-id={item.id}>
-      <Cover cover={item.cover} seed={item.id} large ratio="aspect-[16/9]" sizes="(min-width: 961px) 680px, 100vw" />
+      <Cover cover={item.cover} seed={item.id} large ratio="aspect-[16/9]" sizes="(min-width: 961px) 720px, 100vw" />
       <div className="mt-3.5">
-        <Meta item={item} />
-        <Title item={item} className="mt-1.5 text-[28px] !font-normal leading-[1.15] tracking-[-0.035em] lg:text-[40px]" />
-        {item.summary && <p className="mt-2.5 line-clamp-3 max-w-[62ch] text-[15px] leading-[1.7] text-ink-3">{item.summary}</p>}
+        <Title item={item} className="text-[28px] !font-normal leading-[1.15] tracking-[-0.035em] lg:text-[40px]" />
+        {item.summary && <p className="mt-2.5 line-clamp-2 max-w-[62ch] text-[16px] leading-[1.5] text-ink-3">{item.summary}</p>}
+        <div className="mt-2.5">
+          <Meta item={item} />
+        </div>
       </div>
     </article>
   );
 }
 
-function Side({ item }: { item: FeedItemSummary }) {
+function Compact({ item }: { item: FeedItemSummary }) {
   return (
-    <article className="relative grid min-w-0 grid-cols-[132px_minmax(0,1fr)] items-start gap-3.5 lg:grid-cols-[152px_minmax(0,1fr)]" data-item-id={item.id}>
-      <Cover cover={item.cover} seed={item.id} sizes="152px" />
+    <article className="relative grid min-w-0 grid-cols-[104px_minmax(0,1fr)] items-start gap-3.5 lg:grid-cols-[112px_minmax(0,1fr)]" data-item-id={item.id}>
+      <Cover cover={item.cover} seed={item.id} sizes="112px" credit={false} />
       <div className="min-w-0">
-        <Meta item={item} />
-        <Title item={item} className="mt-1 line-clamp-5 text-[17px] leading-[1.25] lg:text-[19px]" />
+        <Title item={item} className="line-clamp-4 text-[16px] leading-[1.35]" />
+        <div className="mt-1.5">
+          <Meta item={item} />
+        </div>
       </div>
     </article>
   );
 }
 
-export function LeadStories({ items }: { items: FeedItemSummary[] }) {
-  const [first, ...side] = items;
-  if (!first) return null;
+/** The newest stories of any status, as plain rows: publisher, date, headline. */
+function LatestStream({ items }: { items: FeedItemSummary[] }) {
   return (
-    <section aria-label="Top stories" className="mb-8 grid gap-6 border-b border-line pb-8 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:gap-8">
-      <Lead item={first} />
-      {side.length > 0 && <div className="grid content-start gap-6 lg:gap-7">{side.map((it) => <Side key={it.id} item={it} />)}</div>}
+    <aside aria-labelledby="latest-stream" className="min-w-0 border-t border-line pt-6 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
+      <div className="flex items-baseline justify-between gap-3 border-b border-line pb-3">
+        <h2 id="latest-stream" className="text-[18px] font-semibold leading-[1.35] text-ink">Latest</h2>
+        <a href="#more-news" className="text-[12px] font-semibold text-accent hover:underline">See all</a>
+      </div>
+      <ol className="divide-y divide-line-soft">
+        {items.map((item) => (
+          <li key={item.id} className="relative min-w-0 py-3.5" data-item-id={item.id}>
+            <Meta item={item} />
+            <Title item={item} as="h3" className="mt-1 line-clamp-3 text-[16px] leading-[1.4]" />
+          </li>
+        ))}
+      </ol>
+    </aside>
+  );
+}
+
+export function LeadStories({ lead, grid, latest }: { lead: FeedItemSummary | null; grid: FeedItemSummary[]; latest: FeedItemSummary[] }) {
+  if (!lead) return null;
+  return (
+    <section aria-label="Top of the news" className={`mb-10 grid gap-8 ${latest.length > 0 ? "lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]" : ""}`}>
+      <div className={`min-w-0 ${latest.length > 0 ? "lg:pr-8" : ""}`}>
+        <Lead item={lead} />
+        {grid.length > 0 && (
+          <div className="mt-7 grid gap-x-8 gap-y-6 border-t border-line pt-6 lg:grid-cols-2">
+            {grid.map((it) => <Compact key={it.id} item={it} />)}
+          </div>
+        )}
+      </div>
+      {latest.length > 0 && <LatestStream items={latest} />}
     </section>
   );
 }
 
-/** The next featured stories as a compact list: headline, publisher, date and why it matters. */
-export function WeekOverview({ items }: { items: FeedItemSummary[] }) {
+/** The strongest featured stories after the lead and grid, numbered, each with why it matters. */
+export function TopStories({ items }: { items: FeedItemSummary[] }) {
   if (items.length === 0) return null;
   return (
-    <section aria-labelledby="this-week" className="mb-8 border-b border-line pb-8">
-      <h2 id="this-week" className="text-[18px] font-semibold leading-8 text-ink">This week in 3D printing</h2>
-      <ol className="mt-2 divide-y divide-line-soft">
-        {items.map((item) => (
-          <li key={item.id} className="relative min-w-0 py-3.5" data-item-id={item.id}>
-            <Meta item={item} />
-            <h3 className="mt-1 text-[16px] font-semibold leading-[1.4] text-ink">
-              <IntentLink to={`/items/${item.id}`} onClick={() => markRead(item.id)} className="after:absolute after:inset-0 after:content-['']">
-                {displayTitle(item.title, item.source.name)}
-              </IntentLink>
-            </h3>
+    <section aria-labelledby="top-stories" className="mb-10">
+      <h2 id="top-stories" className="border-t-2 border-accent pt-3 text-[24px] font-semibold leading-[1.15] tracking-[-0.02em] text-ink">
+        Top stories this week
+      </h2>
+      <ol className="mt-3 divide-y divide-line-soft border-b border-line">
+        {items.map((item, i) => (
+          <li key={item.id} className="relative grid min-w-0 grid-cols-[44px_minmax(0,1fr)] gap-x-4 gap-y-2 py-5 lg:grid-cols-[72px_minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-x-8" data-item-id={item.id}>
+            <span aria-hidden="true" className="num text-[36px] font-normal leading-none text-ink lg:text-[52px]">{i + 1}</span>
+            <div className="min-w-0">
+              <Title item={item} as="h3" className="text-[18px] leading-[1.35] lg:text-[20px]" />
+              <div className="mt-1.5">
+                <Meta item={item} />
+              </div>
+            </div>
             {item.reason && (
-              <p className="mt-1 max-w-[75ch] text-[13px] leading-[1.65] text-ink-3">
+              <p className="col-start-2 text-[14px] leading-[1.6] text-ink-3 lg:col-start-3">
                 <span className="font-semibold text-ink-2">Why it matters </span>
                 {item.reason}
               </p>

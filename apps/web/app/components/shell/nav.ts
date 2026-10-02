@@ -20,7 +20,7 @@ export const SIDEBAR: Array<{ title: string; items: NavItem[] }> = [
   {
     title: "Reading",
     items: [
-      { to: "/all", label: "Recent", icon: IconBolt, end: true },
+      { to: "/all", label: "Latest", icon: IconBolt, end: true },
       { to: "/all?mode=archive", label: "Archive", icon: IconList },
       { to: "/topics", label: "Topics", icon: IconGrid },
       { to: "/starred", label: "Bookmarks", icon: IconBookmark },
@@ -50,7 +50,7 @@ export const SIDEBAR: Array<{ title: string; items: NavItem[] }> = [
 ];
 
 export const TABBAR: NavItem[] = [
-  { to: "/all", label: "Recent", icon: IconBolt, end: true },
+  { to: "/all", label: "Latest", icon: IconBolt, end: true },
   { to: "/all?mode=archive", label: "Archive", icon: IconList },
   { to: "/topics", label: "Topics", icon: IconGrid },
   { to: "/more", label: "More", icon: IconApps, changelog: true },

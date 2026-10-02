@@ -79,7 +79,7 @@ function SiteShell({ changelogVersion, children }: { changelogVersion: string | 
       <Masthead />
       {/* Mobile shell (≤ 960px): one centred column, the tab bar below. Desktop: the page shares the header's
           4.5% side margins, so every row starts where the wordmark does. */}
-      <main id="main" className="min-w-0 flex-1 pb-[calc(6rem+env(safe-area-inset-bottom))] lg:px-[4.5%] lg:pb-16 lg:pt-8">
+      <main id="main" className="min-w-0 flex-1 pb-8 lg:px-[4.5%] lg:pb-16 lg:pt-8">
         <div className="mx-auto w-full max-w-[640px] px-4 lg:max-w-none lg:px-0">{children}</div>
       </main>
       <SiteFooter />

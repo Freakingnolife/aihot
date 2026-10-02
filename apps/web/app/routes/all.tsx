@@ -8,7 +8,7 @@ import { listPath, pageMeta } from "../lib/seo";
 import { CategoryTabs, SearchField } from "../features/feed/Filters";
 import { PillTabs } from "../components/ui/Tabs";
 import { DayList, Pagination } from "../features/feed/DayList";
-import { LeadStories, WeekOverview } from "../features/feed/LeadStories";
+import { LeadStories, TopStories } from "../features/feed/LeadStories";
 import { splitLead } from "../features/feed/lead";
 import { EmptyState } from "../components/ui/Page";
 import { RingMark } from "../components/Logo";
@@ -85,19 +85,26 @@ export default function AllPage() {
     return `/all?${sp}`;
   };
   const title = f.q ? `Search“${f.q}”` : f.tag ? `#${f.tag}` : null;
-  // Featured lead stories and the "This week" overview open the newest page of Recent only; Archive and search keep their plain lists (unknown-date groups stay visible).
-  const { lead, overview, rest } = mode === "recent" && data.page === 1 && !f.q ? splitLead(data.items) : { lead: [], overview: [], rest: data.items };
+  // The front-page layout (lead, grid, Latest stream, top stories) opens the newest page of Recent only; Archive and search keep their plain lists (unknown-date groups stay visible).
+  const front = mode === "recent" && data.page === 1 && !f.q;
+  // The home page: the front layout with no filter at all. The header already offers Latest and Archive, so it drops its title and period switch.
+  const home = front && !f.category && !f.tag && f.channel === "all";
+  const { lead, grid, top, latest, rest } = front ? splitLead(data.items) : { lead: null, grid: [], top: [], latest: [], rest: data.items };
 
 
   return (
     <div className="pb-6">
       {/* Desktop: the title with the period switch, then one filter row with the search field on the right. */}
       <div className="hidden lg:block">
-        <div className="flex items-center justify-between gap-4">
-          <h1 className="text-[clamp(32px,3.4vw,44px)] font-normal leading-[1.15] tracking-[-0.035em] text-ink">{title ?? (mode === "archive" ? "Archive" : "Latest news")}</h1>
-          <PeriodTabs mode={mode} href={modeHref} layoutId="pool-mode-desk" />
-        </div>
-        <div className="mb-6 mt-4 flex flex-wrap items-center justify-between gap-3">
+        {home ? (
+          <h1 className="sr-only">Latest news</h1>
+        ) : (
+          <div className="flex items-center justify-between gap-4">
+            <h1 className="text-[clamp(32px,3.4vw,44px)] font-normal leading-[1.15] tracking-[-0.035em] text-ink">{title ?? (mode === "archive" ? "Archive" : "Latest news")}</h1>
+            <PeriodTabs mode={mode} href={modeHref} layoutId="pool-mode-desk" />
+          </div>
+        )}
+        <div className={`mb-6 flex flex-wrap items-center justify-between gap-3 ${home ? "" : "mt-4"}`}>
           <CategoryTabs base="/all" category={f.category} channel={f.channel} layoutId="all-cat-desk" className="min-w-0 max-w-full" />
           <SearchField variant="track" defaultValue={f.q ?? ""} keep={keep} />
         </div>
@@ -106,7 +113,7 @@ export default function AllPage() {
       {/* Phones: title with today's count, the search bar, then the same filter row. */}
       <div className="lg:hidden">
         <div className="flex flex-wrap items-baseline justify-between gap-2 pb-3 pt-5">
-          <h1 className="text-[32px] font-normal leading-[1.15] tracking-[-0.035em] text-ink">{title ?? (mode === "archive" ? "Archive" : "Latest news")}</h1>
+          <h1 className={home ? "sr-only" : "text-[32px] font-normal leading-[1.15] tracking-[-0.035em] text-ink"}>{title ?? (mode === "archive" ? "Archive" : "Latest news")}</h1>
           {!f.q && data.todayCount > 0 && (
             <span className="text-[12.5px] text-ink-4">
               <span className="num">{data.todayCount}</span> published today
@@ -117,9 +124,13 @@ export default function AllPage() {
         <div className="-mx-4 mt-3 border-b border-line-soft px-4 pb-3">
           <CategoryTabs base="/all" category={f.category} channel={f.channel} layoutId="all-cat-mobile" size="sm" className="min-w-0 max-w-full" />
         </div>
-        <div className="mb-5 mt-3">
-          <PeriodTabs mode={mode} href={modeHref} layoutId="pool-mode-mobile" />
-        </div>
+        {home ? (
+          <div className="mb-5" />
+        ) : (
+          <div className="mb-5 mt-3">
+            <PeriodTabs mode={mode} href={modeHref} layoutId="pool-mode-mobile" />
+          </div>
+        )}
       </div>
 
       {f.q && (
@@ -155,8 +166,9 @@ export default function AllPage() {
           </div>
         ) : (
           <>
-            <LeadStories items={lead} />
-            <WeekOverview items={overview} />
+            <LeadStories lead={lead} grid={grid} latest={latest} />
+            <TopStories items={top} />
+            {lead && <h2 id="more-news" className="mb-2 scroll-mt-6 border-t border-line pt-3 text-[24px] font-semibold leading-[1.15] tracking-[-0.02em] text-ink">More news</h2>}
             <DayList items={rest} todayCount={f.q ? null : data.todayCount} showTags originalDates />
           </>
         )}
