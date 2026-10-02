@@ -216,3 +216,13 @@ Marcus's direction: additiveos.com opens on the news, and the current AdditiveOS
 - **Approved and merged (Marcus, 2026-10-03).** Marcus approved the redesign and asked to drop the "First party" tab first. The filter row is now All plus the six topics (`apps/web/app/features/feed/Filters.tsx`); old `channel=firstParty` links still filter. Typecheck, build and 35 web tests pass, and the change was checked in a browser. `pilot/reader-polish` was fast-forward merged into `main` (not pushed).
 - **Pushed (2026-10-03).** `main` (13dced6) and `pilot/reader-polish` pushed to `origin` (github.com/Freakingnolife/aihot); `main` matches `origin/main` (verified).
 - **Deploy to live: requested, not done.** Marcus asked to deploy. Held for one decision because it is outward-facing and the launch gates in this doc are open: one privacy notice for the domain, source-permission/public-release approval (only the publisher-photo risk was accepted), noindex, a daily processing budget, and the model route (automated processing on a personal ChatGPT/Codex sign-in, which OpenAI treats as an advanced option for automation). The live landing (additiveos.com, Cloudflare, waitlist on the NAS) would be displaced if Radar takes the root. Options put to Marcus: a private live preview behind Cloudflare Access on a subdomain (recommended), a full public launch at the root after clearing the gates, or wait.
+
+## Public launch at additiveos.com (Marcus, 2026-10-03)
+
+- Marcus chose a full public launch at the root: Radar at additiveos.com, the current landing at /advisor. Order: clear the five open items, then deploy.
+- Checklist (decisions are Marcus's; build work is delegated and reviewed):
+  1. Publishing rights for summaries and publisher photos on a public site — decision pending.
+  2. One privacy notice for the whole domain (reader + waitlist) — draft for approval.
+  3. Search indexing (the reader is `noindex` today) — decision pending.
+  4. Processing route and daily budget for scheduled collection (personal Codex sign-in vs an API key) — research, then decision.
+  5. Hosting: move Radar (PostgreSQL, API, web, scheduled collection) to the NAS beside the landing; route the root and /advisor through the remotely managed `nas-tunnel` (Cloudflare API, see Marcus's NAS memory notes); keep the waitlist data untouched; rollback = restore the current additiveos.com route.
