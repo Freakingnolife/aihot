@@ -5,7 +5,7 @@ export const SITE = {
   mcpPrefix: "additiveos_radar", contactEmail: null as string | null,
   footerNote: "Attributed publisher reports · Not validated engineering advice", icp: null as string | null,
   organization: { name: "AdditiveOS Radar", founder: null as null | { name: string; url?: string; description?: string } },
-  crawlerName: "AdditiveOSRadarBot",
+  crawlerName: "AdditiveOS-Radar",
 } as const;
 export const ABOUT = {
   kicker: "About AdditiveOS Radar", headline: ["Additive manufacturing changes.", "Follow the original sources."] as [string, string],

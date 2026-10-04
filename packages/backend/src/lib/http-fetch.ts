@@ -57,7 +57,7 @@ export interface GuardedResponse {
 }
 
 /** How the collectors introduce themselves: the site's own crawler name and address (industry/site.ts). */
-export const DEFAULT_UA = `Mozilla/5.0 (compatible; ${SITE.crawlerName}/1.0; +${config.siteUrl}/about)`;
+export const DEFAULT_UA = `${SITE.crawlerName}/1.0 (+${config.siteUrl})`;
 
 export async function guardedFetch(input: string, opts: GuardedFetchOptions = {}): Promise<GuardedResponse> {
   // One budget includes DNS, every redirect and the body. Restarting it at each hop allowed a
