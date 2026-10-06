@@ -95,7 +95,7 @@ export default function AllPage() {
   return (
     <div className="pb-6">
       {/* One line for first-time visitors on the home page, above both layouts. The times are those in industry/site.ts (steps.collect). */}
-      {home && <p className="pt-4 text-[13px] leading-[1.5] text-ink-3 lg:pb-4 lg:pt-0">Additive manufacturing news from more than 40 sources, with why each story matters. Updated 07:00 and 19:00 SGT.</p>}
+      {home && <p className="pt-4 text-[13px] leading-[1.5] text-ink-3 lg:pb-4 lg:pt-0">Additive manufacturing news from more than 40 sources, with why each story matters. Updated 07:00 and 19:00 SGT. <Link to="/agent#daily-brief" className="font-medium text-accent hover:underline">Get a daily brief from your AI assistant.</Link></p>}
       {/* Desktop: the title with the period switch, then one filter row with the search field on the right. */}
       <div className="hidden lg:block">
         {home ? (

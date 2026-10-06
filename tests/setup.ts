@@ -38,6 +38,8 @@ process.env.SESSION_SECRET ??= "test-session-secret-0123456789";
 process.env.IMG_PROXY_SIGN_SECRET ??= "test-img-secret-0123456789";
 process.env.FEISHU_CONTENT_PUSH_ENABLED = "false";
 process.env.INDEXNOW_SUBMIT_ENABLED = "false";
+// MCP usage counting stays off unless a test sets it up against a local stub.
+process.env.ANALYTICS_MCP_WEBSITE_ID = "";
 process.env.LOG_LEVEL ??= "error";
 // The tests were written against the named model presets AIHOT assigns to each step (each provider is
 // pointed at a local stub by the test that needs it). The open-source default is one model for every

@@ -25,7 +25,7 @@ export function llmsTxt(opts: { hasDailies: boolean; hasWeekly: boolean; hasMont
   const u = siteUrl;
   const lines = [
     `# ${SITE.name}`, "", `> ${SITE.description}`, "",
-    "Sources are collected twice a day (07:00 and 19:00 Singapore time) and summarised by AI. Briefings are not generated on a schedule. Reader requests do not trigger model calls.", "",
+    "Sources are collected twice a day (07:00 and 19:00 Singapore time) and summarised by AI. Edited briefings are not generated on a schedule; the MCP daily tool then returns the selected stories of the last 24 hours. Reader requests do not trigger model calls.", "",
     "## Read-only interfaces", "",
     "Anonymous read-only access; no API key required.",
     `- [MCP Server](${u("/api/mcp")}): Streamable HTTP ${PUBLIC_VERSIONS.mcp}; tools: ${MCP_TOOLS.map(t => t.name).join(", ")}`,

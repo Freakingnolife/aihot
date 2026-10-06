@@ -73,6 +73,54 @@ function Mono({ children }: { children: ReactNode }) {
   return <code className="mono [overflow-wrap:anywhere] rounded-mark bg-bg-sunk px-1.5 py-0.5 text-[0.88em] text-ink">{children}</code>;
 }
 
+const BRIEF_PROMPT = "Every weekday at 8am, use AdditiveOS Radar to brief me in 5 bullets on news about: [your interests, e.g. polymer SLS, medical devices]. For each bullet, give the headline, why it matters to me, and the link to the original source.";
+
+/** A plain-language start for readers who are not developers: connect an assistant, ask for a morning brief. */
+function DailyBrief({ base }: { base: string }) {
+  const mcp = `${base}/api/mcp`;
+  const step = "mt-1 text-[13.5px] leading-[1.75] text-ink-2";
+  return (
+    <section id="daily-brief" aria-labelledby="daily-brief-title" className="mt-7 scroll-mt-24 rounded-card border border-line bg-surface p-5">
+      <h2 id="daily-brief-title" className="text-[20px] font-bold text-ink">Get your daily brief</h2>
+      <p className="mt-2 text-[14.5px] leading-[1.7] text-ink-3">
+        Connect your own AI assistant to {SITE.name}. Each morning it reads the news here and writes a brief about the topics you care about. You need no account, and nothing about you is stored on this site.
+      </p>
+      <p className="mt-4 text-[13px] font-medium text-ink">Ask your assistant</p>
+      <div className="mt-1.5 flex flex-col items-start gap-2.5 rounded-card border border-line bg-bg-sunk/60 p-3 dark:bg-bg-muted/40 sm:flex-row sm:gap-3">
+        <p className="min-w-0 flex-1 text-[13.5px] leading-[1.7] text-ink-2">{BRIEF_PROMPT}</p>
+        <CopyButton text={BRIEF_PROMPT} label="Copy prompt" className="shrink-0" />
+      </div>
+      <p className="mt-5 text-[13px] font-medium text-ink">Connection address</p>
+      <div className="mt-1.5 flex items-center gap-2 rounded-card border border-line bg-bg-sunk/60 p-3 dark:bg-bg-muted/40">
+        <code className="min-w-0 flex-1 truncate font-mono text-[13px] text-ink">{mcp}</code>
+        <CopyButton text={mcp} className="shrink-0" />
+      </div>
+      <div className="mt-6 space-y-5">
+        <div>
+          <h3 className="text-[14px] font-semibold text-ink">Claude</h3>
+          <ol className="mt-1 list-decimal space-y-1 pl-5 text-[13.5px] leading-[1.75] text-ink-2">
+            <li>Open claude.ai and go to Settings, then Connectors.</li>
+            <li>Add a custom connector and paste the connection address above.</li>
+            <li>Paste the prompt into a chat, or ask Claude to run it every morning as a scheduled task if your plan offers one.</li>
+          </ol>
+        </div>
+        <div>
+          <h3 className="text-[14px] font-semibold text-ink">ChatGPT</h3>
+          <p className={step}>
+            In ChatGPT's connector settings (developer mode may need to be turned on first), add the connection address, then paste the prompt. If connectors are not available on your plan, ask it to read our feed instead: <Mono>{`${base}/feed.xml`}</Mono>
+          </p>
+        </div>
+        <div>
+          <h3 className="text-[14px] font-semibold text-ink">Any other assistant</h3>
+          <p className={step}>
+            Add the connection address in your assistant's connector or MCP settings, or point it at the RSS feed or REST API described in the tabs below.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function McpTab({ base }: { base: string }) {
   const url = `${base}/api/mcp`;
   const name = SITE.mcpPrefix;
@@ -92,7 +140,7 @@ function McpTab({ base }: { base: string }) {
           <><Mono>{T.search}</Mono>: search the last 7 days by organization, product, person or topic</>,
           <><Mono>{T.hot}</Mono>: current trending stories</>,
           <><Mono>{T.story}</Mono>: a story timeline and its stored summary</>,
-          <><Mono>{T.daily}</Mono>: latest or dated {withSubject("briefing")}</>,
+          <><Mono>{T.daily}</Mono>: the daily overview; the selected stories of the last 24 hours when no edited issue exists</>,
         ]} />
         <p className="mt-4">Example request: <span className="font-medium text-ink">Call {T.latest} for up to five items from the last 24 hours, with source links. Results may be empty.</span></p>
       </Section>
@@ -246,7 +294,7 @@ export default function AgentPage() {
       <header>
         <h1 className="text-[24px] font-semibold leading-[1.3] text-ink">Read {SITE.name} with your tools</h1>
         <p className="mt-1.5 text-[13px] text-ink-3">MCP, RSS and REST API v1 provide anonymous read-only access. No API key is required.</p>
-        <p className="mt-3 text-[13px] leading-relaxed text-ink-3">Sources are collected twice a day, at 07:00 and 19:00 Singapore time. Briefings are not generated on a schedule. Reader visits do not trigger model calls.</p>
+        <p className="mt-3 text-[13px] leading-relaxed text-ink-3">Sources are collected twice a day, at 07:00 and 19:00 Singapore time. Edited briefings are not generated on a schedule; the daily tool returns the selected stories of the last 24 hours instead. Reader visits do not trigger model calls.</p>
         <div className="mt-3.5 flex flex-wrap items-center gap-1.5">
           <span className={pill}>Read-only</span>
           <span className={`${pill} mono`}>API v1</span>
@@ -257,6 +305,8 @@ export default function AgentPage() {
           </span>
         </div>
       </header>
+
+      <DailyBrief base={base} />
 
       <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1.5 text-[12.5px] lg:hidden">
         {RESOURCES.map(([l, h]) => (

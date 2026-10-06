@@ -54,6 +54,9 @@ services:
       <<: *app-env
       API_HOST: 0.0.0.0
       API_PORT: "3001"
+      # Aggregate MCP tool-call counting in the self-hosted Umami (empty website id = off); see .env.example.
+      ANALYTICS_MCP_WEBSITE_ID: ${ANALYTICS_MCP_WEBSITE_ID:-}
+      ANALYTICS_URL: ${ANALYTICS_URL:-https://analytics.sgdadbuilds.com/api/send}
     depends_on:
       migrate:
         condition: service_completed_successfully

@@ -55,6 +55,9 @@ export const config = {
   environmentName: str("AIHOT_ENVIRONMENT", isProduction ? "production" : "development"),
   // Model calls are live unless explicitly disabled (tests, replays).
   modelCallsEnabled: bool("MODEL_CALLS_ENABLED", true),
+  /** Umami website that counts MCP tool calls (aggregate, no personal data); empty or not a UUID = counting is off. */
+  analyticsMcpWebsiteId: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(env.ANALYTICS_MCP_WEBSITE_ID ?? "") ? env.ANALYTICS_MCP_WEBSITE_ID! : null,
+  analyticsUrl: str("ANALYTICS_URL", "https://analytics.sgdadbuilds.com/api/send"),
   devAdmin: env.DEV_AUTH_ROLE === "admin" ? { displayName: env.DEV_AUTH_DISPLAY_NAME || "Dev Admin" } : null,
   /** The admin password (at least 12 characters). Feishu sign-in below is optional. */
   adminPassword: env.ADMIN_PASSWORD || null,
