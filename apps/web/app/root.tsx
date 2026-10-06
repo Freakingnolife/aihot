@@ -38,7 +38,13 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
+// Cookieless, self-hosted Umami analytics (see the privacy notice). data-domains keeps it inert on localhost and previews.
+const ANALYTICS = { src: "https://analytics.sgdadbuilds.com/script.js", websiteId: "1e38acd6-56b3-4ea7-8236-c1aefd39e2b0", domains: "additiveos.com,www.additiveos.com" };
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  const { pathname } = useLocation();
+  // The admin shares this document but is never counted.
+  const counted = !(pathname === "/admin" || pathname.startsWith("/admin/"));
   return (
     <html lang={SITE.locale} suppressHydrationWarning>
       <head>
@@ -51,6 +57,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="robots" content="noimageindex" />
         <Meta />
         <Links />
+        {counted && <script defer src={ANALYTICS.src} data-website-id={ANALYTICS.websiteId} data-domains={ANALYTICS.domains} data-exclude-search="true" data-exclude-hash="true" data-do-not-track="true" />}
       </head>
       <body>
         {children}

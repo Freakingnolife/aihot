@@ -11,7 +11,7 @@ This notice covers the AdditiveOS News (AdditiveOS Radar) site (the news pages a
 
 ## Reading the news
 
-You can read the news without an account. We do not use advertising, analytics or tracking cookies, and we do not build reading profiles.
+You can read the news without an account. We do not use advertising or tracking cookies, and we do not build reading profiles. We count visits in aggregate, without cookies, using our own self-hosted Umami analytics, to see how many people read the site and where they came from. We do not track individuals, and we respect your browser's Do Not Track setting.
 
 Bookmarks, read history and display preferences are stored only in your browser. Clearing your browser storage removes them. Bookmark files you export stay wherever you save them.
 

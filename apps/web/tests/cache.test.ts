@@ -204,6 +204,18 @@ test("public reader pages can be indexed; admin, feedback, bookmarks, errors and
   assert.ok(login.tags.some((t) => /noindex/.test(t)));
 });
 
+test("reader pages carry the cookieless analytics tracker; the admin never does", async () => {
+  const tracker = /<script[^>]*src="https:\/\/analytics\.sgdadbuilds\.com\/script\.js"[^>]*>/;
+  for (const path of ["/all", "/privacy"]) {
+    const html = await (await fetch(origin + path)).text();
+    const tag = html.match(tracker)?.[0] ?? "";
+    assert.ok(tag, `${path} has the tracker`);
+    for (const attr of ['data-website-id="1e38acd6-56b3-4ea7-8236-c1aefd39e2b0"', 'data-domains="additiveos.com,www.additiveos.com"', 'data-exclude-search="true"', 'data-exclude-hash="true"', 'data-do-not-track="true"']) assert.ok(tag.includes(attr), `${path}: ${attr}`);
+  }
+  assert.match(await (await fetch(origin + "/privacy")).text(), /self-hosted Umami analytics/);
+  assert.doesNotMatch(await (await fetch(origin + "/admin/login")).text(), /analytics\.sgdadbuilds\.com/);
+});
+
 test("a visitor cannot name its own address to the api without a trusted proxy in front", async () => {
   const res = await fetch(`${origin}/api/site/echo-client`, { headers: { "X-Forwarded-For": "6.6.6.6", "X-Real-IP": "6.6.6.6" } });
   assert.deepEqual(await res.json(), { forwarded: "127.0.0.1", real: "127.0.0.1" });
