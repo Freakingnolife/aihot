@@ -134,7 +134,7 @@ behave differently in a container than on the Mac; the last command is the test)
 source (collection only), fetch missing article pages without the Jina fallback, then process the articles
 discovered in the last 48 hours that are waiting (`processing_state = 'new'`) one at a time. It stops on an
 exhausted budget, an unknown receipt, a provider limit, three errors in a row, or 60 new model requests
-(the article in progress finishes). The llm budget (30/minute, 120/hour, 120/day) is never changed; the
+(the article in progress finishes). The llm budget (30/minute, 240/hour, 240/day since 2026-10-06; set in the admin) is never changed; the
 runner has no code to raise it. It never starts pg-boss workers and never maintains the job tables, so
 jobs already queued stay queued. Because no worker runs, grouping, translations and image preparation
 jobs also stay queued (grouping is a known gap; images are produced on demand).

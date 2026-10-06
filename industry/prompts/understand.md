@@ -7,4 +7,4 @@
 {{> rules-self-contained-title}}
 
 {{> rules-answer-first-summary}}
-Return exactly itemType, authorRole, tags, editorialJudgment, titleZh, summaryZh as JSON.
+Return exactly itemType, authorRole, tags, editorialJudgment, keyPhrases, titleZh, summaryZh as JSON.

@@ -3,7 +3,7 @@
 // pipeline on the articles discovered in the last 48 hours that still await processing, one at a time.
 // A run stops early on an exhausted budget, an unknown receipt, a provider limit or 60 new model
 // requests. It never starts pg-boss workers, never touches queued jobs and never changes budgets: the
-// llm budget (30/min, 120/hour, 120/day) stays the hard ceiling. One JSON line per run goes to stdout.
+// llm budget (30/min, 240/hour, 240/day, set in the admin) stays the hard ceiling. One JSON line per run goes to stdout.
 //   node scripts/scheduled-refresh.ts          run forever, at 07:00 and 19:00 Asia/Singapore
 //   node scripts/scheduled-refresh.ts --once   one run now, then exit
 // COLLECT_ENABLED=false skips collection and page fetching; MODEL_CALLS_ENABLED=false skips processing.

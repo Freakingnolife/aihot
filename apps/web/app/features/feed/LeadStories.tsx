@@ -5,8 +5,8 @@ import { IntentLink } from "../../components/ui/IntentLink";
 import { Cover } from "../../components/ui/Cover";
 import { markRead } from "../../lib/local-state";
 import { displayTitle } from "../../lib/format";
-import { scanText } from "./scan-text";
 import { wholeSentences } from "./lead";
+import { splitByPhrases } from "./phrases";
 
 const DAY = new Intl.DateTimeFormat("en-SG", { day: "numeric", month: "short", timeZone: "Asia/Shanghai" });
 
@@ -25,10 +25,10 @@ function Meta({ item }: { item: FeedItemSummary }) {
   );
 }
 
-/** Text with a few tags and acronyms in bold (the "Why it matters" explanation only; headlines stay plain). */
-function ScanText({ text, tags }: { text: string; tags: string[] }) {
-  return scanText(text, tags).map((part, i) => part.emphasis
-    ? <strong key={i} className="font-bold text-ink">{part.text}</strong>
+/** The "Why it matters" sentence, its key phrases in bold. The text itself is never changed. */
+function Reason({ text, phrases }: { text: string; phrases: string[] }) {
+  return splitByPhrases(text, phrases).map((part, i) => part.bold
+    ? <strong key={i} className="font-semibold text-ink">{part.text}</strong>
     : part.text);
 }
 
@@ -49,7 +49,7 @@ function Lead({ item }: { item: FeedItemSummary }) {
     <article className="relative min-w-0" data-item-id={item.id}>
       <Cover cover={item.cover} seed={item.id} large ratio="aspect-[16/9]" sizes="(min-width: 961px) 720px, 100vw" />
       <div className="mt-3.5">
-        <Title item={item} className="text-[28px] !font-normal leading-[1.15] tracking-[-0.035em] lg:text-[40px]" />
+        <Title item={item} className="text-[28px] leading-[1.15] tracking-[-0.035em] lg:text-[40px]" />
         {item.summary && <p className="mt-2.5 max-w-[75ch] text-[16px] leading-[1.5] text-ink-3">{wholeSentences(item.summary)}</p>}
         <div className="mt-2.5">
           <Meta item={item} />
@@ -127,12 +127,12 @@ export function TopStories({ items }: { items: FeedItemSummary[] }) {
                 <span aria-hidden="true" className="num text-[18px] font-semibold leading-none text-accent">{String(i + 1).padStart(2, "0")}</span>
                 <Meta item={item} />
               </div>
-              <Title item={item} as="h3" className={`!font-normal leading-[1.35] tracking-[-0.02em] ${i === 0 ? "text-[16px] sm:text-[20px] md:text-[24px]" : "text-[16px] sm:text-[20px]"}`} />
+              <Title item={item} as="h3" className={`leading-[1.35] tracking-[-0.02em] ${i === 0 ? "text-[16px] sm:text-[20px] md:text-[24px]" : "text-[16px] sm:text-[20px]"}`} />
             </div>
             {item.reason && (
               <p className={`mt-3 border-t border-line-soft pt-3 text-[14px] leading-[1.6] text-ink-3 col-span-2 ${i === 0 ? "md:col-span-1 md:col-start-2 md:max-w-[75ch]" : ""}`}>
                 <span className="mb-1 block text-[12px] font-semibold text-accent">Why it matters</span>
-                <ScanText text={item.reason} tags={item.tags} />
+                <Reason text={item.reason} phrases={item.reasonPhrases} />
               </p>
             )}
           </li>

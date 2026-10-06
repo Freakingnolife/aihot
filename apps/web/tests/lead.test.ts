@@ -10,7 +10,7 @@ function item(over: Partial<FeedItemSummary> & { daysAgo?: number } = {}): FeedI
   n += 1;
   const at = new Date(NOW - daysAgo * 86400000 - n * 1000).toISOString();
   return {
-    id: `i${n}`, title: `T${n}`, summary: null, reason: null, publishedAt: at, timelineAt: at, category: null, tags: [],
+    id: `i${n}`, title: `T${n}`, summary: null, reason: null, reasonPhrases: [], publishedAt: at, timelineAt: at, category: null, tags: [],
     score: 50, selected: true, channel: "news", source: { name: "S" }, cover: null, x: null, ...rest,
   };
 }

@@ -14,6 +14,7 @@ export interface ItemRow {
   original_title: string | null;
   summary: string | null;
   reason: string | null;
+  reason_phrases: string[];
   category: string | null;
   tags: string[];
   score: number | null;
@@ -54,7 +55,7 @@ export interface ItemRow {
 
 /** Columns every item listing selects. Internal judgement details never leave this layer. */
 export const ITEM_COLUMNS = sql`
-  p.article_id AS id, p.revision, p.title, p.original_title, p.summary, p.reason, p.category, p.tags, p.score,
+  p.article_id AS id, p.revision, p.title, p.original_title, p.summary, p.reason, p.reason_phrases, p.category, p.tags, p.score,
   p.selected, p.eligible, p.channel, p.url, p.published_at, p.discovered_at, p.timeline_at, p.sort_at, p.first_party, p.visibility,
   p.body_mode, p.syndicate, p.indexable, p.visible_after, p.backfill, p.fact_id, p.story_id,
   s.id AS source_id, s.name AS source_name, s.kind AS source_kind, s.participation_mode AS source_mode, s.icon_url AS source_icon,
@@ -162,6 +163,7 @@ export function toItemSummary(row: ItemRow): ItemSummary {
     originalTitle: row.original_title,
     summary: row.summary,
     reason: row.selected ? row.reason : null,
+    reasonPhrases: row.selected && row.reason ? row.reason_phrases : [],
     source: {
       id: row.source_id,
       name: row.source_name,
@@ -197,7 +199,7 @@ export function toFeedItemSummary(row: ItemRow): FeedItemSummary {
   const item = toItemSummary(row);
   return {
     cover: coverView(row),
-    id: item.id, title: item.title, summary: item.summary, reason: item.reason,
+    id: item.id, title: item.title, summary: item.summary, reason: item.reason, reasonPhrases: item.reasonPhrases,
     backfill: item.backfill, discoveredAt: item.discoveredAt,
     source: { name: item.source.name }, publishedAt: item.publishedAt, timelineAt: item.timelineAt,
     category: item.category, tags: item.tags, score: item.score, selected: item.selected, channel: item.channel,

@@ -60,6 +60,8 @@ export interface ItemSummary {
   originalTitle: string | null;
   summary: string | null;
   reason: string | null;
+  /** Words of `reason` to show in bold: exact, whole-word runs of it, at most two. */
+  reasonPhrases: string[];
   source: SourceRef;
   links: { aihot: string; original: string };
   publishedAt: string | null;
@@ -75,7 +77,7 @@ export interface ItemSummary {
 }
 
 /** The fields rendered by a site feed card; full original text lives in the item detail. */
-export interface FeedItemSummary extends Pick<ItemSummary, "id" | "title" | "summary" | "reason" | "publishedAt" | "timelineAt" | "category" | "tags" | "score" | "selected" | "channel"> {
+export interface FeedItemSummary extends Pick<ItemSummary, "id" | "title" | "summary" | "reason" | "reasonPhrases" | "publishedAt" | "timelineAt" | "category" | "tags" | "score" | "selected" | "channel"> {
   backfill?: boolean;
   discoveredAt?: string;
   source: Pick<SourceRef, "name">;
