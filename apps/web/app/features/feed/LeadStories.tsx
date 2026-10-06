@@ -5,6 +5,8 @@ import { IntentLink } from "../../components/ui/IntentLink";
 import { Cover } from "../../components/ui/Cover";
 import { markRead } from "../../lib/local-state";
 import { displayTitle } from "../../lib/format";
+import { scanText } from "./scan-text";
+import { wholeSentences } from "./lead";
 
 const DAY = new Intl.DateTimeFormat("en-SG", { day: "numeric", month: "short", timeZone: "Asia/Shanghai" });
 
@@ -23,12 +25,20 @@ function Meta({ item }: { item: FeedItemSummary }) {
   );
 }
 
+/** Text with a few tags and acronyms in bold (the "Why it matters" explanation only; headlines stay plain). */
+function ScanText({ text, tags }: { text: string; tags: string[] }) {
+  return scanText(text, tags).map((part, i) => part.emphasis
+    ? <strong key={i} className="font-bold text-ink">{part.text}</strong>
+    : part.text);
+}
+
 /** A headline whose link covers its whole (relatively positioned) card. */
 function Title({ item, as: Tag = "h2", className }: { item: FeedItemSummary; as?: "h2" | "h3"; className: string }) {
+  const title = displayTitle(item.title, item.source.name);
   return (
     <Tag className={`font-semibold text-ink ${className}`}>
       <IntentLink to={`/items/${item.id}`} onClick={() => markRead(item.id)} className="after:absolute after:inset-0 after:content-['']">
-        {displayTitle(item.title, item.source.name)}
+        {title}
       </IntentLink>
     </Tag>
   );
@@ -40,7 +50,7 @@ function Lead({ item }: { item: FeedItemSummary }) {
       <Cover cover={item.cover} seed={item.id} large ratio="aspect-[16/9]" sizes="(min-width: 961px) 720px, 100vw" />
       <div className="mt-3.5">
         <Title item={item} className="text-[28px] !font-normal leading-[1.15] tracking-[-0.035em] lg:text-[40px]" />
-        {item.summary && <p className="mt-2.5 line-clamp-2 max-w-[62ch] text-[16px] leading-[1.5] text-ink-3">{item.summary}</p>}
+        {item.summary && <p className="mt-2.5 max-w-[75ch] text-[16px] leading-[1.5] text-ink-3">{wholeSentences(item.summary)}</p>}
         <div className="mt-2.5">
           <Meta item={item} />
         </div>
@@ -86,11 +96,11 @@ function LatestStream({ items }: { items: FeedItemSummary[] }) {
 export function LeadStories({ lead, grid, latest }: { lead: FeedItemSummary | null; grid: FeedItemSummary[]; latest: FeedItemSummary[] }) {
   if (!lead) return null;
   return (
-    <section aria-label="Top of the news" className={`mb-10 grid gap-8 ${latest.length > 0 ? "lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]" : ""}`}>
-      <div className={`min-w-0 ${latest.length > 0 ? "lg:pr-8" : ""}`}>
+    <section aria-label="Top of the news" className={`mb-8 grid items-start gap-6 ${latest.length > 0 ? "lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]" : ""}`}>
+      <div className={`min-w-0 ${latest.length > 0 ? "lg:pr-6" : ""}`}>
         <Lead item={lead} />
         {grid.length > 0 && (
-          <div className="mt-7 grid gap-x-8 gap-y-6 border-t border-line pt-6 lg:grid-cols-2">
+          <div className="mt-5 grid items-start gap-x-6 gap-y-4 border-t border-line pt-4 lg:grid-cols-2">
             {grid.map((it) => <Compact key={it.id} item={it} />)}
           </div>
         )}
@@ -100,28 +110,29 @@ export function LeadStories({ lead, grid, latest }: { lead: FeedItemSummary | nu
   );
 }
 
-/** The strongest featured stories after the lead and grid, numbered, each with why it matters. */
+/** Picture-led weekly stories, with the headline and its full explanation kept together. */
 export function TopStories({ items }: { items: FeedItemSummary[] }) {
   if (items.length === 0) return null;
   return (
-    <section aria-labelledby="top-stories" className="mb-10">
+    <section aria-labelledby="top-stories" className="mb-8">
       <h2 id="top-stories" className="border-t-2 border-accent pt-3 text-[24px] font-semibold leading-[1.15] tracking-[-0.02em] text-ink">
         Top stories this week
       </h2>
-      <ol className="mt-3 divide-y divide-line-soft border-b border-line">
+      <ol className="mt-5 grid items-start gap-5 md:grid-cols-2">
         {items.map((item, i) => (
-          <li key={item.id} className="relative grid min-w-0 grid-cols-[44px_minmax(0,1fr)] gap-x-4 gap-y-2 py-5 lg:grid-cols-[72px_minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-x-8" data-item-id={item.id}>
-            <span aria-hidden="true" className="num text-[36px] font-normal leading-none text-ink lg:text-[52px]">{i + 1}</span>
+          <li key={item.id} className={`relative min-w-0 rounded-card border border-line bg-surface p-4 transition-colors hover:border-line-strong focus-within:border-line-strong grid grid-cols-[96px_minmax(0,1fr)] items-start gap-x-3.5 md:gap-x-4 ${i === 0 ? "md:col-span-2 md:grid-cols-[240px_minmax(0,1fr)]" : "md:grid-cols-[128px_minmax(0,1fr)]"}`} data-item-id={item.id}>
+            <Cover cover={item.cover} seed={item.id} className={i === 0 ? "md:row-span-2" : ""} ratio="aspect-[3/2] md:aspect-[4/3]" sizes={i === 0 ? "(min-width: 768px) 240px, 96px" : "(min-width: 768px) 128px, 96px"} />
             <div className="min-w-0">
-              <Title item={item} as="h3" className="text-[18px] leading-[1.35] lg:text-[20px]" />
-              <div className="mt-1.5">
+              <div className="mb-2 flex items-start gap-3">
+                <span aria-hidden="true" className="num text-[18px] font-semibold leading-none text-accent">{String(i + 1).padStart(2, "0")}</span>
                 <Meta item={item} />
               </div>
+              <Title item={item} as="h3" className={`!font-normal leading-[1.35] tracking-[-0.02em] ${i === 0 ? "text-[16px] sm:text-[20px] md:text-[24px]" : "text-[16px] sm:text-[20px]"}`} />
             </div>
             {item.reason && (
-              <p className="col-start-2 text-[14px] leading-[1.6] text-ink-3 lg:col-start-3">
-                <span className="font-semibold text-ink-2">Why it matters </span>
-                {item.reason}
+              <p className={`mt-3 border-t border-line-soft pt-3 text-[14px] leading-[1.6] text-ink-3 col-span-2 ${i === 0 ? "md:col-span-1 md:col-start-2 md:max-w-[75ch]" : ""}`}>
+                <span className="mb-1 block text-[12px] font-semibold text-accent">Why it matters</span>
+                <ScanText text={item.reason} tags={item.tags} />
               </p>
             )}
           </li>

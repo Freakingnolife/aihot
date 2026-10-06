@@ -27,7 +27,9 @@ export const FeedItem = memo(function FeedItem({ item, group, filters, read = fa
   const open = () => onOpen?.(item.id);
   const showSources = !!group && (group.additionalSourceCount > 0 || (group.developmentCount <= 1 && group.reportCount > 1));
   const showDevelopments = !!group?.story && group.developmentCount > 1;
-  const tags = showTags ? item.tags.slice(0, 3) : [];
+  // A tag that repeats the category label ("Industry" and #Industry) adds nothing next to it.
+  const categoryLabel = item.category ? CATEGORY_LABELS[item.category].toLowerCase() : null;
+  const tags = showTags ? item.tags.filter((t) => t.toLowerCase() !== categoryLabel).slice(0, 3) : [];
 
   return (
     <article className="relative flex min-w-0 items-start gap-3.5 lg:card lg:card-hover lg:gap-5 lg:px-[18px] lg:pb-[14px] lg:pt-[15px]" data-item-id={item.id}>
