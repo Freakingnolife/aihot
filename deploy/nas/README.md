@@ -132,12 +132,37 @@ behave differently in a container than on the Mac; the last command is the test)
 
 `scripts/scheduled-refresh.ts` runs at 07:00 and 19:00 Asia/Singapore. Each run: collect every enabled
 source (collection only), fetch missing article pages without the Jina fallback, then process the articles
-discovered in the last 48 hours that are waiting (`processing_state = 'new'`) one at a time. It stops on an
-exhausted budget, an unknown receipt, a provider limit, three errors in a row, or 60 new model requests
-(the article in progress finishes). The llm budget (30/minute, 240/hour, 240/day since 2026-10-06; set in the admin) is never changed; the
-runner has no code to raise it. It never starts pg-boss workers and never maintains the job tables, so
-jobs already queued stay queued. Because no worker runs, grouping, translations and image preparation
-jobs also stay queued (grouping is a known gap; images are produced on demand).
+discovered in the last 48 hours that are waiting (`processing_state = 'new'`) one at a time. Analysis has
+first use of the 60-request target and checks it before each article; because one article can use several
+requests, analysis may cross 60 slightly. After analysis, the runner claims up to 12 existing
+`events.group` jobs, one at a time, while the same cap has room. The normal grouping handler runs, so
+receipts, budget checks and manual decisions still apply. If the cap or daily/hourly/minute budget is reached,
+the claimed job is deferred without spending a processing retry, and remaining grouping jobs stay queued for a later refresh. The backlog drains over
+multiple slots; pending grouping is logged separately from article analysis.
+
+Under the refresh advisory lock, expired `events.group` claims are returned to the queue; no unrelated
+queue is supervised. Automatic grouping jobs are ordered newest-first by original publication time
+(discovery time when publication time is missing). Jobs older than 14 days are completed with the
+distinct `age-skip` outcome; their reports remain visible as standalone items in the site and Archive.
+Explicit manual regroup jobs are exempt. Cap, budget and busy-receipt stops return a claimed job to the
+queue without consuming its bounded failure retries. An unknown-outcome paid request blocks only its own
+job: while its outcome is open, that job and any changed version of its judgement are never re-sent. The job
+is parked for 12 hours, then claimed again; the rest of the queue still runs, and the run reports it as `blocked`.
+Only the admin's release (Runs page) lets the next claim send it once: the 30-minute automatic release runs in the
+worker, which this deployment does not run. A placeholder left by a process that stopped mid-request (pending for
+over 10 minutes) is marked unknown at the start of each grouping pass, so its job waits for the admin like any other.
+If consolidation hits an unknown receipt on a report's first pass, that consolidation is not retried automatically
+(accepted behaviour).
+Actual processing failures keep the normal retry limit, and a claim that expires because the process died
+spends one retry, so a job that keeps crashing the runner ends as failed. A run whose job errored reports
+status `errors`. The run log reports completed, age-skipped, deferred, blocked, active/stalled and pending
+grouping counts.
+
+The runner opens pg-boss in passive mode only to claim and complete grouping jobs. It does not register
+workers, start other queues or enable schedules/migrations, and does not process translations,
+image-preparation jobs or story digests. Grouping from this runner does not queue digests (nothing here
+consumes them), so a new story has no digest until a worker later handles a report for it. There is no always-on worker. The llm budget (30/minute, 240/hour, 240/day; set in
+the admin) is never changed; embedding and DashScope remain disabled at their existing zero budgets.
 
 `COLLECT_ENABLED=false` skips collection and page fetching; `MODEL_CALLS_ENABLED=false` skips processing.
 Change them in `.env`, then `docker compose up -d scheduler`.
@@ -148,7 +173,9 @@ Run once now (safe next to the daemon: a database lock allows one run at a time)
 docker compose run --rm scheduler node scripts/scheduled-refresh.ts --once
 ```
 
-Each run writes one JSON line: `{"event":"refresh","status":"finished|request-cap|budget|unknown-receipt|provider-limit|errors|error|shutdown|disabled|another-run-in-progress", "collect":{...},"bodies":{...},"process":{"candidates":..,"processed":..,"states":{..},"requests":..,"stop":..}}`.
+Each run writes one JSON line. `process` records analysis progress and `grouping` separately records
+`attempted`, `completed`, `ageSkipped`, `deferred`, `errors`, `requests`, `stalled`, `active`,
+`pendingBefore`, `pending`, and its stop reason. Jobs not yet claimed remain queued.
 An `unknown-receipt` needs the admin's normal recovery (Runs page) before that article is retried.
 
 ## Logs

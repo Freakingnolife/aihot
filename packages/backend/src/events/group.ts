@@ -18,7 +18,7 @@ import { modelFor } from "../editorial/models.ts";
 import { sql, type Db } from "../db.ts";
 import { newShortId, newUuid, sha256 } from "../lib/ids.ts";
 import { chatJson } from "../providers/llm.ts";
-import { BudgetExceededError, ReceiptBusyError, completeReceipt } from "../providers/receipts.ts";
+import { BudgetExceededError, ReceiptBusyError, ReceiptUnknownError, completeReceipt, unknownReceiptFor } from "../providers/receipts.ts";
 import { embeddingsAvailable, ensureEmbeddings } from "../providers/embeddings.ts";
 import { isHistorical, STALE_ON_DISCOVERY_MS } from "../content/materials.ts";
 import { enqueue, QUEUES } from "../jobs/queue.ts";
@@ -197,7 +197,7 @@ function cosine32(a: Float32Array, b: Float32Array): number {
  * Facts whose reports are similar to the query text: the best report of each fact counts. Boosted
  * facts (a post the query replies to or quotes) are always included.
  */
-async function recallFacts(queryId: string, queryText: string, minScore: number, top: number, boost: PoolRow[] = []): Promise<Recalled[]> {
+async function recallFacts(queryId: string, queryText: string, minScore: number, top: number, boost: PoolRow[] = [], forceLexical = false): Promise<Recalled[]> {
   const pool = (await recallPool()).filter((r) => r.article_id !== queryId);
   const best = new Map<number, Recalled>();
   const consider = (r: PoolRow, score: number) => {
@@ -205,7 +205,7 @@ async function recallFacts(queryId: string, queryText: string, minScore: number,
     if (!prev || score > prev.score) best.set(r.fact_id, { factId: r.fact_id, storyId: r.story_id, factTitle: r.fact_title, score });
   };
   if (pool.length) {
-    if (!embeddingsAvailable()) {
+    if (forceLexical || !embeddingsAvailable()) {
       const texts = await reportTexts([...new Set(pool.map((r) => r.article_id))]);
       for (const r of pool) {
         const s = lexicalSimilarity(queryText, texts.get(r.article_id) ?? "");
@@ -276,7 +276,16 @@ async function candidateViews(recalled: Recalled[]): Promise<CandidateView[]> {
 // Judgement
 // ---------------------------------------------------------------------------
 
-async function judgeBatch(articleId: string, query: ReportView, cands: CandidateView[]): Promise<{ verdicts: Map<number, Verdict>; receiptId: number }> {
+export class GroupRequestCapError extends Error {
+  constructor() { super("scheduled refresh model request cap reached"); }
+}
+
+async function admitModelRequest(beforeModelRequest?: () => Promise<boolean>) {
+  if (beforeModelRequest && !(await beforeModelRequest())) throw new GroupRequestCapError();
+}
+
+async function judgeBatch(articleId: string, query: ReportView, cands: CandidateView[], beforeModelRequest?: () => Promise<boolean>): Promise<{ verdicts: Map<number, Verdict>; receiptId: number }> {
+  await admitModelRequest(beforeModelRequest);
   const res = await chatJson({
     model: await modelFor("group"), purpose: "group_article", subject: `article:${articleId}`, promptVersion: RELATE_PROMPT_VERSION,
     system: BATCH_SYSTEM, user: batchUser(query, cands), schema: BatchSchema, temperature: 0, maxTokens: 200 + 90 * cands.length,
@@ -285,7 +294,8 @@ async function judgeBatch(articleId: string, query: ReportView, cands: Candidate
 }
 
 /** The review model reads both reports on their own; a merge stands only when it agrees. */
-async function confirmMerge(articleId: string, query: ReportView, cand: CandidateView): Promise<{ relation: Relation; receiptId: number }> {
+async function confirmMerge(articleId: string, query: ReportView, cand: CandidateView, beforeModelRequest?: () => Promise<boolean>): Promise<{ relation: Relation; receiptId: number }> {
+  await admitModelRequest(beforeModelRequest);
   const res = await chatJson({
     model: await modelFor("groupReview"), purpose: "group_review", subject: `article:${articleId}:fact:${cand.factId}`, promptVersion: RELATE_PROMPT_VERSION,
     system: PAIR_SYSTEM, user: pairUser(query, cand.report), schema: PairSchema, temperature: 0, maxTokens: 400,
@@ -293,7 +303,8 @@ async function confirmMerge(articleId: string, query: ReportView, cand: Candidat
   return { relation: res.data.relation, receiptId: res.receiptId };
 }
 
-async function judgeSignal(articleId: string, query: ReportView, cands: CandidateView[]): Promise<{ verdicts: Map<number, Verdict>; receiptId: number }> {
+async function judgeSignal(articleId: string, query: ReportView, cands: CandidateView[], beforeModelRequest?: () => Promise<boolean>): Promise<{ verdicts: Map<number, Verdict>; receiptId: number }> {
+  await admitModelRequest(beforeModelRequest);
   const res = await chatJson({
     model: await modelFor("group"), purpose: "group_signal", subject: `article:${articleId}`, promptVersion: RELATE_PROMPT_VERSION,
     system: SIGNAL_SYSTEM, user: batchUser(query, cands, "帖子"), schema: SignalSchema, temperature: 0, maxTokens: 150 + 60 * cands.length,
@@ -450,7 +461,12 @@ async function storyRoot(storyId: number): Promise<StoryRoot | null> {
   };
 }
 
-async function judgeStories(capability: "group" | "groupReview", a: StoryRoot, b: StoryRoot): Promise<{ relation: Relation; confidence: number; difference: string; receiptId: number }> {
+async function judgeStories(capability: "group" | "groupReview", a: StoryRoot, b: StoryRoot, beforeModelRequest?: () => Promise<boolean>): Promise<{ relation: Relation; confidence: number; difference: string; receiptId: number }> {
+  // The pair's roots may have changed since an earlier judgement lost its outcome, and the anchor may have flipped
+  // (the same pair keyed the other way round): a new key would pay again, in either order.
+  const unknown = await unknownReceiptFor([`story:${a.storyId}:${b.storyId}`, `story:${b.storyId}:${a.storyId}`], ["group_story", "group_story_review"]);
+  if (unknown !== null) throw new ReceiptUnknownError(unknown, `story pair receipt ${unknown} has an unknown outcome`);
+  await admitModelRequest(beforeModelRequest);
   const res = await chatJson({
     model: await modelFor(capability), purpose: capability === "group" ? "group_story" : "group_story_review", subject: `story:${a.storyId}:${b.storyId}`,
     promptVersion: RELATE_PROMPT_VERSION, system: PAIR_SYSTEM, user: pairUser(a.report, b.report), schema: PairSchema, temperature: 0, maxTokens: 400,
@@ -487,7 +503,7 @@ export interface Consolidation {
  * the judge and then the review model both see one occurrence or a direct development: a report tied
  * to two different events (a comparison, a roundup) cannot fuse them on its own.
  */
-export async function consolidate(storyIds: number[], opts: { dryRun?: boolean } = {}): Promise<Consolidation[]> {
+export async function consolidate(storyIds: number[], opts: { dryRun?: boolean; beforeModelRequest?: () => Promise<boolean> } = {}): Promise<Consolidation[]> {
   const live = new Set<number>();
   for (const id of storyIds) {
     const s = await liveStory(id);
@@ -501,14 +517,14 @@ export async function consolidate(storyIds: number[], opts: { dryRun?: boolean }
   const out: Consolidation[] = [];
   for (const other of others) {
     const base = { from: other.storyId, into: anchor.storyId, fromTitle: other.report.title, intoTitle: anchor.report.title };
-    const first = await judgeStories("group", anchor, other);
+    const first = await judgeStories("group", anchor, other, opts.beforeModelRequest);
     await completeReceipt(sql, first.receiptId);
     if (!firmlyTied(first.relation, first.confidence)) {
       out.push({ ...base, merge: false, first: first.relation, second: null, difference: first.difference });
       continue;
     }
     // The review model reads the pair the other way round.
-    const second = await judgeStories("groupReview", other, anchor);
+    const second = await judgeStories("groupReview", other, anchor, opts.beforeModelRequest);
     await completeReceipt(sql, second.receiptId);
     const merge = firmlyTied(second.relation, second.confidence, STORY_REVIEW_MIN_CONFIDENCE);
     if (merge && !opts.dryRun) {
@@ -592,6 +608,10 @@ export interface GroupOptions {
   signalOnly?: boolean;
   /** An explicit regroup: drop the automatic membership and decide again (manual decisions still win). A report waiting in regroup_pending is regrouped the same way. */
   force?: boolean;
+  /** Scheduled refresh admission check, called immediately before each paid LLM request. */
+  beforeModelRequest?: () => Promise<boolean>;
+  /** Disable paid vector recall for scheduled refreshes, including when credentials are configured. */
+  forceLexical?: boolean;
 }
 
 export async function groupArticle(articleId: string, opts: GroupOptions = {}): Promise<GroupResult> {
@@ -619,6 +639,7 @@ async function decide(articleId: string, opts: GroupOptions): Promise<GroupResul
     await publishArticle(articleId);
     return { verdict: "manual", factId: manual.factId };
   }
+  if (opts.force) await sql`DELETE FROM group_consolidation_pending WHERE article_id = ${articleId}`;
   const left = opts.force || a.regroup_pending ? await resetAutomatic(articleId) : [];
 
   // History founds no event and adds no heat (isHistorical); a regroup takes it out of any it joined.
@@ -628,7 +649,26 @@ async function decide(articleId: string, opts: GroupOptions): Promise<GroupResul
     return { verdict: "historical" };
   }
 
-  if (opts.signalOnly || a.participation_mode !== "editorial") return groupSignal(a, source, observedAt);
+  if (opts.signalOnly || a.participation_mode !== "editorial") return groupSignal(a, source, observedAt, opts);
+
+  const [continuation] = await sql<{ story_ids: number[] }[]>`SELECT story_ids FROM group_consolidation_pending WHERE article_id = ${articleId}`;
+  if (continuation) {
+    const consolidated = await consolidate(continuation.story_ids, { beforeModelRequest: opts.beforeModelRequest });
+    const membership = await currentMembership(articleId);
+    const result: GroupResult = { verdict: "kept", factId: membership?.factId, storyId: membership?.storyId, consolidated };
+    if (a.x_post?.tweetId) {
+      try { result.reclaimed = await reclaimWaiting(a.x_post.tweetId); }
+      catch (error) { result.reclaimError = String(error).slice(0, 300); }
+    }
+    const [decision] = await sql<{ verdict: string }[]>`SELECT verdict FROM grouping_decisions WHERE article_id = ${articleId} ORDER BY id DESC LIMIT 1`;
+    if (decision?.verdict === "new-story" || decision?.verdict === "new-fact-in-story") {
+      const [analysis] = await sql<{ title_zh: string | null; summary_zh: string | null }[]>`SELECT title_zh,summary_zh FROM analyses WHERE article_id = ${articleId} ORDER BY input_revision DESC,id DESC LIMIT 1`;
+      try { result.rematched = await rematchSignals(articleId, reportText(analysis?.title_zh || a.title, analysis?.summary_zh), opts.forceLexical); }
+      catch (error) { result.rematchError = String(error).slice(0, 300); }
+    }
+    await sql`DELETE FROM group_consolidation_pending WHERE article_id = ${articleId}`;
+    return result;
+  }
 
   const kept = await currentMembership(articleId);
   if (kept) {
@@ -666,9 +706,9 @@ async function decide(articleId: string, opts: GroupOptions): Promise<GroupResul
     storyId = sameUrl.story_id;
   } else {
     try {
-      cands = await candidateViews(await recallFacts(articleId, reportText(title, an.summary_zh), RECALL_MIN_COSINE, RECALL_TOP_FACTS, referenced));
+      cands = await candidateViews(await recallFacts(articleId, reportText(title, an.summary_zh), RECALL_MIN_COSINE, RECALL_TOP_FACTS, referenced, opts.forceLexical));
       if (cands.length) {
-        const judged = await judgeBatch(articleId, query, cands);
+        const judged = await judgeBatch(articleId, query, cands, opts.beforeModelRequest);
         verdicts = judged.verdicts;
         receipts.push(judged.receiptId);
         for (const pick of sameOccurrence(cands, verdicts)) {
@@ -676,7 +716,7 @@ async function decide(articleId: string, opts: GroupOptions): Promise<GroupResul
             factId = pick.factId;
             break;
           }
-          const review = await confirmMerge(articleId, query, pick);
+          const review = await confirmMerge(articleId, query, pick, opts.beforeModelRequest);
           receipts.push(review.receiptId);
           if (review.relation === "SAME_OCCURRENCE") {
             factId = pick.factId;
@@ -743,9 +783,14 @@ async function decide(articleId: string, opts: GroupOptions): Promise<GroupResul
   for (const c of cands) if (firmlyTied(verdicts.get(c.factId)?.relation, verdicts.get(c.factId)?.confidence)) tied.add(c.storyId);
   if (tied.size > 1) {
     try {
-      result.consolidated = await consolidate([...tied]);
+      result.consolidated = await consolidate([...tied], { beforeModelRequest: opts.beforeModelRequest });
       result.storyId = (await liveStory(written.storyId!)) ?? written.storyId!;
     } catch (error) {
+      if (error instanceof GroupRequestCapError) {
+        await sql`INSERT INTO group_consolidation_pending (article_id, story_ids) VALUES (${articleId}, ${sql.array([...tied])}::bigint[])
+          ON CONFLICT (article_id) DO UPDATE SET story_ids = EXCLUDED.story_ids, requested_at = now()`;
+        throw error;
+      }
       result.consolidationError = String(error).slice(0, 300);
     }
   }
@@ -763,7 +808,7 @@ async function decide(articleId: string, opts: GroupOptions): Promise<GroupResul
   // A new fact may be what discussion posts of the last hours were about before any report came.
   if (verdict === "new-story" || verdict === "new-fact-in-story") {
     try {
-      result.rematched = await rematchSignals(articleId, reportText(title, an.summary_zh));
+      result.rematched = await rematchSignals(articleId, reportText(title, an.summary_zh), opts.forceLexical);
     } catch (error) {
       result.rematchError = String(error).slice(0, 300);
     }
@@ -806,8 +851,9 @@ const signalText = (a: { title: string; body_text: string | null }) => reportTex
  * then and were left. When a report founds a fact, the recent unattached posts close to it are
  * grouped again; each is judged the usual way, against all candidates.
  */
-async function rematchSignals(articleId: string, queryText: string): Promise<number> {
-  if (!embeddingsAvailable()) return 0;
+async function rematchSignals(articleId: string, queryText: string, forceLexical = false): Promise<number> {
+  // Scheduled refreshes make no embedding request, whatever the budget; no lexical stand-in is added here.
+  if (forceLexical || !embeddingsAvailable()) return 0;
   const mine = (await vectorsFor([{ id: articleId, text: queryText }])).get(articleId);
   if (!mine) return 0;
   const posts = await sql<{ id: string; title: string; body_text: string | null }[]>`
@@ -829,7 +875,7 @@ async function rematchSignals(articleId: string, queryText: string): Promise<num
  * Discussion evidence (hot_signal sources): the post the item replies to or quotes decides first;
  * otherwise clear candidates are judged, and a nearly identical report attaches without a call.
  */
-async function groupSignal(a: ArticleRow, source: { id: string; signal_group_id: string | null }, observedAt: Date): Promise<GroupResult> {
+async function groupSignal(a: ArticleRow, source: { id: string; signal_group_id: string | null }, observedAt: Date, opts: GroupOptions): Promise<GroupResult> {
   const { referenced } = await relatedPosts(a);
   if (referenced.length) {
     const target = referenced[0]!;
@@ -837,8 +883,8 @@ async function groupSignal(a: ArticleRow, source: { id: string; signal_group_id:
     await recordDecision(sql, a.id, target.fact_id, target.story_id, "signal-native", [{ id: target.fact_id, score: 1, relation: "SAME_STORY", confidence: 1 }], null);
     return { verdict: "signal-native", storyId: target.story_id };
   }
-  if (!embeddingsAvailable()) return { verdict: "signal-unmatched" };
-  const recalled = await recallFacts(a.id, signalText(a), SIGNAL_MIN_COSINE, SIGNAL_TOP_FACTS);
+  if (!opts.forceLexical && !embeddingsAvailable()) return { verdict: "signal-unmatched" };
+  const recalled = await recallFacts(a.id, signalText(a), SIGNAL_MIN_COSINE, SIGNAL_TOP_FACTS, [], opts.forceLexical);
   if (recalled.length === 0) {
     // Recorded, so a post that found nothing is told apart from one never decided.
     await recordDecision(sql, a.id, null, null, "signal-unmatched", [], null);
@@ -855,7 +901,7 @@ async function groupSignal(a: ArticleRow, source: { id: string; signal_group_id:
   const cands = await candidateViews(recalled);
   if (cands.length === 0) return { verdict: "signal-unmatched" };
   const query: ReportView = { title: a.title, source: a.source_name, firstParty: false, at: observedAt, summary: a.body_text?.slice(0, 300) ?? null };
-  const { verdicts, receiptId } = await judgeSignal(a.id, query, cands);
+  const { verdicts, receiptId } = await judgeSignal(a.id, query, cands, opts.beforeModelRequest);
   const target = signalTarget(cands, verdicts);
   if (target) await recordSignal(sql, target.storyId, a.id, source, "signal", observedAt);
   await recordDecision(sql, a.id, target?.factId ?? null, target?.storyId ?? null, target ? "signal" : "signal-unmatched", asCandidates(verdicts), receiptId);

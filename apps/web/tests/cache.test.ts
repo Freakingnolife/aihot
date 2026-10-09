@@ -20,6 +20,8 @@ const apiCookies: Array<string | undefined> = [];
 const imported = new Date().toISOString();
 const unknownDraft = {id:"unknown-draft",revision:1,title:"Unknown original date",originalTitle:null,summary:"Publisher describes a component.",reason:null,source:{id:"fixture",name:"Fixture publisher",kind:"rss",firstParty:true},links:{original:"https://example.invalid/original",aihot:"/items/unknown-draft"},publishedAt:null,discoveredAt:imported,timelineAt:imported,backfill:true,category:"products",tags:[],score:49,selected:false,channel:"news",story:null,x:null,readingMode:"summary-only",author:null,language:"en",body:null,outline:[],relatedStories:[],hasTranslation:false,bodyLanguage:"original",markdownAvailable:false,indexable:false,media:[]};
 const datedDraft={...unknownDraft,id:"dated-draft",title:"Dated draft",publishedAt:"2026-06-09T00:00:00Z",timelineAt:"2026-06-09T00:00:00Z"};
+const groupedCard={...unknownDraft,id:"selected-grouped",title:"Selected grouped event",selected:true,cover:null,x:null,event:{sourceCount:2,anchorAt:imported,reports:[{source:"Fixture publisher",title:"First original report",originalUrl:"https://example.invalid/publisher-a"},{source:"Second publisher",title:"Second original report",originalUrl:"https://example.invalid/publisher-b"}]}};
+const oneSourceCard={...groupedCard,id:"one-source-grouped",title:"One publisher, two links",selected:false,event:{sourceCount:1,anchorAt:imported,reports:[{source:"Fixture publisher",title:"Morning original",originalUrl:"https://example.invalid/publisher-a"},{source:"Fixture publisher",title:"Afternoon original",originalUrl:"https://example.invalid/publisher-a-2"}]}};
 const api = createServer((req, res) => {
   const url = new URL(req.url!, "http://api.local");
   apiCookies.push(req.headers.cookie);
@@ -38,7 +40,7 @@ const api = createServer((req, res) => {
   if (url.pathname === "/api/site/pool") {
     const mode=url.searchParams.get("mode");
     const filters={channel:url.searchParams.get("channel")??"all",category:url.searchParams.get("category"),tag:url.searchParams.get("tag"),q:url.searchParams.get("q"),tab:url.searchParams.get("tab")??"time",mode};
-    return res.end(JSON.stringify({filters,items:filters.tag==="dates" ? [datedDraft,unknownDraft] : [],total:45,page:Number(url.searchParams.get("page")??1),pageCount:2,todayCount:0,freshness:"2026-09-30T00:00:00Z",generatedAt:"2026-09-30T00:00:00Z"}));
+    return res.end(JSON.stringify({filters,items:filters.tag==="dates" ? [datedDraft,unknownDraft] : filters.tag==="grouped" ? [groupedCard] : filters.tag==="one-source" ? [oneSourceCard] : [],total:45,page:Number(url.searchParams.get("page")??1),pageCount:2,todayCount:0,freshness:"2026-09-30T00:00:00Z",generatedAt:"2026-09-30T00:00:00Z"}));
   }
   if (url.pathname === "/api/site/hot") return res.end(JSON.stringify({ windowHours:48, computedAt:null, entries: populatedHot ? ["unknown","new","flat","up","down"].map((trend,i)=>({rank:i+1,story:{publicId:`story-${i}`,title:`Manufacturing story ${i}`},heat:10,trend,trendPct:trend==="new"?null:10,badges:[],participantCount:1,sourceCount:1,signalCount:0,reportCount:1,sourceNames:["Fixture publisher"],latestAt:imported,firstReportAt:imported,representative:null,participants:[{kind:"editorial",name:"Fixture publisher",iconUrl:null}],spark:[1,2,3],summary:"Attributed report",latest:null,cover:null})) : [] }));
   if (url.pathname === "/api/site/echo-client") return res.end(JSON.stringify({ forwarded: req.headers["x-forwarded-for"], real: req.headers["x-real-ip"] }));
@@ -112,6 +114,28 @@ test("HTML and navigation share freshness; cookies do not personalize public res
   assert.equal(signedIn.headers.get("Set-Cookie"), null);
   assert.equal(await signedIn.text(), await plain.text());
   assert.ok(apiCookies.every((cookie) => !cookie));
+});
+
+test("a selected folded event keeps the publisher disclosure on its lead card", async () => {
+  const res = await fetch(`${origin}/all?tag=grouped`);
+  assert.equal(res.status, 200);
+  const html = await res.text();
+  assert.match(html, /Selected grouped event/);
+  const disclosure = html.match(/<summary[^>]*>(.*?)<\/summary>/)?.[1]?.replaceAll("<!-- -->", "");
+  assert.equal(disclosure?.trim(), "2 sources");
+  assert.match(html, /https:\/\/example\.invalid\/publisher-a/);
+  assert.match(html, /https:\/\/example\.invalid\/publisher-b/);
+  assert.ok(html.indexOf("sources</summary>") < html.indexOf("First original report"), "the disclosure is an expandable source list");
+});
+
+test("a folded event's disclosure counts publishers and says how many links it lists", async () => {
+  const res = await fetch(`${origin}/all?tag=one-source`);
+  assert.equal(res.status, 200);
+  const html = await res.text();
+  const disclosure = html.match(/<summary[^>]*>(.*?)<\/summary>/)?.[1] ?? "";
+  assert.equal(disclosure.replaceAll("<!-- -->", "").replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim(), "1 source · 2 reports");
+  assert.match(html, /Morning original/);
+  assert.match(html, /Afternoon original/);
 });
 
 test("missing routes cannot be hidden by a root-only request; errors and redirects stay uncached", async () => {

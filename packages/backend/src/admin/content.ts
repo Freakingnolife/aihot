@@ -5,7 +5,7 @@
 import { z } from "zod";
 import { ARTICLE_ID_PATTERN, CATEGORY_KEYS } from "@aihot/contracts/taxonomy";
 import { sql } from "../db.ts";
-import { enqueue, QUEUES } from "../jobs/queue.ts";
+import { enqueue, MANUAL_GROUP_PRIORITY, QUEUES } from "../jobs/queue.ts";
 import { queueProcessing } from "../jobs/content.ts";
 import { normalizeUrl } from "../lib/url.ts";
 import { publishArticle } from "../publication/publish.ts";
@@ -163,7 +163,7 @@ export async function rerun(id: string, step: "extract" | "analyze" | "group", r
   if (step === "group") {
     // An explicit regroup replaces an earlier manual "keep standalone" decision and the automatic membership.
     await sql`DELETE FROM grouping_overrides WHERE article_id = ${id}`;
-    jobId = await enqueue(QUEUES.group, { articleId: id, force: true }, { singletonKey: `manual:group:${id}:${requestId}` });
+    jobId = await enqueue(QUEUES.group, { articleId: id, force: true }, { singletonKey: `manual:group:${id}:${requestId}`, priority: MANUAL_GROUP_PRIORITY });
   } else {
     await sql`UPDATE articles SET processing_state = 'new', processing_error = NULL, processing_attempts = 0, processing_retry_at = NULL,
                 body_status = CASE WHEN ${step === "extract"} THEN 'pending' ELSE body_status END WHERE id = ${id}`;

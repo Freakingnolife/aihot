@@ -7,6 +7,7 @@ import { markRead } from "../../lib/local-state";
 import { displayTitle } from "../../lib/format";
 import { wholeSentences } from "./lead";
 import { splitByPhrases } from "./phrases";
+import { EventSources } from "./EventSources";
 
 const DAY = new Intl.DateTimeFormat("en-SG", { day: "numeric", month: "short", timeZone: "Asia/Shanghai" });
 
@@ -54,6 +55,7 @@ function Lead({ item }: { item: FeedItemSummary }) {
         <div className="mt-2.5">
           <Meta item={item} />
         </div>
+        <EventSources item={item} />
       </div>
     </article>
   );
@@ -68,6 +70,7 @@ function Compact({ item }: { item: FeedItemSummary }) {
         <div className="mt-1.5">
           <Meta item={item} />
         </div>
+        <EventSources item={item} />
       </div>
     </article>
   );
@@ -86,6 +89,7 @@ function LatestStream({ items }: { items: FeedItemSummary[] }) {
           <li key={item.id} className="relative min-w-0 py-3.5" data-item-id={item.id}>
             <Meta item={item} />
             <Title item={item} as="h3" className="mt-1 line-clamp-3 text-[16px] leading-[1.4]" />
+            <EventSources item={item} />
           </li>
         ))}
       </ol>
@@ -128,6 +132,7 @@ export function TopStories({ items }: { items: FeedItemSummary[] }) {
                 <Meta item={item} />
               </div>
               <Title item={item} as="h3" className={`leading-[1.35] tracking-[-0.02em] ${i === 0 ? "text-[16px] sm:text-[20px] md:text-[24px]" : "text-[16px] sm:text-[20px]"}`} />
+              <EventSources item={item} />
             </div>
             {item.reason && (
               <p className={`mt-3 border-t border-line-soft pt-3 text-[14px] leading-[1.6] text-ink-3 col-span-2 ${i === 0 ? "md:col-span-1 md:col-start-2 md:max-w-[75ch]" : ""}`}>

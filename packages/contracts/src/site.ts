@@ -81,6 +81,8 @@ export interface FeedItemSummary extends Pick<ItemSummary, "id" | "title" | "sum
   backfill?: boolean;
   discoveredAt?: string;
   source: Pick<SourceRef, "name">;
+  /** Other eligible reports sharing a confirmed fact or story identity in browse results. */
+  event?: { sourceCount: number; anchorAt: string | null; reports: Array<{ source: string; title: string; originalUrl: string }> };
   cover: CoverView | null;
   x: (Pick<XPostView, "authorName" | "handle" | "avatarUrl" | "avatarSrcSet" | "media"> & {
     quoted: Omit<NonNullable<XPostView["quoted"]>, "url"> | null;

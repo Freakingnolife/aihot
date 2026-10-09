@@ -15,7 +15,8 @@ export function DayList({ items, todayCount = null, showTags = true, animate = f
   const days = useMemo(() => {
     const out: Array<{ day: string; items: FeedItemSummary[] }> = [];
     for (const it of items) {
-      const d = originalDates ? (it.publishedAt ? beijingDate(it.publishedAt) : "unknown") : beijingDate(it.timelineAt);
+      const published = it.event?.anchorAt ?? it.publishedAt;
+      const d = originalDates ? (published ? beijingDate(published) : "unknown") : beijingDate(it.timelineAt);
       const last = out[out.length - 1];
       if (last && last.day === d) last.items.push(it);
       else out.push({ day: d, items: [it] });
@@ -77,4 +78,3 @@ export function Pagination({ page, pageCount, href }: { page: number; pageCount:
     </nav>
   );
 }
-

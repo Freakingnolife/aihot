@@ -11,6 +11,7 @@ import { Cover } from "../../components/ui/Cover";
 import { MediaThumbs, SourceLine, StarButton } from "./parts";
 import { GroupDevelopments, GroupSources, LatestDevelopment } from "./ReadingGroup";
 import { QuotedLine } from "../item/QuotedPost";
+import { EventSources } from "./EventSources";
 
 export interface FeedItemProps {
   item: FeedItemSummary;
@@ -85,6 +86,7 @@ export const FeedItem = memo(function FeedItem({ item, group, filters, read = fa
         )}
 
         {group && <LatestDevelopment group={group} />}
+        <EventSources item={item} />
         {(showSources || showDevelopments) && (
           <div className="mt-2 flex flex-wrap items-start gap-x-4 gap-y-1">
             {showSources && <GroupSources group={group!} filters={filters} parentId={item.id} />}

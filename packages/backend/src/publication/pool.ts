@@ -1,7 +1,7 @@
 // Public pool (/all) with numeric pages, and search in its two orderings.
 import type { PoolResponse, TimelineFilters } from "@aihot/contracts/site";
 import { beijingDate, beijingMidnight } from "@aihot/contracts/time";
-import { one, sql, withCustomPlans, type Db } from "../db.ts";
+import { sql, withCustomPlans, type Db } from "../db.ts";
 import {
   categoryCondition, channelCondition, ITEM_COLUMNS, ITEM_FROM, listedCondition, tagCondition, toFeedItemSummary, topicCondition,
   type ItemRow,
@@ -83,25 +83,6 @@ export function publicMatchCondition(terms: string[]) {
   );
 }
 
-/** Unfiltered-by-search totals only set the page count; they are reused for 30 seconds per filter. */
-const countCache = new Map<string, { at: number; n: number }>();
-const countPending = new Map<string, Promise<number>>();
-async function poolCount(key: string | null, query: () => Promise<Array<{ n: number }>>): Promise<number> {
-  if (key === null) return Number(one(await query()).n);
-  const hit = countCache.get(key);
-  if (hit && Date.now() - hit.at < 30_000) return hit.n;
-  const pending = countPending.get(key);
-  if (pending) return pending;
-  const load = (async () => {
-    const n = Number(one(await query()).n);
-    if (countCache.size >= 200) countCache.delete(countCache.keys().next().value!);
-    countCache.set(key, { at: Date.now(), n });
-    return n;
-  })();
-  countPending.set(key, load);
-  try { return await load; } finally { countPending.delete(key); }
-}
-
 export interface PoolQuery extends TimelineFilters {
   mode?: "recent" | "archive";
   q?: string | null;
@@ -118,96 +99,93 @@ export async function loadPool(query: PoolQuery): Promise<PoolResponse> {
   const tab = q && query.tab === "relevance" ? "relevance" : "time";
   const terms = q ? searchTerms(q) : [];
   const period = query.mode === "recent" ? sql`AND p.published_at >= ${new Date(now.getTime() - 30 * 86400000)} AND p.published_at <= ${now}` : sql``;
-  const order = query.mode ? sql`p.published_at DESC NULLS LAST, p.article_id DESC` : sql`p.timeline_at DESC, p.article_id DESC`;
-  const rankedOrder = query.mode ? sql`published_at DESC NULLS LAST, article_id DESC` : sql`timeline_at DESC, article_id DESC`;
-  const hydratedOrder = query.mode ? sql`hydrated.published_at DESC NULLS LAST, hydrated.id DESC` : sql`hydrated.timeline_at DESC, hydrated.id DESC`;
   const filters = sql`${period} ${channelCondition(query.channel)} ${categoryCondition(query.category)} ${tagCondition(query.tag)} ${topicCondition(query.topicTags)}`;
-  const offset = (page - 1) * POOL_PAGE_SIZE;
   const cap = POOL_MAX_PAGES * POOL_PAGE_SIZE;
-  // A fixed clock (tests, replays) never shares cached totals.
-  const filterKey = query.now ? null : JSON.stringify([query.channel, query.category, query.tag, query.topicTags ?? null, query.mode ?? null]);
-
-  // Searches go through pool_search (eligible items only): trigram indexes for longer terms, a small
-  // table to scan for one- and two-character ones.
   const like = (col: ReturnType<typeof sql>, t: string) => sql`${col} LIKE ${"%" + t + "%"}`;
-  const run = async (db: Db) => {
-    if (!q) {
-      // Page ids from the timeline index first, then the joins for those rows only.
-      const rows = await db<ItemRow[]>`
-        WITH page AS (
-          SELECT p.article_id FROM publications p WHERE ${listedCondition(now)} AND p.eligible ${filters}
-          ORDER BY ${order} LIMIT ${POOL_PAGE_SIZE} OFFSET ${offset})
-        SELECT ${ITEM_COLUMNS} ${ITEM_FROM} WHERE p.article_id IN (SELECT article_id FROM page)
-        ORDER BY ${order}`;
-      return { rows, total: await poolCount(filterKey, () => db<{ n: number }[]>`
-        SELECT count(*) AS n FROM (SELECT 1 FROM publications p WHERE ${listedCondition(now)} AND p.eligible ${filters} LIMIT ${cap}) t`) };
-    }
-    if (tab === "relevance") {
-      // Rank narrow rows first: no article bodies or translations enter the sort/count. The public
-      // total stops at 2,000, even though ranking must consider every matching item.
-      // For an unfiltered trigram search, match each indexed field separately. OR across fields
-      // can make PostgreSQL scan every toasted body instead. Keep other searches inline so short
-      // terms, additional terms and selective publication filters retain their existing plans.
+  type EventRow = { id: string | null; event_at: Date | null; rel: number | null; members: number | null; source_count: number | null; reports: Array<{ source: string; title: string; originalUrl: string }> | null; total: number; today_count: number };
+  const findEvents = async (db: Db): Promise<EventRow[]> => {
+    let matching;
+    let materialized = false;
+    if (!q) matching = sql`
+      SELECT p.article_id AS id,p.timeline_at,p.published_at,p.fact_id,coalesce(st.merged_into,p.story_id) AS story_root,
+             p.first_party,p.body_mode,p.score,p.source_id,s.name AS source_name,p.title,p.url,0::int AS rel
+      FROM publications p JOIN sources s ON s.id=p.source_id LEFT JOIN stories st ON st.id=p.story_id
+      WHERE ${listedCondition(now)} AND p.eligible ${filters}`;
+    else if (tab === "relevance") {
       const splitFields = terms.length === 1 && /[\p{L}\p{N}]{3}/u.test(terms[0]!)
         && (!query.channel || query.channel === "all") && !query.category && !query.tag && !query.topicTags?.length;
-      const partScore = terms.reduce(
-        (acc, t) => sql`${acc} + (CASE WHEN ${like(sql`ps.direct`, t)} THEN 3 ELSE 0 END) + (CASE WHEN ${like(sql`ps.body`, t)} THEN 1 ELSE 0 END)`,
-        sql`0`,
-      );
+      const partScore = terms.reduce((acc, t) => sql`${acc} + (CASE WHEN ${like(sql`ps.direct`, t)} THEN 3 ELSE 0 END) + (CASE WHEN ${like(sql`ps.body`, t)} THEN 1 ELSE 0 END)`, sql`0`);
       const titleScore = terms.reduce((acc, t) => sql`${acc} + (CASE WHEN ${like(sql`lower(p.title)`, t)} THEN 6 ELSE 0 END)`, sql`0`);
       const anyMatch = terms.reduce((acc, t) => sql`${acc} AND (${like(sql`ps.direct`, t)} OR ${like(sql`ps.body`, t)})`, sql`TRUE`);
       const matches = splitFields ? sql`
-        SELECT coalesce(d.article_id, b.article_id) AS article_id,
-          (CASE WHEN d.article_id IS NOT NULL THEN 3 ELSE 0 END) + (CASE WHEN b.article_id IS NOT NULL THEN 1 ELSE 0 END) AS part
+        SELECT coalesce(d.article_id,b.article_id) AS article_id,(CASE WHEN d.article_id IS NOT NULL THEN 3 ELSE 0 END)+(CASE WHEN b.article_id IS NOT NULL THEN 1 ELSE 0 END) AS part
         FROM (SELECT article_id FROM pool_search WHERE direct LIKE ${"%" + terms[0]! + "%"}) d
-        FULL JOIN (SELECT article_id FROM pool_search WHERE body LIKE ${"%" + terms[0]! + "%"}) b ON b.article_id = d.article_id`
-        : sql`SELECT ps.article_id, (${partScore}) AS part FROM pool_search ps WHERE ${anyMatch}`;
-      type RankedRow = Omit<ItemRow, "id"> & { id: string | null; rel: number; total: number };
-      const result = await db<RankedRow[]>`
-        WITH matches AS ${splitFields ? sql`MATERIALIZED` : sql`NOT MATERIALIZED`} (${matches}), scored AS MATERIALIZED (
-          SELECT p.article_id, p.timeline_at, p.published_at, matches.part + (${titleScore}) AS rel
-          FROM matches JOIN publications p ON p.article_id = matches.article_id JOIN sources s ON s.id = p.source_id
-          WHERE ${listedCondition(now)} AND p.eligible ${filters}
-        ), page AS MATERIALIZED (
-          SELECT article_id, rel FROM scored ORDER BY rel DESC, ${rankedOrder}
-          LIMIT ${POOL_PAGE_SIZE} OFFSET ${offset}
-        ), total AS (SELECT count(*) AS n FROM (SELECT 1 FROM scored LIMIT ${cap}) capped)
-        SELECT hydrated.*, total.n AS total FROM total LEFT JOIN LATERAL (
-          SELECT ${ITEM_COLUMNS}, page.rel ${ITEM_FROM} JOIN page ON page.article_id = p.article_id
-        ) hydrated ON true ORDER BY hydrated.rel DESC, ${hydratedOrder}`;
-      const rows = result.filter((r): r is ItemRow & { rel: number; total: number } => r.id !== null);
-      return { rows, total: Number(result[0]!.total) };
-    }
-    // Default search: newest first straight from the timeline index; the total from the pool's
-    // search rows, where one- and two-character terms scan a small table instead of every item.
-    const rows = await db<ItemRow[]>`
-      WITH page AS (
-        SELECT p.article_id FROM publications p WHERE ${listedCondition(now)} AND p.eligible ${filters} ${directMatchCondition(terms)}
-        ORDER BY ${order} LIMIT ${POOL_PAGE_SIZE} OFFSET ${offset})
-      SELECT ${ITEM_COLUMNS} ${ITEM_FROM} WHERE p.article_id IN (SELECT article_id FROM page)
-      ORDER BY ${order}`;
-    const direct = terms.reduce((acc, t) => sql`${acc} AND ${like(sql`ps.direct`, t)}`, sql``);
-    const { n } = one(await db<{ n: number }[]>`
-      SELECT count(*) AS n FROM (SELECT 1 FROM pool_search ps JOIN publications p ON p.article_id = ps.article_id
-        WHERE ${listedCondition(now)} AND p.eligible ${filters} ${direct} LIMIT ${cap}) t`);
-    return { rows, total: Number(n) };
+        FULL JOIN (SELECT article_id FROM pool_search WHERE body LIKE ${"%" + terms[0]! + "%"}) b ON b.article_id=d.article_id`
+        : sql`SELECT ps.article_id,(${partScore}) AS part FROM pool_search ps WHERE ${anyMatch}`;
+      materialized = splitFields;
+      matching = sql`WITH matches AS ${splitFields ? sql`MATERIALIZED` : sql`NOT MATERIALIZED`} (${matches})
+        SELECT p.article_id AS id,p.timeline_at,p.published_at,p.fact_id,coalesce(st.merged_into,p.story_id) AS story_root,
+               p.first_party,p.body_mode,p.score,p.source_id,s.name AS source_name,p.title,p.url,(matches.part+(${titleScore}))::int AS rel
+        FROM matches JOIN publications p ON p.article_id=matches.article_id JOIN sources s ON s.id=p.source_id LEFT JOIN stories st ON st.id=p.story_id
+        WHERE ${listedCondition(now)} AND p.eligible ${filters}`;
+    } else matching = sql`
+      SELECT p.article_id AS id,p.timeline_at,p.published_at,p.fact_id,coalesce(st.merged_into,p.story_id) AS story_root,
+             p.first_party,p.body_mode,p.score,p.source_id,s.name AS source_name,p.title,p.url,0::int AS rel
+      FROM publications p JOIN sources s ON s.id=p.source_id LEFT JOIN stories st ON st.id=p.story_id
+      WHERE ${listedCondition(now)} AND p.eligible ${filters} ${directMatchCondition(terms)}`;
+
+    const eventAt = query.mode ? sql`published_at` : sql`timeline_at`;
+    const groupOrder = tab === "relevance" && q ? sql`rel DESC,event_at DESC NULLS LAST,id DESC` : sql`event_at DESC NULLS LAST,id DESC`;
+    const todayAt = beijingMidnight(beijingDate(now));
+    return db<EventRow[]>`
+      WITH matching AS ${materialized ? sql`MATERIALIZED` : sql`NOT MATERIALIZED`} (${matching}), identified AS (
+        SELECT m.*,coalesce('s:'||m.story_root::text,'f:'||m.fact_id::text,'a:'||m.id) AS event_key,
+               ${eventAt} AS event_at
+        FROM matching m
+      ), grouped AS (
+        SELECT event_key,
+          (array_agg(id ORDER BY first_party DESC,(body_mode='full') DESC,score DESC NULLS LAST,timeline_at ASC,id ASC))[1] AS id,
+          max(event_at) AS event_at,max(rel)::int AS rel,count(*)::int AS members,count(DISTINCT source_id)::int AS source_count,
+          jsonb_agg(jsonb_build_object('source',source_name,'title',title,'originalUrl',url) ORDER BY event_at DESC NULLS LAST,id DESC) AS reports,
+          bool_or(event_at >= ${todayAt} ${query.mode ? sql`AND event_at <= ${now}` : sql``}) AS today
+        FROM identified GROUP BY event_key
+      ), capped AS MATERIALIZED (
+        SELECT * FROM grouped ORDER BY ${groupOrder} LIMIT ${cap}
+      ), page AS (
+        SELECT * FROM capped ORDER BY ${groupOrder} LIMIT ${POOL_PAGE_SIZE} OFFSET ${(page - 1) * POOL_PAGE_SIZE}
+      )
+      SELECT page.*, (SELECT count(*)::int FROM capped) AS total,
+        (SELECT count(*)::int FROM grouped WHERE today) AS today_count
+      FROM (SELECT 1) AS anchor LEFT JOIN page ON true`;
   };
 
-  const { rows, total } = q ? await withSearchCapacity(run) : await run(sql);
-  const today = beijingDate(now);
-  const meta = one(await sql<{ today_count: number; updated_at: Date | null }[]>`
-    SELECT (SELECT count(*) FROM publications p
-      WHERE ${listedCondition(now)} AND p.eligible AND ${query.mode ? sql`p.published_at` : sql`p.timeline_at`} >= ${beijingMidnight(today)} ${query.mode ? sql`AND p.published_at <= ${now}` : sql``} ${filters}) AS today_count,
-      (SELECT max(p.updated_at) FROM publications p WHERE p.eligible) AS updated_at`);
+  const events = q ? await withSearchCapacity(findEvents) : await findEvents(sql);
+  const pageEvents = events.filter((event): event is EventRow & { id: string } => event.id !== null);
+  const ids = pageEvents.map((event) => event.id);
+  const rows = ids.length ? await sql<ItemRow[]>`SELECT ${ITEM_COLUMNS} ${ITEM_FROM} WHERE p.article_id IN ${sql(ids)}` : [];
+  const rowsById = new Map(rows.map((r) => [r.id, toFeedItemSummary(r)]));
+  const total = Number(events[0]?.total ?? 0);
+  const todayCount = Number(events[0]?.today_count ?? 0);
+  const items = pageEvents.flatMap((event) => {
+    const item = rowsById.get(event.id);
+    if (!item) return [];
+    if ((event.members ?? 0) > 1) item.event = {
+      sourceCount: event.source_count ?? 0,
+      anchorAt: event.event_at?.toISOString() ?? null,
+      reports: event.reports ?? [],
+    };
+    return [item];
+  });
+  const [meta] = await sql<{ updated_at: Date | null }[]>`SELECT max(updated_at) AS updated_at FROM publications WHERE eligible`;
 
   return {
     filters: { channel: query.channel, category: query.category, tag: query.tag, topic: query.topic ?? null, q, tab, ...(query.mode ? { mode: query.mode } : {}) },
-    items: rows.map(toFeedItemSummary),
+    items,
     page,
     pageCount: Math.min(POOL_MAX_PAGES, Math.max(1, Math.ceil(total / POOL_PAGE_SIZE))),
     total,
-    todayCount: Number(meta.today_count),
-    freshness: (meta.updated_at ?? now).toISOString(),
+    todayCount,
+    freshness: (meta?.updated_at ?? now).toISOString(),
     generatedAt: now.toISOString(),
   };
 }

@@ -10,7 +10,7 @@ import { after, before, test } from "node:test";
 import { closeDb, sql } from "@aihot/backend/db";
 import { detachFromFact } from "@aihot/backend/admin/content";
 import { upsertMaterial } from "@aihot/backend/content/materials";
-import { groupArticle, linkRelatedStories } from "@aihot/backend/events/group";
+import { groupArticle, GroupRequestCapError, linkRelatedStories } from "@aihot/backend/events/group";
 import { stopBoss } from "@aihot/backend/jobs/queue";
 import { publishArticle } from "@aihot/backend/publication/publish";
 
@@ -238,6 +238,62 @@ test("two stories a report ties together merge when both models see one story in
   }
 });
 
+test("a story pair whose judgement has an unknown outcome is not sent again, whatever its roots say now", async () => {
+  hold = gate();
+  hold.open();
+  const text = randomText();
+  const older = await storyWithRoot(`${text}甲`, "pair-unknown-older");
+  const newer = await storyWithRoot(`${text}乙`, "pair-unknown-newer");
+  // The pair was judged once with newer as the earlier root, and that outcome was lost. The roots have since
+  // changed: older is now the anchor, so a judgement keyed from it runs in the opposite order. Only that one
+  // direction exists as a receipt.
+  const open = await sql<{ id: number }[]>`INSERT INTO receipts (logical_key, service, model, purpose, subject, status, attempts)
+    VALUES (${`test-pair-unknown-${T}-b`}, 'deepseek', 'deepseek-flash', 'group_story', ${`story:${newer.storyId}:${older.storyId}`}, 'unknown', 1)
+    RETURNING id`;
+  relation = "SAME_STORY";
+  answerAll = true;
+  const before = provider.hits();
+  try {
+    const result = await groupArticle(await report("pair-unknown-bridge", text, text));
+    assert.match(result.consolidationError ?? "", /unknown outcome/, "the pair is not judged while its outcome is unknown");
+    assert.equal(provider.hits() - before, 1, "only the report's own judgement is sent, no story-pair judgement");
+  } finally {
+    relation = "SAME_OCCURRENCE";
+    answerAll = false;
+    await sql`UPDATE receipts SET status = 'failed' WHERE id IN ${sql(open.map((r) => r.id))}`;
+  }
+});
+
+test("a cap between consolidation judge and review persists a continuation and resumes past membership", async () => {
+  hold = gate();
+  hold.open();
+  const text = randomText();
+  const older = await storyWithRoot(`${text}甲`, "cap-older");
+  const newer = await storyWithRoot(`${text}乙`, "cap-newer");
+  relation = "SAME_STORY";
+  answerAll = true;
+  const bridge = await report("cap-bridge", text, text);
+  let admissionCalls = 0;
+  try {
+    await assert.rejects(groupArticle(bridge, { beforeModelRequest: async () => ++admissionCalls < 3 }), GroupRequestCapError);
+    assert.equal(admissionCalls, 3, "the first consolidation judge passed, then its review was stopped");
+    const [pending] = await sql<{ story_ids: number[] }[]>`SELECT story_ids FROM group_consolidation_pending WHERE article_id = ${bridge}`;
+    assert.deepEqual(new Set(pending!.story_ids.map(Number)), new Set([older.storyId, newer.storyId]));
+    assert.ok(await sql`SELECT 1 FROM fact_articles WHERE article_id = ${bridge}`, "the bridge membership was already persisted");
+
+    const resumed = await groupArticle(bridge, { beforeModelRequest: async () => true });
+    assert.equal(resumed.verdict, "kept", "resume sees membership and runs the saved continuation first");
+    assert.equal(resumed.consolidated?.[0]?.merge, true);
+    const [cleared] = await sql<{ n: number }[]>`SELECT count(*)::int AS n FROM group_consolidation_pending WHERE article_id = ${bridge}`;
+    const [merged] = await sql<{ merged_into: number | null }[]>`SELECT merged_into FROM stories WHERE id = ${newer.storyId}`;
+    assert.equal(cleared!.n, 0);
+    assert.equal(Number(merged!.merged_into), older.storyId);
+  } finally {
+    relation = "SAME_OCCURRENCE";
+    answerAll = false;
+  }
+});
+
 test("two stories stay apart when their roots are different events, whatever the report ties them with", async () => {
   hold = gate();
   hold.open();
@@ -311,4 +367,47 @@ test("stories that reports keep tying together without merging list each other a
     pairRelation = null;
     answerAll = false;
   }
+});
+
+test("the reported Haarlem, ENGO and PharmaTher pairs share confirmed facts, while the earlier distribution deal stays separate", async () => {
+  hold = gate();
+  hold.open();
+  relation = "SAME_OCCURRENCE";
+  pairRelation = null;
+  const pairs = [
+    ["haarlem-a", "3D Print Gallery opens Haarlem fashion exhibition with three designers", "Three 3D printed garments by Anouk Wipprecht, Jojanneke Tamis and LABELEDBY are shown in Haarlem."],
+    ["engo-a", "ENGO launches AR running glasses with 3D printed titanium temples", "ENGO Titanium running glasses weigh 28.9 grams and use printed titanium temples."],
+    ["pharmather-a", "PharmaTher targets first CraftMake orders in Q4 2026 and a pediatric NDA roadmap", "PharmaTher expects initial CraftMake orders in Q4 2026 and plans a pediatric NDA submission in 2028."],
+  ] as const;
+  const alternatives = [
+    ["haarlem-b", "Fashion exhibition opens at the 3D Print Gallery in Haarlem", "The Haarlem exhibition features garments by Anouk Wipprecht, Jojanneke Tamis and LABELEDBY."],
+    ["engo-b", "Engo introduces 28.9-gram AR sports glasses with printed titanium temples", "The Engo Titanium glasses use 3D printed titanium temples for running."],
+    ["pharmather-b", "PharmaTher plans up to 50 CraftMake placements and renames the platform M3DICINES", "The placement plan and first CraftMake orders concern the same Q4 2026 roadmap."],
+  ] as const;
+  const factIds: number[] = [];
+  for (let i = 0; i < pairs.length; i++) {
+    const [suffix, title, summary] = pairs[i]!;
+    const marker = randomUUID();
+    const first = await report(`${suffix}-${T}`, `${title} ${marker}`, `${summary} ${marker}`);
+    const created = await groupArticle(first);
+    const [altSuffix, altTitle, altSummary] = alternatives[i]!;
+    const second = await report(`${altSuffix}-${T}`, `${altTitle} ${marker}`, `${altSummary} ${marker}`);
+    const hits = provider.hits();
+    await assert.rejects(groupArticle(second, { beforeModelRequest: async () => false }), GroupRequestCapError);
+    assert.equal(provider.hits(), hits, "the cap gate stops before starting a paid request");
+    const joined = await groupArticle(second);
+    assert.equal(joined.verdict, "same-fact", suffix);
+    assert.equal(joined.factId, created.factId, suffix);
+    factIds.push(created.factId!);
+  }
+
+  relation = "UNRELATED";
+  const negativeMarker = randomUUID();
+  const earlier = await report("pharmather-earlier-deal-" + T,
+    `PharmaTher signs North American distribution deal with Craft Health ${negativeMarker}`,
+    `The exclusive distribution agreement covers CraftMake, CraftControl and CraftBlends in North America. ${negativeMarker}`);
+  const separate = await groupArticle(earlier);
+  assert.equal(separate.verdict, "new-story");
+  assert.ok(!factIds.includes(separate.factId!), "the earlier distribution agreement is not merged by company or platform name");
+  relation = "SAME_OCCURRENCE";
 });

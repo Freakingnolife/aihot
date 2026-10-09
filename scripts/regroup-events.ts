@@ -9,12 +9,14 @@
 // window sits today, embeds the recall window within the embedding budget, marks the window's reports
 // as waiting (regroup_pending: until its turn comes a report is not evidence for others, so the
 // regroup in discovery order sees what live grouping would have seen) and sends one regroup job per
-// article through the worker's serial events.group queue, behind live reports and live discussion
-// posts. `redirect` merges stories that lost all their reports into the story most of them moved to
-// (the old public id redirects there) once none of those reports is still waiting; run it while the
-// regroup drains so old event pages keep working. `finish` waits for the jobs to drain, redirects
-// what is left, asks for new digests, repairs the heat history of the hottest stories and publishes a
-// new hot ranking. Give `redirect` and `finish` the snapshot of every plan since the last finish.
+// article through the worker's serial events.group queue. The jobs run behind live automatic work
+// (live reports and discussion posts included): BULK_GROUP_PRIORITY.
+// `redirect` merges stories that lost all their reports into the story most of them moved to (the old
+// public id redirects there) once none of those reports is still waiting; run it while the regroup
+// drains so old event pages keep working.
+// `finish` waits for the jobs to drain, redirects what is left, asks for new digests, repairs the heat
+// history of the hottest stories and publishes a new hot ranking. Give `redirect` and `finish` the
+// snapshot of every plan since the last finish.
 // `consolidate` applies the story consolidation of live grouping to the decisions made since a time:
 // wherever a report was firmly tied to several stories, their roots are compared and the stories
 // merge when both models see one story (`--dry-run` judges and prints without merging).
@@ -22,7 +24,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { parseArgs } from "node:util";
 import { closeDb, sql } from "@aihot/backend/db";
-import { enqueue, getBoss, QUEUES, stopBoss } from "@aihot/backend/jobs/queue";
+import { BULK_GROUP_PRIORITY, enqueue, getBoss, QUEUES, stopBoss } from "@aihot/backend/jobs/queue";
 import { backfillStoryHeat, computeHotRanking } from "@aihot/backend/events/hot";
 import { consolidate, warmRecallWindow } from "@aihot/backend/events/group";
 import { firmlyTied } from "@aihot/backend/events/relate";
@@ -88,8 +90,8 @@ async function plan() {
   console.log(JSON.stringify({ warmed, cancelledJobs: waiting.length }));
   await sql`INSERT INTO regroup_pending (article_id) SELECT unnest(${[...ids, ...signals]}::text[]) ON CONFLICT (article_id) DO UPDATE SET requested_at = now()`;
   let sent = 0;
-  for (const id of ids) if (await enqueue(QUEUES.group, { articleId: id, force: true }, { singletonKey: `regroup:${id}`, priority: -2 })) sent++;
-  for (const id of signals) if (await enqueue(QUEUES.group, { articleId: id, signalOnly: true, force: true }, { singletonKey: `regroup:${id}`, priority: -3 })) sent++;
+  for (const id of ids) if (await enqueue(QUEUES.group, { articleId: id, force: true }, { singletonKey: `regroup:${id}`, priority: BULK_GROUP_PRIORITY })) sent++;
+  for (const id of signals) if (await enqueue(QUEUES.group, { articleId: id, signalOnly: true, force: true }, { singletonKey: `regroup:${id}`, priority: BULK_GROUP_PRIORITY })) sent++;
   console.log(JSON.stringify({ since: snapshot.since, articles: ids.length, signals: signals.length, previousMemberships: memberships.length, jobsSent: sent, snapshot: snapshots[0] }));
 }
 
