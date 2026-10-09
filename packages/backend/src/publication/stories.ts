@@ -3,6 +3,7 @@
 import type { HeatPoint, HotResponse, StoryDetail, StoryReportView } from "@aihot/contracts/site";
 import { sql } from "../db.ts";
 import { proxiedImage, proxiedImageSet } from "../media/imgproxy.ts";
+import { coverDetails } from "../media/cover.ts";
 import { latestHotRanking, rankingExtras } from "../events/hot-read.ts";
 import { behindSources, sourceClocks } from "../events/hot.ts";
 import { storyStatusFor } from "../events/digest.ts";
@@ -205,21 +206,35 @@ async function hotCovers(rankingId: number, entries: Array<{ storyId: number; re
   } finally { coversPending.delete(rankingId); }
 }
 
+export function selectHotCovers(rows: Array<{ story_id: number; m: { url: string; width?: number; height?: number } }>) {
+  const covers = new Map<number, { url: string; width: number | null; height: number | null }>();
+  const goodCovers = new Set<number>();
+  for (const row of rows) {
+    const storyId = Number(row.story_id);
+    const suitability = coverDetails([row.m], row.m.url).leadSuitability;
+    if (suitability === "bad" || goodCovers.has(storyId)) continue;
+    if (suitability === "good") goodCovers.add(storyId);
+    if (suitability === "good" || !covers.has(storyId)) {
+      covers.set(storyId, { url: row.m.url, width: typeof row.m.width === "number" ? row.m.width : null, height: typeof row.m.height === "number" ? row.m.height : null });
+    }
+  }
+  return covers;
+}
+
 async function queryHotCovers(entries: Array<{ storyId: number; representativeItemId: string | null }>, at: Date) {
   const ids = entries.map((e) => e.storyId);
   const reps = entries.map((e) => e.representativeItemId).filter((id): id is string => !!id);
   const rows = await sql<{ story_id: number; m: { url: string; width?: number; height?: number } }[]>`
-    SELECT DISTINCT ON (p.story_id) p.story_id, img.m
+    SELECT p.story_id, img.m
     FROM publications p JOIN articles a ON a.id = p.article_id
     CROSS JOIN LATERAL (
       SELECT m FROM jsonb_array_elements(coalesce(a.media, '[]'::jsonb)) m
-      WHERE m->>'kind' = 'image' AND coalesce((m->>'width')::numeric, 800) >= 480 LIMIT 1
+      WHERE m->>'kind' = 'image' AND coalesce((m->>'width')::numeric, 800) >= 480
     ) img
     WHERE p.story_id = ANY(${ids}::bigint[]) AND p.visibility = 'public' AND p.eligible AND p.body_mode <> 'summary'
       AND (NOT p.selected OR p.visible_after <= ${at})
     ORDER BY p.story_id, (p.article_id::text = ANY(${reps}::text[])) DESC, p.first_party DESC, p.selected DESC, coalesce(p.score, 0) DESC, p.article_id`;
-  const covers = new Map(rows.map((c) => [Number(c.story_id), { url: c.m.url, width: typeof c.m.width === "number" ? c.m.width : null, height: typeof c.m.height === "number" ? c.m.height : null }]));
-  return covers;
+  return selectHotCovers(rows);
 }
 
 export async function loadHot(): Promise<HotResponse> {

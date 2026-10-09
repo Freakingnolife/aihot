@@ -14,6 +14,8 @@ export type { ProxyMode } from "./renditions.ts";
 const WINDOW_SECONDS = 24 * 3600;
 const LIFETIME_SECONDS = 48 * 3600;
 const SIG_HEX = 16;
+/** The only URLs the proxy serves. Picture selection uses the same check so it never promotes a URL the proxy rejects. */
+export const PROXYABLE_URL = /^https?:\/\//i;
 
 function secret(): string {
   const s = credential("auth", "IMG_PROXY_SIGN_SECRET");
@@ -33,7 +35,7 @@ export function proxyExpiry(nowMs = Date.now(), lifetimeSeconds = LIFETIME_SECON
 export function proxiedImage(url: string | null | undefined, mode: ProxyMode, absolute = false, nowMs = Date.now(), lifetimeSeconds = LIFETIME_SECONDS): string | null {
   if (!url) return null;
   if (url.startsWith("data:")) return url;
-  if (!/^https?:\/\//i.test(url)) return null;
+  if (!PROXYABLE_URL.test(url)) return null;
   const exp = proxyExpiry(nowMs, lifetimeSeconds);
   const path = `/api/img-proxy?u=${encodeURIComponent(url)}&mode=${mode}&exp=${exp}&sig=${signature(url, mode, exp).slice(0, SIG_HEX)}`;
   return absolute ? `${config.siteUrl}${path}` : path;
@@ -41,7 +43,7 @@ export function proxiedImage(url: string | null | undefined, mode: ProxyMode, ab
 
 /** Browser source candidates, each independently signed with the same expiry boundary. */
 export function proxiedImageSet(url: string | null | undefined, kind: ResponsiveImageKind, absolute = false, nowMs = Date.now(), lifetimeSeconds = LIFETIME_SECONDS): string | null {
-  if (!url || !/^https?:\/\//i.test(url)) return null;
+  if (!url || !PROXYABLE_URL.test(url)) return null;
   return RESPONSIVE_MODES[kind].map((mode) => `${proxiedImage(url, mode, absolute, nowMs, lifetimeSeconds)} ${IMAGE_WIDTHS[mode]}w`).join(", ");
 }
 
@@ -52,7 +54,7 @@ export function verifyProxyRequest(params: { u?: string; mode?: string; exp?: st
   if (!u || mode === "" || !exp || !sig) return { ok: false, reason: "missing" };
   if (!/^\d{9,11}$/.test(exp)) return { ok: false, reason: "missing" };
   if (Number(exp) * 1000 < nowMs) return { ok: false, reason: "expired" };
-  if (!/^https?:\/\//i.test(u)) return { ok: false, reason: "bad-url" };
+  if (!PROXYABLE_URL.test(u)) return { ok: false, reason: "bad-url" };
   // Legacy article pages signed body images without a mode (as "default"); those still in open tabs and
   // caches keep loading, as full images, until their signature expires.
   const given = Buffer.from(new RegExp(`^(?:[0-9a-f]{${SIG_HEX}}|[0-9a-f]{64})$`, "i").test(sig) ? sig : "", "hex");

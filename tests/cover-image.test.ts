@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { pickCoverImage } from '@aihot/backend/media/cover';
+import { coverDetails, pickCoverImage } from '@aihot/backend/media/cover';
 
 const img = (url: string) => ({ kind: 'image', url });
 
@@ -33,4 +33,26 @@ test('no usable picture, videos and malformed media all give no cover', () => {
   assert.equal(pickCoverImage('not media'), null);
   assert.equal(pickCoverImage([{ kind: 'video', url: 'https://example.com/a.mp4' }, img('ftp://example.com/a.jpg'), { kind: 'image' }]), null);
   assert.equal(pickCoverImage([img('https://s.w.org/images/core/emoji/14.0.0/72x72/2122.png')]), null);
+});
+
+test('lead suitability has good, unknown and bad states', () => {
+  const certificate = 'https://example.com/MX3D-DNV-AMC3-certification-780x470.jpg';
+  const photo = 'https://example.com/factory-floor-780x470.jpg';
+  const small = 'https://example.com/thumbnail-480x320.jpg';
+  const screenshot = 'https://example.com/Screenshot-1200x800.jpg';
+  const polishScreenshot = 'https://example.com/Zrzut-ekranu-1200x800.jpg';
+  const portrait = 'https://example.com/portrait.jpg';
+  const extreme = 'https://example.com/banner.jpg';
+  const unknown = 'https://example.com/h350-1.webp';
+  assert.equal(coverDetails([img(certificate)], certificate).leadSuitability, 'bad');
+  assert.equal(coverDetails([img(photo)], photo).leadSuitability, 'good');
+  assert.equal(coverDetails([img(small)], small).leadSuitability, 'bad');
+  assert.equal(coverDetails([img(screenshot)], screenshot).leadSuitability, 'bad');
+  assert.equal(coverDetails([img(polishScreenshot)], polishScreenshot).leadSuitability, 'bad');
+  assert.equal(coverDetails([{ ...img(portrait), width: 819, height: 1024 }], portrait).leadSuitability, 'bad');
+  assert.equal(coverDetails([{ ...img(extreme), width: 2400, height: 500 }], extreme).leadSuitability, 'bad');
+  assert.equal(coverDetails([img(unknown)], unknown).leadSuitability, 'unknown');
+  assert.equal(coverDetails([{ ...img(unknown), width: 600 }], unknown).leadSuitability, 'bad');
+  assert.equal(coverDetails([{ ...img(unknown), height: 399 }], unknown).leadSuitability, 'bad');
+  assert.equal(coverDetails([img('https://example.com/five-size-seal-project-shot-780x470.jpg')], 'https://example.com/five-size-seal-project-shot-780x470.jpg').leadSuitability, 'good');
 });

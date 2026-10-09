@@ -19,6 +19,11 @@ const { xView } = await import("@aihot/backend/publication/items");
 
 let imageHits = 0;
 let failureHits = 0;
+let retryHits = 0;
+let dropHits = 0;
+let clientErrorHits = 0;
+let cooldownHits = 0;
+let cooldownRecovered = false;
 const png = await sharp({ create: { width: 800, height: 400, channels: 3, background: "#176b75" } }).png().toBuffer();
 // Ten noisy 160×120 frames: a GIF that animated WebP clearly beats.
 const frames = await sharp({ create: { width: 160, height: 1200, channels: 3, background: "#808080", noise: { type: "gaussian", mean: 128, sigma: 40 } } }).raw().toBuffer();
@@ -30,7 +35,20 @@ const server = createServer(async (req, res) => {
     res.writeHead(302, { location: `/redirect/${Number(req.url.split("/").pop()) + 1}` });
     return res.end();
   }
-  if (req.url === "/fail") { failureHits++; res.writeHead(502); return res.end(); }
+  if (req.url === "/fail" || req.url === "/http-fail") { failureHits++; res.writeHead(502); return res.end(); }
+  if (req.url === "/client-error") { clientErrorHits++; res.writeHead(404); return res.end(); }
+  if (req.url === "/cooldown") {
+    cooldownHits++;
+    if (!cooldownRecovered) { res.writeHead(503); return res.end(); }
+  }
+  if (req.url === "/retry-once") {
+    retryHits++;
+    if (retryHits === 1) { res.writeHead(503); return res.end(); }
+  }
+  if (req.url === "/retry-drop") {
+    dropHits++;
+    if (dropHits === 1) return req.socket.destroy();
+  }
   imageHits++;
   await new Promise((resolve) => setTimeout(resolve, 60));
   res.writeHead(200, { "content-type": "image/png" });
@@ -58,10 +76,30 @@ test("simultaneous modes share original bytes, preserve dimensions and use their
   assert.equal(imageHits, 1);
 });
 
-test("failed originals are not retried for every mode", async () => {
+test("a transient upstream 5xx is retried once before the image is accepted", async () => {
+  const before = retryHits;
+  const image = await produceImage(`${base}/retry-once`, "image-720");
+  assert.equal((await sharp(image.body).metadata()).width, 720);
+  assert.equal(retryHits - before, 2);
+});
+
+test("a dropped upstream connection is retried once", async () => {
+  const before = dropHits;
+  const image = await produceImage(`${base}/retry-drop`, "image-720");
+  assert.equal((await sharp(image.body).metadata()).width, 720);
+  assert.equal(dropHits - before, 2);
+});
+
+test("a failed original retries transient errors once and shares a 60-second source cooldown across modes", async () => {
   await assert.rejects(produceImage(`${base}/fail`, "thumb"));
+  assert.equal(failureHits, 2);
   await assert.rejects(produceImage(`${base}/fail`, "full"));
-  assert.equal(failureHits, 1);
+  assert.equal(failureHits, 2);
+});
+
+test("client errors are not retried", async () => {
+  await assert.rejects(produceImage(`${base}/client-error`, "thumb"));
+  assert.equal(clientErrorHits, 1);
 });
 
 test("site media exposes responsive previews and full lightboxes while RSS retains thumb images", () => {
@@ -197,7 +235,57 @@ test("image HTTP responses keep issued URLs valid, reject tampering before fetch
   assert.match(short, /&sig=[0-9a-f]{16}$/);
   assert.equal((await app.inject({ url: short })).statusCode, 200);
   assert.equal((await app.inject({ url: short.replace(/sig=(.)/, (_m, c: string) => `sig=${c === "0" ? "1" : "0"}`) })).statusCode, 403);
+  const failUrl = `${base}/http-fail`;
+  const failExp = String(Math.ceil(Date.now() / 1000) + 3600);
+  const failParams = new URLSearchParams({ u: failUrl, mode: "image-336", exp: failExp, sig: signature(failUrl, "image-336", failExp) });
+  const failed = await app.inject({ url: `/api/img-proxy?${failParams}` });
+  assert.equal(failed.statusCode, 502);
+  assert.equal(failed.headers["cache-control"], "no-store");
   await app.close();
+});
+
+test("the signed route limits browser retries across outage windows, then recovers after cooldown", async (t) => {
+  t.mock.timers.enable({ apis: ["Date"], now: Date.now() });
+  const { default: Fastify } = await import("fastify");
+  const { registerMedia } = await import("../apps/api/src/routes/media.ts");
+  const { signature } = await import("@aihot/backend/media/imgproxy");
+  const app = Fastify();
+  registerMedia(app);
+  const url = `${base}/cooldown`;
+  const request = async (mode: string, retry = false) => {
+    const exp = String(Math.ceil(Date.now() / 1000) + 3600);
+    const params = new URLSearchParams({ u: url, mode, exp, sig: signature(url, mode, exp) });
+    if (retry) params.set("retry", "1");
+    return app.inject({ url: `/api/img-proxy?${params}` });
+  };
+  try {
+    const first = await request("image-336");
+    assert.equal(first.statusCode, 502);
+    assert.equal(first.headers["cache-control"], "no-store");
+    assert.equal(cooldownHits, 2, "server performs exactly one retry");
+    const browserRetry = await request("image-336", true);
+    assert.equal(browserRetry.statusCode, 502);
+    assert.equal((await request("image-720")).statusCode, 502);
+    assert.equal(cooldownHits, 2, "retry=1 and another rendition share the source cooldown");
+
+    for (let window = 0; window < 3; window++) {
+      t.mock.timers.tick(59_999);
+      assert.equal((await request("image-336", true)).statusCode, 502);
+      assert.equal((await request("image-720")).statusCode, 502);
+      assert.equal(cooldownHits, 2 + window * 2, "readers stay blocked before cooldown expiry");
+      t.mock.timers.tick(1);
+      assert.equal((await request("image-720")).statusCode, 502);
+      assert.equal(cooldownHits, 4 + window * 2, "one exhausted retry pair starts after each expiry");
+    }
+
+    cooldownRecovered = true;
+    t.mock.timers.tick(60_000);
+    const recovered = await request("image-720");
+    assert.equal(recovered.statusCode, 200);
+    assert.equal(cooldownHits, 9, "one recovery fetch occurs after cooldown");
+  } finally {
+    await app.close();
+  }
 });
 
 test("background preparation turns a cached GIF into a smaller animated WebP with every frame and its timing", async () => {

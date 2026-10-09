@@ -98,7 +98,7 @@ export const FeedItem = memo(function FeedItem({ item, group, filters, read = fa
           </div>
         )}
       </div>
-      {!isX && <Cover cover={item.cover} seed={item.id} sizes="(min-width: 961px) 216px, 104px" className="w-[104px] shrink-0 lg:w-[216px]" />}
+      {!isX && <Cover cover={item.cover} seed={item.id} label={item.category ? CATEGORY_LABELS[item.category] : item.source.name} sizes="(min-width: 961px) 216px, 104px" className="w-[104px] shrink-0 lg:w-[216px]" />}
     </article>
   );
 });

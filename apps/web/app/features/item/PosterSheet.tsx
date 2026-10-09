@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import { SITE } from "@aihot/industry/site";
 import { Presence } from "../../components/ui/Presence";
 import { IconClose, IconDownload, IconShare } from "../../components/icons";
+import { useImageRetry } from "../../components/ui/image-retry";
 
 export default function PosterSheet({ id, title, open, onClose }: { id: string; title: string; open: boolean; onClose: () => void }) {
   const src = `/og/posters/${id}.png`;
   const [loaded, setLoaded] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const retry = useImageRetry(src);
   const [canShareFile, setCanShareFile] = useState(false);
 
   useEffect(() => {
@@ -55,16 +56,16 @@ export default function PosterSheet({ id, title, open, onClose }: { id: string; 
             </button>
           </div>
           <div className="relative aspect-[3/4] w-full max-w-[min(360px,calc((92dvh-190px)*0.75))] overflow-hidden rounded-card border border-line bg-bg-sunk">
-            {!loaded && !failed && <div className="absolute inset-0 animate-pulse bg-[linear-gradient(110deg,transparent_30%,rgba(255,255,255,0.35)_50%,transparent_70%)] bg-[length:200%_100%]" />}
-            {failed ? (
+            {!loaded && !retry.failed && <div className="absolute inset-0 animate-pulse bg-[linear-gradient(110deg,transparent_30%,rgba(255,255,255,0.35)_50%,transparent_70%)] bg-[length:200%_100%]" />}
+            {retry.failed ? (
               <p className="absolute inset-0 grid place-items-center px-6 text-center text-[13px] text-ink-3">The poster could not be generated. Please try again later.</p>
             ) : (
               <img
-                src={src}
+                src={retry.src ?? src}
                 alt={`${title} · Share poster`}
                 className={`size-full object-contain transition-[opacity,transform] duration-[250ms] ${loaded ? "scale-100 opacity-100" : "scale-[0.985] opacity-0"}`}
                 onLoad={() => setLoaded(true)}
-                onError={() => setFailed(true)}
+                onError={retry.onError}
               />
             )}
           </div>

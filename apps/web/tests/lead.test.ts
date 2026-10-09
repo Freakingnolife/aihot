@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { FeedItemSummary } from "@aihot/contracts/site";
-import { sameEvent, splitLead, wholeSentences } from "../app/features/feed/lead.ts";
+import { preferSuitableLead, sameEvent, splitLead, wholeSentences } from "../app/features/feed/lead.ts";
 
 const NOW = Date.parse("2026-10-03T00:00:00Z");
 let n = 0;
@@ -38,6 +38,17 @@ test("lead, grid and top stories hold only featured news, strongest first, split
   assert.ok([lead!, ...grid, ...top].every((x) => x.selected));
   // The two weakest featured stories and the unfeatured ones keep the list, in the original order.
   assert.deepEqual(ids(rest), ids(all.filter((x) => !ranked.slice(0, 10).includes(x))));
+});
+
+test("lead picture preference is good, then unknown, then original when all are bad", () => {
+  const cover = (url: string, leadSuitability: "good" | "unknown" | "bad") => ({ url, srcSet: null, largeSrcSet: null, width: null, height: null, leadSuitability, credit: { source: "A", url: "https://a.test" } });
+  const bad = item({ cover: cover("/certificate.jpg", "bad") });
+  const unknown = item({ cover: cover("/h350-1.webp", "unknown") });
+  const good = item({ cover: cover("/photo-780x470.jpg", "good") });
+  assert.equal(preferSuitableLead(bad, [unknown, good], []).lead, good);
+  assert.equal(preferSuitableLead(bad, [unknown], []).lead, unknown);
+  assert.equal(preferSuitableLead(bad, [item({ cover: cover("/screenshot.jpg", "bad") })], []).lead, bad);
+  assert.equal(preferSuitableLead(unknown, [good, bad], []).lead, good);
 });
 
 test("latest is the eight newest news stories of any status that are not already shown above", () => {

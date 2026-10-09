@@ -1,6 +1,7 @@
 // The top of the first page, laid out like a front page: the lead story with four more beneath it, a "Latest" stream
 // beside them, then the numbered "Top stories this week". Which stories go where is decided in ./lead.
 import type { FeedItemSummary } from "@aihot/contracts/site";
+import { CATEGORY_LABELS } from "@aihot/contracts/taxonomy";
 import { IntentLink } from "../../components/ui/IntentLink";
 import { Cover } from "../../components/ui/Cover";
 import { markRead } from "../../lib/local-state";
@@ -47,7 +48,7 @@ function Title({ item, as: Tag = "h2", className }: { item: FeedItemSummary; as?
 function Lead({ item }: { item: FeedItemSummary }) {
   return (
     <article className="relative min-w-0" data-item-id={item.id}>
-      <Cover cover={item.cover} seed={item.id} large ratio="aspect-[16/9]" sizes="(min-width: 961px) 720px, 100vw" />
+      <Cover cover={item.cover} seed={item.id} label={item.category ? CATEGORY_LABELS[item.category] : item.source.name} large ratio="aspect-[16/9]" sizes="(min-width: 961px) 720px, 100vw" />
       <div className="mt-3.5">
         <Title item={item} className="text-[28px] leading-[1.15] tracking-[-0.035em] lg:text-[40px]" />
         {item.summary && <p className="mt-2.5 max-w-[75ch] text-[16px] leading-[1.5] text-ink-3">{wholeSentences(item.summary)}</p>}
@@ -62,7 +63,7 @@ function Lead({ item }: { item: FeedItemSummary }) {
 function Compact({ item }: { item: FeedItemSummary }) {
   return (
     <article className="relative grid min-w-0 grid-cols-[104px_minmax(0,1fr)] items-start gap-3.5 lg:grid-cols-[112px_minmax(0,1fr)]" data-item-id={item.id}>
-      <Cover cover={item.cover} seed={item.id} sizes="112px" credit={false} />
+      <Cover cover={item.cover} seed={item.id} label={item.category ? CATEGORY_LABELS[item.category] : item.source.name} sizes="112px" credit={false} />
       <div className="min-w-0">
         <Title item={item} className="line-clamp-4 text-[16px] leading-[1.35]" />
         <div className="mt-1.5">
@@ -121,7 +122,7 @@ export function TopStories({ items }: { items: FeedItemSummary[] }) {
       <ol className="mt-5 grid items-start gap-5 md:grid-cols-2">
         {items.map((item, i) => (
           <li key={item.id} className={`relative min-w-0 rounded-card border border-line bg-surface p-4 transition-colors hover:border-line-strong focus-within:border-line-strong grid grid-cols-[96px_minmax(0,1fr)] items-start gap-x-3.5 md:gap-x-4 ${i === 0 ? "md:col-span-2 md:grid-cols-[240px_minmax(0,1fr)]" : "md:grid-cols-[128px_minmax(0,1fr)]"}`} data-item-id={item.id}>
-            <Cover cover={item.cover} seed={item.id} className={i === 0 ? "md:row-span-2" : ""} ratio="aspect-[3/2] md:aspect-[4/3]" sizes={i === 0 ? "(min-width: 768px) 240px, 96px" : "(min-width: 768px) 128px, 96px"} />
+            <Cover cover={item.cover} seed={item.id} label={item.category ? CATEGORY_LABELS[item.category] : item.source.name} className={i === 0 ? "md:row-span-2" : ""} ratio="aspect-[3/2] md:aspect-[4/3]" sizes={i === 0 ? "(min-width: 768px) 240px, 96px" : "(min-width: 768px) 128px, 96px"} />
             <div className="min-w-0">
               <div className="mb-2 flex items-start gap-3">
                 <span aria-hidden="true" className="num text-[18px] font-semibold leading-none text-accent">{String(i + 1).padStart(2, "0")}</span>

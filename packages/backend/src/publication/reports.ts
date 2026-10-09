@@ -4,6 +4,7 @@ import type { ReportCitation, ReportDetail, ReportIndexEntry, ReportNavigationEn
 import { sql } from "../db.ts";
 import { cached, type Cached } from "../lib/cache.ts";
 import { proxiedImage, proxiedImageSet } from "../media/imgproxy.ts";
+import { coverDetails } from "../media/cover.ts";
 import { dailyUrl, itemUrl, siteUrl } from "./links.ts";
 import { SITE, withSubject } from "@aihot/industry/site";
 
@@ -167,21 +168,33 @@ export function leadItemOf(leadTitle: string | undefined, highlights: ReportCita
  * report of the same event (first-hand first). Items shown as summaries only lend no pictures.
  */
 async function leadCover(itemId: string): Promise<{ url: string; srcSet?: string; width: number | null; height: number | null } | null> {
-  const [row] = await sql<{ m: { url: string; width?: number; height?: number } }[]>`
+  const rows = await sql<{ m: { url: string; width?: number; height?: number } }[]>`
     SELECT img.m
     FROM publications p JOIN articles a ON a.id = p.article_id
     CROSS JOIN LATERAL (
       SELECT m FROM jsonb_array_elements(coalesce(a.media, '[]'::jsonb)) m
-      WHERE m->>'kind' = 'image' AND coalesce((m->>'width')::numeric, 800) >= 480 LIMIT 1
+      WHERE m->>'kind' = 'image' AND coalesce((m->>'width')::numeric, 800) >= 480
     ) img
     WHERE (p.article_id = ${itemId} OR p.story_id = (SELECT story_id FROM publications WHERE article_id = ${itemId}))
       AND p.visibility = 'public' AND p.eligible AND p.body_mode <> 'summary'
     ORDER BY (p.article_id = ${itemId}) DESC, p.first_party DESC, coalesce(p.score, 0) DESC, p.article_id
-    LIMIT 1`;
-  if (!row) return null;
-  const url = proxiedImage(row.m.url, "full");
+    `;
+  const selected = selectReportCover(rows);
+  if (!selected) return null;
+  const url = proxiedImage(selected.m.url, "full");
   if (!url) return null;
-  return { url, ...(proxiedImageSet(row.m.url, "hero") ? { srcSet: proxiedImageSet(row.m.url, "hero")! } : {}), width: typeof row.m.width === "number" ? row.m.width : null, height: typeof row.m.height === "number" ? row.m.height : null };
+  return { url, ...(proxiedImageSet(selected.m.url, "hero") ? { srcSet: proxiedImageSet(selected.m.url, "hero")! } : {}), width: typeof selected.m.width === "number" ? selected.m.width : null, height: typeof selected.m.height === "number" ? selected.m.height : null };
+}
+
+export function selectReportCover<T extends { m: { url: string; width?: number; height?: number } }>(rows: T[]): T | undefined {
+  let unknown: T | undefined;
+  for (const row of rows) {
+    const suitability = coverDetails([row.m], row.m.url).leadSuitability;
+    if (suitability === "bad") continue;
+    if (suitability === "good") return row;
+    unknown ??= row;
+  }
+  return unknown;
 }
 
 function readingMinutes(text: string): number {

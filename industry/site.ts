@@ -4,6 +4,7 @@ export const SITE = {
   tagline: "What changed in additive manufacturing", locale: "en", defaultUrl: "http://127.0.0.1:4310",
   mcpPrefix: "additiveos_radar", contactEmail: null as string | null,
   footerNote: "Attributed publisher reports · Not validated engineering advice", icp: null as string | null,
+  advisorIntro: "Independent advice on polymer 3D printing materials and processes for prototypes, with traceable evidence. In development.",
   organization: { name: "AdditiveOS Radar", founder: null as null | { name: string; url?: string; description?: string } },
   crawlerName: "AdditiveOS-Radar",
 } as const;
