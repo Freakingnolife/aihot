@@ -36,7 +36,7 @@ export function registerMedia(app: FastifyInstance) {
     } catch (error) {
 
       req.log.warn({ err: String(error), host: new URL(verdict.url).hostname }, "img-proxy upstream failed");
-      return reply.code(502).header("Cache-Control", "public, max-age=300").type("text/plain; charset=utf-8").send("Upstream image unavailable");
+      return reply.code(502).header("Cache-Control", "no-store").type("text/plain; charset=utf-8").send("Upstream image unavailable");
     }
   });
 }

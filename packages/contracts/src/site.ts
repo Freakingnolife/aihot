@@ -31,6 +31,10 @@ export interface CoverView {
   srcSet: string | null;
   /** Wider candidates for the lead story. */
   largeSrcSet: string | null;
+  width: number | null;
+  height: number | null;
+  /** Whether this image is suitable for a large editorial lead slot. */
+  leadSuitability: "good" | "unknown" | "bad";
   credit: { source: string; url: string };
 }
 

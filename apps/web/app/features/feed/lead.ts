@@ -65,9 +65,7 @@ export function splitLead(items: FeedItemSummary[]): {
     if (picked.length === 1 + GRID_COUNT + TOP_COUNT) break;
     if (!picked.some((p) => sameEvent(p.title, it.title))) picked.push(it);
   }
-  const lead = picked[0] ?? null;
-  const grid = picked.slice(1, 1 + GRID_COUNT);
-  const top = picked.slice(1 + GRID_COUNT);
+  const { lead, grid, top } = preferSuitableLead(picked[0] ?? null, picked.slice(1, 1 + GRID_COUNT), picked.slice(1 + GRID_COUNT));
   const shown = new Set([...(lead ? [lead] : []), ...grid, ...top]);
   const latest: FeedItemSummary[] = [];
   for (const it of items.filter((it) => it.channel === "news").sort((a, b) => when(b) - when(a))) {
@@ -75,4 +73,15 @@ export function splitLead(items: FeedItemSummary[]): {
     if (!shown.has(it) && ![...shown, ...latest].some((s) => sameEvent(s.title, it.title))) latest.push(it);
   }
   return { lead, grid, top, latest, rest: items.filter((it) => !shown.has(it)) };
+}
+
+/** Keep the existing ranking, but avoid enlarging artwork or small pictures in the hero slot. */
+export function preferSuitableLead<T extends { cover: { leadSuitability?: "good" | "unknown" | "bad" } | null }>(lead: T | null, grid: T[], top: T[]): { lead: T | null; grid: T[]; top: T[] } {
+  if (!lead) return { lead, grid, top };
+  const ranked = [lead, ...grid, ...top];
+  const index = ranked.findIndex((item) => item.cover?.leadSuitability === "good");
+  const chosen = index >= 0 ? index : ranked.findIndex((item) => item.cover?.leadSuitability === "unknown");
+  if (chosen <= 0) return { lead, grid, top };
+  const reordered = [ranked[chosen]!, ...ranked.slice(0, chosen), ...ranked.slice(chosen + 1)];
+  return { lead: reordered[0]!, grid: reordered.slice(1, 1 + grid.length), top: reordered.slice(1 + grid.length) };
 }

@@ -6,8 +6,9 @@
 // and the neighbours; line parts stories, columns and list rows. Nothing is set in solid ink. Stories
 // sit in rows of two whose rules run across the page, each story as tall as its neighbour.
 import { SITE } from "@aihot/industry/site";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router";
+import { useImageRetry } from "../../components/ui/image-retry";
 import type { ReportCitation, ReportDetail, ReportNavigationEntry } from "@aihot/contracts/site";
 import { displayTitle, shortSourceName } from "../../lib/format";
 import { Badge } from "../../components/ui/Badge";
@@ -187,15 +188,17 @@ function pagesOf(report: ReportDetail, leadStory: ReportCitation | null): Page[]
  * the lead's own (a weekly or monthly's, from its first highlight) is captioned with its story.
  */
 function LeadPicture({ cover, onError, priority = false, className = "" }: { cover: NonNullable<ReportDetail["cover"]>; onError: () => void; priority?: boolean; className?: string }) {
+  const retry = useImageRetry(cover.url, cover.srcSet);
   const ratio = cover.width && cover.height ? cover.width / cover.height : 16 / 9;
   const shown = ratio >= 1.25 ? Math.min(2, Math.max(1.6, ratio)) : Math.max(0.8, ratio);
+  useEffect(() => { if (retry.failed) onError(); }, [retry.failed, onError]);
   return (
     <figure className={className}>
       <div className="overflow-hidden well rounded-panel" style={{ aspectRatio: shown }}>
-        <img src={cover.url} srcSet={cover.srcSet}
+        {!retry.failed && <img src={retry.src ?? cover.url} srcSet={retry.srcSet}
           sizes={priority ? "(min-width: 1700px) 780px, (min-width: 1580px) calc(100vw - 920px), (min-width: 1420px) calc(100vw - 880px), (min-width: 1024px) calc(100vw - 540px), (min-width: 640px) 608px, calc(100vw - 32px)" : "auto, (min-width: 1180px) 300px, (min-width: 640px) 608px, calc(100vw - 32px)"}
           width={cover.width ?? undefined} height={cover.height ?? undefined}
-          alt="" loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : "auto"} decoding="async" onError={onError} className="size-full object-cover" />
+          alt="" loading={priority ? "eager" : "lazy"} fetchPriority={priority ? "high" : "auto"} decoding="async" onError={retry.onError} className="size-full object-cover" />}
       </div>
       {cover.caption && <figcaption className="mt-2.5 line-clamp-2 text-[12.5px] leading-[1.6] text-ink-4">Image · {cover.caption}</figcaption>}
     </figure>

@@ -46,8 +46,8 @@ export function Masthead() {
             );
           })}
         </nav>
-        <nav aria-label="Main" className="ml-auto flex items-center gap-[38px] text-[12px]">
-          <a href="/advisor" className="hidden min-[901px]:inline">Advisor</a>
+        <nav aria-label="Main" className="ml-auto flex items-center gap-4 text-[12px] min-[901px]:gap-[38px]">
+          <a href="/advisor" className="inline">Advisor</a>
           <a href="/advisor#join" className="inline-flex min-h-10 items-center justify-between gap-[15px] whitespace-nowrap rounded-full bg-accent px-4 text-[11px] font-semibold text-[#fffdf7] transition-colors hover:bg-ink min-[901px]:min-h-[46px] min-[901px]:gap-[30px] min-[901px]:px-[23px] min-[901px]:text-[12px]">
             Join the waitlist <span aria-hidden="true" className="text-[22px] leading-none">↗</span>
           </a>

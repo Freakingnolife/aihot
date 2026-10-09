@@ -13,11 +13,19 @@ const CACHE_DIR = path.join(config.dataDir, "imgcache");
 const ORIGINAL_TTL_MS = 60_000;
 const ORIGINAL_MAX_BYTES = 32 * 1024 * 1024;
 const ORIGINAL_MAX_ENTRIES = 32;
+const TRANSIENT_FAILURE_TTL_MS = 60_000;
 const recentOriginals = new Map<string, { value: GuardedResponse; until: number }>();
 let originalBytes = 0;
 const inflight = new Map<string, Promise<{ body: Buffer; type: string }>>();
 const originals = new Map<string, Promise<GuardedResponse>>();
 const failures = new Map<string, { until: number; error: unknown }>();
+
+function transient(error: unknown): boolean {
+  if (error instanceof TypeError) return true; // undici reports dropped/terminated bodies as TypeError
+  if (!error || typeof error !== "object") return false;
+  const e = error as { name?: string; code?: string };
+  return e.name === "AbortError" || e.name === "TimeoutError" || /^(UND_ERR|ECONN|ETIMEDOUT|EAI_AGAIN)/.test(e.code ?? "") || /upstream 5\d\d/.test(error instanceof Error ? error.message : "");
+}
 
 // Responsive candidates and a later lightbox can request the same source in successive turns.
 // Keep at most 32 MiB / 32 originals for one minute as well as sharing in-flight downloads.
@@ -59,8 +67,9 @@ function original(url: string): Promise<GuardedResponse> {
       rememberOriginal(url, res);
       return res;
     }).catch((error: unknown) => {
-      // A failed original is not refetched for a minute; this also coalesces failures across signed modes.
-      failures.set(url, { until: Date.now() + 60_000, error });
+      // A source-level cooldown prevents browser retries and successive readers from
+      // multiplying an exhausted upstream retry. The original URL shares it across modes.
+      failures.set(url, { until: Date.now() + (transient(error) ? TRANSIENT_FAILURE_TTL_MS : 60_000), error });
       if (failures.size > 512) failures.delete(failures.keys().next().value!);
       throw error;
     }).finally(() => originals.delete(url));
@@ -70,9 +79,17 @@ function original(url: string): Promise<GuardedResponse> {
 }
 
 async function fetchOriginal(url: string): Promise<GuardedResponse> {
-  const res = await guardedFetch(url, { timeoutMs: 20_000, maxBytes: 15 * 1024 * 1024, headers: { accept: "image/avif,image/webp,image/*,*/*;q=0.8" } });
-  if (res.status !== 200) throw new Error(`upstream ${res.status}`);
-  return res;
+  const opts = { timeoutMs: 20_000, maxBytes: 15 * 1024 * 1024, headers: { accept: "image/avif,image/webp,image/*,*/*;q=0.8" } };
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await guardedFetch(url, opts);
+      if (res.status === 200) return res;
+      if (res.status < 500 || attempt === 1) throw new Error(`upstream ${res.status}`);
+    } catch (error) {
+      if (attempt === 1 || !transient(error)) throw error;
+    }
+  }
+  throw new Error("upstream unavailable");
 }
 
 /**

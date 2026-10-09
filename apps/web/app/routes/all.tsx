@@ -95,7 +95,13 @@ export default function AllPage() {
   return (
     <div className="pb-6">
       {/* One line for first-time visitors on the home page, above both layouts. The times are those in industry/site.ts (steps.collect). */}
-      {home && <p className="pt-4 text-[13px] leading-[1.5] text-ink-3 lg:pb-4 lg:pt-0">Additive manufacturing news from more than 40 sources, with why each story matters. Updated 07:00 and 19:00 SGT. <Link to="/agent#daily-brief" className="font-medium text-accent hover:underline">Get a daily brief from your AI assistant.</Link></p>}
+      {home && <>
+        <p className="pt-4 text-[13px] leading-[1.5] text-ink-3 lg:pb-3 lg:pt-0">Additive manufacturing news from more than 40 sources, with why each story matters. Updated 07:00 and 19:00 SGT. <Link to="/agent#daily-brief" className="font-medium text-accent hover:underline">Get a daily brief from your AI assistant.</Link></p>
+        <a href="/advisor" className="mt-3 flex min-h-10 items-center justify-between gap-3 rounded-control border border-line bg-surface px-3 py-2 text-[12px] leading-[1.45] text-ink-3 transition-colors hover:border-line-strong hover:text-ink sm:px-4">
+          <span><span className="font-semibold text-ink">AdditiveOS Advisor</span> · {SITE.advisorIntro}</span>
+          <span aria-hidden="true" className="shrink-0 text-[16px] text-accent">↗</span>
+        </a>
+      </>}
       {/* Desktop: the title with the period switch, then one filter row with the search field on the right. */}
       <div className="hidden lg:block">
         {home ? (

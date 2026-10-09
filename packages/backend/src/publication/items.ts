@@ -3,7 +3,7 @@
 import type { CategoryKey, ChannelKey } from "@aihot/contracts/taxonomy";
 import type { CoverView, FeedItemSummary, ItemSummary, MediaView, SourceKind, XPostView } from "@aihot/contracts/site";
 import { sql, type Db } from "../db.ts";
-import { pickCoverImage } from "../media/cover.ts";
+import { coverDetails, pickCoverImage } from "../media/cover.ts";
 import { proxiedImage, proxiedImageSet } from "../media/imgproxy.ts";
 import { displayTags } from "./rules.ts";
 
@@ -191,7 +191,7 @@ export function coverView(row: Pick<ItemRow, "channel" | "media" | "url" | "sour
   const picked = row.channel === "news" ? pickCoverImage(row.media) : null;
   const url = proxiedImage(picked, "thumb");
   if (!picked || !url) return null;
-  return { url, srcSet: proxiedImageSet(picked, "card"), largeSrcSet: proxiedImageSet(picked, "hero"), credit: { source: row.source_name, url: row.url } };
+  return { url, srcSet: proxiedImageSet(picked, "card"), largeSrcSet: proxiedImageSet(picked, "hero"), ...coverDetails(row.media, picked), credit: { source: row.source_name, url: row.url } };
 }
 
 /** Project the shared public article into the exact fields a site card renders. */
