@@ -1,17 +1,18 @@
-// Scheduled refresh for the public site, without the worker app: twice a day (07:00 and 19:00 Singapore
-// time) it collects every enabled source, fetches the missing article pages (no Jina), then runs the
-// pipeline on the articles discovered in the last 48 hours that still await processing, one at a time.
-// A run stops early on an exhausted budget, an unknown receipt, a provider limit or 60 new model
-// requests. It never starts pg-boss workers, never touches queued jobs and never changes budgets: the
-// llm budget (30/min, 240/hour, 240/day, set in the admin) stays the hard ceiling. One JSON line per run goes to stdout.
+// Scheduled refresh for the public site: twice a day (07:00 and 19:00 Singapore time) it collects
+// sources, fetches missing pages (no Jina), then analyzes new articles serially. Analysis has priority
+// over a bounded serial drain of existing events.group jobs, which uses only remaining room under
+// the shared 60-request target. Analysis checks that threshold before each article, so one article
+// can cross it slightly; grouping checks before every individual request. pg-boss runs passive: no
+// worker, unrelated queue or schedule starts. Budgets are never changed. One JSON line per run goes to stdout.
 //   node scripts/scheduled-refresh.ts          run forever, at 07:00 and 19:00 Asia/Singapore
 //   node scripts/scheduled-refresh.ts --once   one run now, then exit
-// COLLECT_ENABLED=false skips collection and page fetching; MODEL_CALLS_ENABLED=false skips processing.
+// COLLECT_ENABLED=false skips collection and page fetching; MODEL_CALLS_ENABLED=false skips analysis and grouping.
 import { closeDb, sql } from "@aihot/backend/db";
 import { extractArticleBody } from "@aihot/backend/content/extract";
 import { afterFailure, processArticle } from "@aihot/backend/jobs/content";
-import { stopBoss } from "@aihot/backend/jobs/queue";
-import { BudgetExceededError, ReceiptUnknownError } from "@aihot/backend/providers/receipts";
+import { activeEventGroupJobs, ageSkipOldAutomaticEventGroups, drainEventGroups, prioritizeNewestAutomaticEventGroups, recoverExpiredEventGroupClaims } from "@aihot/backend/jobs/events";
+import { getBoss, QUEUES, stopBoss } from "@aihot/backend/jobs/queue";
+import { BudgetExceededError, markStalePendingReceipts, ReceiptUnknownError } from "@aihot/backend/providers/receipts";
 import { collectSource } from "@aihot/backend/sources/collect";
 
 // Only ever enqueues (never maintains, schedules or migrates) in this process; see jobs/queue.ts.
@@ -21,6 +22,7 @@ const SLOT_HOURS_SGT = [7, 19];
 const SGT_OFFSET_MS = 8 * 3_600_000; // Singapore has no daylight saving time
 const WINDOW = "48 hours";
 const MAX_REQUESTS = 60;
+const MAX_GROUP_JOBS = 12;
 const MAX_CONSECUTIVE_ERRORS = 3;
 const LOCK_KEY = 7_204_001; // pg advisory lock: one run at a time, daemon or --once
 
@@ -79,8 +81,7 @@ async function fetchBodies() {
   return out;
 }
 
-async function processNew() {
-  const started = new Date();
+async function processNew(started: Date) {
   const out = { candidates: 0, processed: 0, states: {} as Record<string, number>, errors: 0, requests: 0, stop: "finished" };
   const ids = (await sql<{ id: string }[]>`
     SELECT id FROM articles
@@ -114,6 +115,42 @@ async function processNew() {
   return out;
 }
 
+async function pendingGroups() {
+  const [row] = await sql<{ n: number }[]>`
+    SELECT count(*)::int AS n FROM pgboss.job WHERE name = ${QUEUES.group} AND state IN ('created', 'retry')`;
+  return Number(row?.n ?? 0);
+}
+
+export async function prepareEventGroups() {
+  // Placeholders of a process that stopped mid-request become unknown before any job is claimed. Nothing else
+  // releases them here (no worker runs), and a changed candidate set would otherwise send a new paid request.
+  await markStalePendingReceipts();
+  const stalled = await recoverExpiredEventGroupClaims();
+  const ageSkipped = await ageSkipOldAutomaticEventGroups();
+  await prioritizeNewestAutomaticEventGroups();
+  return { stalled, ageSkipped };
+}
+
+async function processGroups(started: Date, prepared: { stalled: number; ageSkipped: number }) {
+  const pendingBefore = await pendingGroups();
+  const boss = await getBoss();
+  const hasRequestRoom = async () => (await sql<{ n: number }[]>`
+    SELECT count(*)::int AS n FROM receipt_attempts WHERE started_at >= ${started}`)[0]!.n < MAX_REQUESTS;
+  const result = await drainEventGroups(boss, {
+    maxJobs: MAX_GROUP_JOBS,
+    canContinue: hasRequestRoom,
+    beforeModelRequest: hasRequestRoom,
+    forceLexical: true,
+    shouldStop: () => stopping,
+    onError: (error, job) => {
+      if (error instanceof ReceiptUnknownError) console.error(`[refresh grouping] receipt outcome unknown for ${job.articleId}`);
+      else console.error(`[refresh grouping] ${job.articleId}: ${String(error).slice(0, 300)}`);
+    },
+  });
+  return { ...result, ...prepared, active: await activeEventGroupJobs(), requests: (await sql<{ n: number }[]>`
+    SELECT count(*)::int AS n FROM receipt_attempts WHERE started_at >= ${started}`)[0]!.n, pendingBefore, pending: await pendingGroups() };
+}
+
 async function run(): Promise<Record<string, unknown>> {
   const summary: Record<string, unknown> = { collect: "off", bodies: "off", process: "off" };
   // Nothing to do: no database connection is opened either.
@@ -129,9 +166,24 @@ async function run(): Promise<Record<string, unknown>> {
         summary.bodies = await fetchBodies();
       }
       if (modelling()) {
-        const processed = await processNew();
+        const groupingPrep = await prepareEventGroups();
+        const started = new Date();
+        const processed = await processNew(started);
         summary.process = processed;
-        status = processed.stop;
+        // A job that errored is not a clean run, whatever stopped the loop.
+        status = processed.stop === "finished" && processed.errors > 0 ? "errors" : processed.stop;
+        // Analysis always gets first use of the shared request target. Grouping drains only whatever
+        // room remains and claims jobs serially, so the rest stay queued for a later refresh.
+        if (processed.stop === "finished") {
+          const grouping = await processGroups(started, groupingPrep);
+          summary.grouping = grouping;
+          if (grouping.stop !== "finished") status = grouping.stop;
+          else if (grouping.errors > 0) status = "errors";
+        } else {
+          const pending = await pendingGroups();
+          summary.grouping = { attempted: 0, completed: 0, ageSkipped: groupingPrep.ageSkipped, deferred: 0, blocked: 0, errors: 0,
+            stalled: groupingPrep.stalled, active: await activeEventGroupJobs(), requests: processed.requests, pendingBefore: pending, pending, stop: processed.stop };
+        }
       }
     } catch (error) {
       status = "error";

@@ -210,6 +210,20 @@ export async function completeReceipt(db: Db, receiptId: number): Promise<void> 
   await db`UPDATE receipts SET status = 'completed', completed_at = coalesce(completed_at, now()), updated_at = now() WHERE id = ${receiptId}`;
 }
 
+/**
+ * An unknown-outcome receipt among `purposes` for any of `subjects` (each exactly, or a sub-subject `subject:...`), if any.
+ * Work with such a receipt open must not be sent again with a different key (e.g. after its candidates changed).
+ */
+export async function unknownReceiptFor(subjects: string[], purposes: string[]): Promise<number | null> {
+  const [row] = await sql<{ id: number }[]>`
+    SELECT id FROM receipts
+    WHERE status = 'unknown' AND purpose = ANY(${sql.array(purposes)})
+      AND EXISTS (SELECT 1 FROM unnest(${sql.array(subjects)}::text[]) AS s(v)
+                  WHERE subject = s.v OR starts_with(subject, s.v || ':'))
+    ORDER BY id LIMIT 1`;
+  return row ? Number(row.id) : null;
+}
+
 /** Marks a received response that could not be used (e.g. unparsable) so a fresh attempt can be made. */
 export async function rejectReceivedResponse(receiptId: number, reason: string): Promise<void> {
   await sql`UPDATE receipts SET status = 'failed', error = ${reason.slice(0, 2000)}, updated_at = now() WHERE id = ${receiptId}`;

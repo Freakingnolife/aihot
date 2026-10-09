@@ -22,6 +22,14 @@ export const QUEUES = {
   prepareMedia: "media.prepare",
 } as const;
 
+/**
+ * A single explicit regroup (admin) claims before the automatic backlog, which the scheduled refresh
+ * ranks 0..N-1. Far above any backlog size, so a correction is not stuck behind hundreds of jobs.
+ */
+export const MANUAL_GROUP_PRIORITY = 1_000_000;
+/** Bulk regroups (operator script) claim after live automatic work (0..N-1, signal posts at -1) and after history (-2). */
+export const BULK_GROUP_PRIORITY = -1_000_000;
+
 type QueueOptions = NonNullable<Parameters<PgBoss["createQueue"]>[1]>;
 
 /** Queue definitions in one place; created on first use by any process. */
