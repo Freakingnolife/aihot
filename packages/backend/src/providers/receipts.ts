@@ -40,6 +40,19 @@ export class ProviderRejectedError extends Error {
   }
 }
 
+const LIMIT_WORDS = /usage limit|\brate[ _-]?limit|too many requests|\bout of credits\b|\bspend cap\b|\bworkspace credit limit\b|\blast status: 429\b/i;
+
+/**
+ * The provider is out of capacity for now: HTTP 429, or a limit named in a provider rejection. The Codex shim
+ * (scripts/codex-shim.ts) answers every failed run as HTTP 502 with the CLI's text, so its usage limit, spend cap
+ * and out-of-credits messages are recognised by the words. Digits alone (an id, a URL, a trace) are not a limit.
+ * Only a provider rejection can be a limit: a model answer that quotes limit wording is an ordinary failure.
+ */
+export function isProviderLimit(error: unknown): boolean {
+  if (!(error instanceof ProviderRejectedError)) return false;
+  return error.status === 429 || LIMIT_WORDS.test(error.message);
+}
+
 export interface CallOutcome {
   response: unknown;
   requestId?: string | null;

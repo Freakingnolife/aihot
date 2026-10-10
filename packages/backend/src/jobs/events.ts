@@ -2,7 +2,7 @@
 import type { PgBoss } from "pg-boss";
 import { GroupRequestCapError, groupArticle } from "../events/group.ts";
 import { composeStoryDigest } from "../events/digest.ts";
-import { BudgetExceededError, ProviderRejectedError, ReceiptBusyError, ReceiptUnknownError, unknownReceiptFor } from "../providers/receipts.ts";
+import { BudgetExceededError, isProviderLimit, ReceiptBusyError, ReceiptUnknownError, unknownReceiptFor } from "../providers/receipts.ts";
 import { settleNonEditorial } from "./content.ts";
 import { ensureQueue, enqueue, QUEUES } from "./queue.ts";
 import { sql } from "../db.ts";
@@ -111,8 +111,6 @@ async function deferGroupJob(boss: PgBoss, id: string, afterSeconds: number | nu
 
 /** Purposes of the grouping judgements a report's job sends; their subjects start with `article:<id>`. */
 const GROUPING_RECEIPT_PURPOSES = ["group_article", "group_signal", "group_review"];
-
-const isProviderLimit = (error: unknown) => error instanceof ProviderRejectedError && error.status === 429;
 
 /**
  * Claim one existing grouping job at a time. Jobs not claimed remain resumable in pg-boss.

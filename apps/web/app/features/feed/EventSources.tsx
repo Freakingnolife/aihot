@@ -12,8 +12,8 @@ export function EventSources({ item, className = "" }: { item: FeedItemSummary; 
       </summary>
       <ul className="mt-2 max-w-2xl divide-y divide-line-soft rounded-control bg-bg-sunk px-3 dark:bg-bg-muted/60">
         {event.reports.map((report, index) => (
-          <li key={`${report.originalUrl}-${index}`} className="flex items-baseline gap-2 py-2 text-[13px]">
-            <span className="w-[108px] shrink-0 truncate text-ink-4">{report.source}</span>
+          <li key={`${report.originalUrl}-${index}`} className="flex flex-col gap-0.5 py-2 text-[13px] sm:flex-row sm:items-baseline sm:gap-2">
+            <span className="min-w-0 text-ink-4 [overflow-wrap:anywhere] sm:w-[11rem] sm:shrink-0">{report.source}</span>
             <a href={report.originalUrl} target="_blank" rel="noopener noreferrer" className="min-w-0 flex-1 text-ink-2 hover:text-accent">{report.title}</a>
           </li>
         ))}

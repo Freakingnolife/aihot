@@ -12,7 +12,7 @@ import { extractArticleBody } from "@aihot/backend/content/extract";
 import { afterFailure, processArticle } from "@aihot/backend/jobs/content";
 import { activeEventGroupJobs, ageSkipOldAutomaticEventGroups, drainEventGroups, prioritizeNewestAutomaticEventGroups, recoverExpiredEventGroupClaims } from "@aihot/backend/jobs/events";
 import { getBoss, QUEUES, stopBoss } from "@aihot/backend/jobs/queue";
-import { BudgetExceededError, markStalePendingReceipts, ReceiptUnknownError } from "@aihot/backend/providers/receipts";
+import { BudgetExceededError, isProviderLimit, markStalePendingReceipts, ReceiptUnknownError } from "@aihot/backend/providers/receipts";
 import { collectSource } from "@aihot/backend/sources/collect";
 
 // Only ever enqueues (never maintains, schedules or migrates) in this process; see jobs/queue.ts.
@@ -107,7 +107,7 @@ async function processNew(started: Date) {
       // The same bookkeeping as the worker: retry later with backoff, or mark failed for good.
       await afterFailure(id, error).catch(() => {});
       if (error instanceof BudgetExceededError) { out.stop = "budget"; break; }
-      if (/usage limit|429|rate.?limit/i.test(String(error))) { out.stop = "provider-limit"; break; }
+      if (isProviderLimit(error)) { out.stop = "provider-limit"; break; }
       if (++consecutiveErrors >= MAX_CONSECUTIVE_ERRORS) { out.stop = "errors"; break; }
     }
   }
