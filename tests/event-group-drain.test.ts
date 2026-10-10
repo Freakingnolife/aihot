@@ -22,8 +22,10 @@ const provider = await stub(() => ({
 }));
 process.env.DEEPSEEK_BASE_URL = `${provider.url}/v1`;
 process.env.DEEPSEEK_API_KEY = 'test-key';
-// Failure modes for the judge: a dropped connection (outcome unknown) and a provider rate limit.
-let mode: 'ok' | 'reset' | 'limit' | 'text429' = 'ok';
+// Failure modes for the judge: a dropped connection (outcome unknown), a provider rate limit, the Codex
+// shim's 502 answers (its usage limit with the CLI's wording, and an ordinary failure), and a 200 answer whose
+// text is not JSON but quotes a limit phrase (a ModelOutputError, which must not be read as a limit).
+let mode: 'ok' | 'reset' | 'limit' | 'text429' | 'codex-limit' | 'bad-gateway' | 'junk-output' = 'ok';
 let flakyHits = 0;
 const flaky = http.createServer((req, res) => {
   req.resume();
@@ -32,6 +34,9 @@ const flaky = http.createServer((req, res) => {
     if (mode === 'reset') return req.socket.destroy();
     if (mode === 'limit') { res.writeHead(429, { 'content-type': 'application/json' }); return res.end('{"error":"rate limited"}'); }
     if (mode === 'text429') { res.writeHead(500, { 'content-type': 'application/json' }); return res.end('{"error":"upstream failure, trace 429"}'); }
+    if (mode === 'codex-limit') { res.writeHead(502, { 'content-type': 'application/json' }); return res.end('{"error":{"message":"Error: codex exited 1: ERROR: Usage limit reached. You\'ve reached your usage limit. Increase your limits to continue using codex."}}'); }
+    if (mode === 'bad-gateway') { res.writeHead(502, { 'content-type': 'application/json' }); return res.end('{"error":{"message":"Error: codex exited 1: ERROR: model returned invalid JSON"}}'); }
+    if (mode === 'junk-output') { res.writeHead(200, { 'content-type': 'application/json' }); return res.end(JSON.stringify({ choices: [{ message: { content: '{"x": rate limit}' } }], usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 } })); }
     res.writeHead(200, { 'content-type': 'application/json' });
     res.end(JSON.stringify({ choices: [{ message: { content: JSON.stringify({ query: '', decisions: [] }) } }], usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 } }));
   });
@@ -278,6 +283,95 @@ test('provider rate limits defer grouping without spending retries, however many
     await sql`UPDATE pgboss.job SET start_after = now() - interval '1 second' WHERE id = ${id}`;
     const resumed = await drainEventGroups(boss, { maxJobs: 1, canContinue: async () => true, forceLexical: true });
     assert.equal(resumed.completed, 1, 'the job completes once the provider accepts requests again');
+  } finally {
+    mode = 'ok';
+    process.env.DEEPSEEK_BASE_URL = oldBase;
+  }
+});
+
+test('a Codex usage limit that arrives as HTTP 502 defers grouping without spending a retry', async () => {
+  const boss = await getBoss();
+  await ensureQueue(QUEUES.group);
+  await sql`DELETE FROM pgboss.job WHERE name = ${QUEUES.group} AND state IN ('created', 'retry')`;
+  const shared = `codex limit ${randomUUID()} new drone launch`;
+  await groupArticle(await analyzed('codex-limit-first', shared));
+  const second = await analyzed('codex-limit-second', shared);
+  const id = String(await boss.send(QUEUES.group, { articleId: second }, { singletonKey: `codex-limit:${second}` }));
+  const oldBase = process.env.DEEPSEEK_BASE_URL;
+  process.env.DEEPSEEK_BASE_URL = flakyUrl;
+  try {
+    mode = 'codex-limit';
+    for (let i = 0; i < 3; i++) {
+      await sql`UPDATE pgboss.job SET start_after = now() - interval '1 second' WHERE id = ${id}`;
+      const result = await drainEventGroups(boss, { maxJobs: 3, canContinue: async () => true, forceLexical: true });
+      assert.deepEqual({ deferred: result.deferred, stop: result.stop, errors: result.errors }, { deferred: 1, stop: 'provider-limit', errors: 0 }, `refresh ${i + 1}`);
+      const [row] = await sql<{ state: string; retry_count: number }[]>`SELECT state, retry_count FROM pgboss.job WHERE id = ${id}`;
+      assert.deepEqual(row, { state: 'retry', retry_count: 0 }, `refresh ${i + 1} keeps the retry budget`);
+    }
+    mode = 'ok';
+    await sql`UPDATE pgboss.job SET start_after = now() - interval '1 second' WHERE id = ${id}`;
+    const resumed = await drainEventGroups(boss, { maxJobs: 1, canContinue: async () => true, forceLexical: true });
+    assert.equal(resumed.completed, 1, 'the job completes once Codex accepts requests again');
+  } finally {
+    mode = 'ok';
+    process.env.DEEPSEEK_BASE_URL = oldBase;
+  }
+});
+
+test('a plain HTTP 502 from the provider is a true failure that spends a retry', async () => {
+  const boss = await getBoss();
+  await ensureQueue(QUEUES.group);
+  await sql`DELETE FROM pgboss.job WHERE name = ${QUEUES.group} AND state IN ('created', 'retry')`;
+  const shared = `plain bad gateway ${randomUUID()} new sensor launch`;
+  await groupArticle(await analyzed('bad-gateway-first', shared));
+  const second = await analyzed('bad-gateway-second', shared);
+  const id = String(await boss.send(QUEUES.group, { articleId: second }, { singletonKey: `bad-gateway:${second}` }));
+  const oldBase = process.env.DEEPSEEK_BASE_URL;
+  process.env.DEEPSEEK_BASE_URL = flakyUrl;
+  try {
+    mode = 'bad-gateway';
+    const errors: string[] = [];
+    const result = await drainEventGroups(boss, { maxJobs: 1, canContinue: async () => true, forceLexical: true, onError: (e) => errors.push(String(e)) });
+    assert.deepEqual({ deferred: result.deferred, errors: result.errors, stop: result.stop }, { deferred: 0, errors: 1, stop: 'finished' });
+    assert.match(errors[0]!, /HTTP 502/);
+    const [failed] = await sql<{ state: string; error: string }[]>`SELECT state, output->>'error' AS error FROM pgboss.job WHERE id = ${id}`;
+    assert.equal(failed!.state, 'retry');
+    assert.match(failed!.error, /HTTP 502/, 'the failure is recorded on the job, not deferred');
+    // pg-boss counts the spent retry when the job is claimed again.
+    await sql`UPDATE pgboss.job SET start_after = now() - interval '1 second' WHERE id = ${id}`;
+    await drainEventGroups(boss, { maxJobs: 1, canContinue: async () => true, forceLexical: true, onError: () => {} });
+    const [row] = await sql<{ state: string; retry_count: number }[]>`SELECT state, retry_count FROM pgboss.job WHERE id = ${id}`;
+    assert.deepEqual(row, { state: 'retry', retry_count: 1 }, 'the next claim spends one processing retry');
+  } finally {
+    mode = 'ok';
+    process.env.DEEPSEEK_BASE_URL = oldBase;
+  }
+});
+
+test('a model answer that is not JSON but quotes a limit phrase is a failure that spends a retry, not a deferral', async () => {
+  const boss = await getBoss();
+  await ensureQueue(QUEUES.group);
+  await sql`DELETE FROM pgboss.job WHERE name = ${QUEUES.group} AND state IN ('created', 'retry')`;
+  const shared = `quoted limit ${randomUUID()} new battery launch`;
+  await groupArticle(await analyzed('junk-first', shared));
+  const second = await analyzed('junk-second', shared);
+  const id = String(await boss.send(QUEUES.group, { articleId: second }, { singletonKey: `junk:${second}` }));
+  const oldBase = process.env.DEEPSEEK_BASE_URL;
+  process.env.DEEPSEEK_BASE_URL = flakyUrl;
+  try {
+    mode = 'junk-output';
+    const errors: string[] = [];
+    const result = await drainEventGroups(boss, { maxJobs: 1, canContinue: async () => true, forceLexical: true, onError: (e) => errors.push(String(e)) });
+    assert.deepEqual({ deferred: result.deferred, errors: result.errors, stop: result.stop }, { deferred: 0, errors: 1, stop: 'finished' });
+    assert.match(errors[0]!, /unusable output/);
+    const [failed] = await sql<{ state: string; error: string }[]>`SELECT state, output->>'error' AS error FROM pgboss.job WHERE id = ${id}`;
+    assert.equal(failed!.state, 'retry');
+    assert.match(failed!.error, /unusable output/, 'the failure is recorded on the job, not deferred');
+    // pg-boss counts the spent retry when the job is claimed again.
+    await sql`UPDATE pgboss.job SET start_after = now() - interval '1 second' WHERE id = ${id}`;
+    await drainEventGroups(boss, { maxJobs: 1, canContinue: async () => true, forceLexical: true, onError: () => {} });
+    const [row] = await sql<{ state: string; retry_count: number }[]>`SELECT state, retry_count FROM pgboss.job WHERE id = ${id}`;
+    assert.deepEqual(row, { state: 'retry', retry_count: 1 }, 'the next claim spends one processing retry');
   } finally {
     mode = 'ok';
     process.env.DEEPSEEK_BASE_URL = oldBase;

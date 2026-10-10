@@ -11,7 +11,7 @@ import { parseArgs } from "node:util";
 import { config } from "@aihot/backend/config";
 import { closeDb } from "@aihot/backend/db";
 import { applyPhrases, phraseCandidates, requestPhrases } from "@aihot/backend/editorial/reason-phrase-backfill";
-import { BudgetExceededError, ReceiptBusyError, ReceiptUnknownError } from "@aihot/backend/providers/receipts";
+import { BudgetExceededError, isProviderLimit, ReceiptBusyError, ReceiptUnknownError } from "@aihot/backend/providers/receipts";
 
 const DAYS = 7;
 const MAX_CONSECUTIVE_ERRORS = 3;
@@ -51,7 +51,7 @@ try {
         console.log(`${c.articleId}  error: ${String(error).slice(0, 200)}`);
         if (error instanceof BudgetExceededError) { out.stop = "budget"; break; }
         if (error instanceof ReceiptUnknownError || error instanceof ReceiptBusyError) { out.stop = "receipt"; break; }
-        if (/usage limit|429|rate.?limit/i.test(String(error))) { out.stop = "provider-limit"; break; }
+        if (isProviderLimit(error)) { out.stop = "provider-limit"; break; }
         if (++consecutive >= MAX_CONSECUTIVE_ERRORS) { out.stop = "errors"; break; }
       }
     }
