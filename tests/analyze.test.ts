@@ -19,12 +19,15 @@ import { SITE } from "@aihot/industry/site";
 const T = tag();
 const SOURCE = `test-analyze-${T}`;
 const X_SOURCE = `test-analyze-x-${T}`;
+// A T2 (media and individuals) source: its near-selected window is wide (sum > 100 and < 132). T1_5's is narrow (< 110);
+// T1 has none, because its bar equals the understand floor (50).
+const MEDIA_SOURCE = `test-analyze-media-${T}`;
 
 type Step = "prefilter" | "score" | "understand" | "summarize" | "structure";
 interface Req { step: Step; marker: string; system: string; user: string; body: Record<string, any> }
 const requests: Req[] = [];
 const MARKERS = ["CLEAR", "RESCUE", "LOW", "OFFTOPIC", "BARE", "VAGUE", "THIN", "SENSITIVE", "推文"];
-const scoreAnswers: Record<string, number[]> = { CLEAR: [78, 72], RESCUE: [56, 50], LOW: [45, 40], THIN: [70, 70], SENSITIVE: [80, 80], 推文: [40, 40], BARE: [30, 34], VAGUE: [60, 62] };
+const scoreAnswers: Record<string, number[]> = { CLEAR: [78, 72], RESCUE: [60, 58], LOW: [45, 40], THIN: [70, 70], SENSITIVE: [80, 80], 推文: [40, 40], BARE: [30, 34], VAGUE: [60, 62] };
 
 const stepOf = (system: string, user: string): Step =>
   system.includes("You filter material for") ? "prefilter" : system.includes("You score the attention value") ? "score"
@@ -58,7 +61,8 @@ Object.assign(process.env, { PREFILTER_MODEL: "qwen3.7-flash", SCORE_MODEL: "glm
 before(async () => {
   await sql`INSERT INTO sources (id, name, kind, tier, participation_mode, next_fetch_at) VALUES
     (${SOURCE}, 'Test analyze source', 'rss', 'T1', 'editorial', '2100-01-01'),
-    (${X_SOURCE}, 'Test X account', 'x_search', 'T1', 'editorial', '2100-01-01')`;
+    (${X_SOURCE}, 'Test X account', 'x_search', 'T1', 'editorial', '2100-01-01'),
+    (${MEDIA_SOURCE}, 'Test media source', 'rss', 'T2', 'editorial', '2100-01-01')`;
 });
 after(async () => {
   await provider.close();
@@ -92,10 +96,12 @@ test("every prompt in the pack renders, and the site's name replaces AIHOT's", (
 });
 
 test("a selected item: prefilter, two scores, the content understanding and the structure", async () => {
-  assert.equal(tierThreshold("T1"), 60);
+  // Hard-coded on purpose: a change to the owner's bar (commit 008949e) must fail here, not pass silently.
+  assert.equal(tierThreshold("T1"), 50);
+  assert.equal(tierThreshold("T2"), 66);
   const id = await article("CLEAR");
   const res = await analyzeArticle(id);
-  assert.deepEqual([res!.output!.selected, res!.output!.score], [true, 75], "78 + 72 = 150 >= 120");
+  assert.deepEqual([res!.output!.selected, res!.output!.score], [true, 75], "78 + 72 = 150 >= 2 × 50 = 100");
   assert.deepEqual(calls("CLEAR").sort(), ["prefilter", "score", "score", "structure", "understand"]);
   const r = await row(id);
   assert.deepEqual([r.title_zh, r.reason_zh, r.category, r.receipt_ids.length], ["理解标题 CLEAR", "理由 CLEAR", "products", 5]);
@@ -113,11 +119,14 @@ test("a selected item: prefilter, two scores, the content understanding and the 
 });
 
 test("a near-selected item is written like a selected one; below the floor it is translated", async () => {
-  const near = await analyzeArticle(await article("RESCUE"));
-  assert.deepEqual([near!.output!.selected, near!.output!.reasonZh], [false, "理由 RESCUE"], "56 + 50 = 106 > 100");
+  // T2 bar 66 → selection needs 2 × 66 = 132; the near floor is 2 × 50 = 100 (understandFloor, strictly above).
+  const nearId = await article("RESCUE", { sourceId: MEDIA_SOURCE });
+  const near = await analyzeArticle(nearId);
+  assert.deepEqual([near!.output!.selected, near!.output!.titleZh, near!.output!.reasonZh], [false, "理解标题 RESCUE", "理由 RESCUE"], "60 + 58 = 118: above 2 × 50 = 100 and below 2 × 66 = 132");
+  assert.deepEqual(calls("RESCUE").sort(), ["prefilter", "score", "score", "structure", "understand"], "written by the understanding step, as a selected item is");
   const lowId = await article("LOW");
   const low = await analyzeArticle(lowId);
-  assert.deepEqual([low!.output!.selected, low!.output!.titleZh, low!.output!.reasonZh], [false, "翻译标题 LOW", null]);
+  assert.deepEqual([low!.output!.selected, low!.output!.titleZh, low!.output!.reasonZh], [false, "翻译标题 LOW", null], "45 + 40 = 85 <= 2 × 50 = 100: below the floor, so translated");
   assert.deepEqual(calls("LOW").sort(), ["prefilter", "score", "score", "structure", "summarize"]);
   const summarize = requests.find((q) => q.marker === "LOW" && q.step === "summarize")!;
   assert.equal(summarize.body.messages.length, 1, "the title/summary prompt is one user message");
@@ -129,7 +138,7 @@ test("the prefilter's BLOCK stops everything; UNKNOWN goes on like PASS", async 
   const off = await analyzeArticle(await article("OFFTOPIC"));
   assert.deepEqual([off!.output!.relevance, off!.output!.selected], ["block", false]);
   assert.deepEqual(calls("OFFTOPIC"), ["prefilter"]);
-  // An UNKNOWN with material is judged and written like a PASS, up to 精选 (60 + 62 ≥ 2 × 60).
+  // An UNKNOWN with material is judged and written like a PASS, up to 精选 (60 + 62 = 122 ≥ 2 × 50 = 100).
   const vagueId = await article("VAGUE");
   const vague = await analyzeArticle(vagueId);
   assert.deepEqual([vague!.output!.relevance, vague!.output!.selected, vague!.output!.titleZh], ["pass", true, "理解标题 VAGUE"]);
